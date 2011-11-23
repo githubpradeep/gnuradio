@@ -38,8 +38,7 @@ public:
             gr_make_io_signature (0, 0, 0),
             gr_make_io_signature (1, 1, item_size)
         ),
-        _item_size(item_size),
-        _has_data(false)
+        _item_size(item_size)
     {
         //NOP
     }
@@ -57,6 +56,11 @@ public:
             _cond.wait(lock);
         }
         return _len;
+    }
+
+    bool start(void){
+        _has_data = false;
+        return true;
     }
 
     int work(
