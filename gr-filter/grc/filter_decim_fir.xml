@@ -7,9 +7,9 @@
 <block>
     <name>Decimating FIR Filter</name>
     <key>filter_decim_fir</key>
-    <import>from gnuradio import filter</import>
+    <import>import gnuradio.filter as gr_filter</import>
     <import>from gnuradio.gr import firdes</import>
-    <make>filter.decim_fir(filter.$type, $decim)
+    <make>gr_filter.decim_fir(gr_filter.$type, $decim)
 self.$(id).set_taps($taps)</make>
     <callback>set_taps($taps)</callback>
     <param>

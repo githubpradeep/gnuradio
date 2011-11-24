@@ -204,7 +204,7 @@ add_subdirectory(gruel)
 add_subdirectory(gnuradio-core)
 add_subdirectory(grc)
 
-add_subdirectory(gr-basic)
+add_subdirectory(gr-blocks)
 add_subdirectory(gr-filter)
 
 add_subdirectory(gr-atsc)
