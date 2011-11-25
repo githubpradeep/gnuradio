@@ -216,5 +216,5 @@ private:
 gr_blocks_stream_selector::sptr gr_blocks_stream_selector::make(
     gr_io_signature_sptr in_sig, gr_io_signature_sptr out_sig
 ){
-    return sptr(new gr_blocks_stream_selector_impl(in_sig, out_sig));
+    return gnuradio::get_initial_sptr(new gr_blocks_stream_selector_impl(in_sig, out_sig));
 }
