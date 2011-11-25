@@ -123,9 +123,9 @@ public:
         if (_output != NULL){
             return _output->post_output(input_items[0], noutput_items*_item_size)/_item_size;
         }
-        while (_block){
+        if (_block){
             _blocker.wait(lock);
-            if (!_block) goto again;
+            goto again; //wait woke up, check state vars again
         }
         //consume all
         return noutput_items;
