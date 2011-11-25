@@ -119,18 +119,16 @@ public:
         gr_vector_void_star &
     ){
         gruel::scoped_lock lock(_mutex);
-        while (true){
-            if (_output != NULL){
-                return _output->post_output(input_items[0], noutput_items*_item_size)/_item_size;
-            }
-            if (_block){
-                _blocker.wait(lock);
-                continue;
-            }
-            else{ //consume all
-                return noutput_items;
-            }
+        again:
+        if (_output != NULL){
+            return _output->post_output(input_items[0], noutput_items*_item_size)/_item_size;
         }
+        while (_block){
+            _blocker.wait(lock);
+            if (!_block) goto again;
+        }
+        //consume all
+        return noutput_items;
     }
 
 private:
