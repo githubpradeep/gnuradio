@@ -64,3 +64,6 @@ multiply_vcc = multiply_cc
 multiply_vff = multiply_ff
 multiply_vii = multiply_ii
 multiply_vss = multiply_ss
+
+try: from gnuradio.blocks import *
+except ImportError: pass
