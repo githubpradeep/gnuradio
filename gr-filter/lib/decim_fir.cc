@@ -32,7 +32,7 @@ using namespace gnuradio::filter;
 /***********************************************************************
  * FIR filter FC32 implementation
  **********************************************************************/
-class decim_fir_fc32 : public gnuradio::filter::decim_fir{
+class decim_fir_fc32 : public decim_fir{
 public:
     typedef std::complex<float> type;
 
@@ -86,7 +86,7 @@ private:
 /***********************************************************************
  * FIR filter F32 implementation
  **********************************************************************/
-class decim_fir_f32 : public gnuradio::filter::decim_fir{
+class decim_fir_f32 : public decim_fir{
 public:
     typedef float type;
 
