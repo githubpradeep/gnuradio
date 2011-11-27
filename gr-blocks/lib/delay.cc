@@ -19,17 +19,19 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_delay.h>
+#include <gnuradio/blocks/delay.h>
 #include <gr_io_signature.h>
 #include <cstring> //memcpy
 #include <gruel/thread.h>
 
+using namespace gnuradio::blocks;
+
 /***********************************************************************
  * Generic delay implementation
  **********************************************************************/
-class gr_blocks_delay_impl : public gr_blocks_delay{
+class delay_impl : public delay{
 public:
-    gr_blocks_delay_impl(const size_t itemsize):
+    delay_impl(const size_t itemsize):
         gr_block(
             "blocks delay block",
             gr_make_io_signature (1, 1, itemsize),
@@ -83,6 +85,6 @@ private:
 /***********************************************************************
  * Delay factory function
  **********************************************************************/
-gr_blocks_delay::sptr gr_blocks_delay::make(const size_t itemsize){
-    return sptr(new gr_blocks_delay_impl(itemsize));
+delay::sptr delay::make(const size_t itemsize){
+    return sptr(new delay_impl(itemsize));
 }

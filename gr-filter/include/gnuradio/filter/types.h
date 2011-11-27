@@ -18,18 +18,17 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INCLUDED_GR_BLOCKS_SUBTRACT_H
-#define INCLUDED_GR_BLOCKS_SUBTRACT_H
 
-#include <gr_blocks_api.h>
-#include <gr_sync_block.h>
-#include <gr_blocks_op_types.h>
+#ifndef INCLUDED_GR_FILTER_TYPES_H
+#define INCLUDED_GR_FILTER_TYPES_H
 
-class GR_BLOCKS_API gr_blocks_subtract : virtual public gr_sync_block{
-public:
-    typedef boost::shared_ptr<gr_blocks_subtract> sptr;
+namespace gnuradio{ namespace filter{
 
-    static sptr make(op_type type, const size_t vlen = 1);
+enum filter_type{
+    FILTER_FC32_IO_FC32_TAPS,
+    FILTER_F32_IO_F32_TAPS,
 };
 
-#endif /* INCLUDED_GR_BLOCKS_SUBTRACT_H */
+}}
+
+#endif /* INCLUDED_GR_FILTER_TYPES_H */

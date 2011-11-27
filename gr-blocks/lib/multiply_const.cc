@@ -19,11 +19,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_multiply_const.h>
+#include <gnuradio/blocks/multiply_const.h>
 #include <gr_io_signature.h>
 #include <stdexcept>
 #include <complex>
 #include <volk/volk.h>
+
+using namespace gnuradio::blocks;
 
 /***********************************************************************
  * Helper routines for conversion
@@ -39,11 +41,11 @@ template <typename type> void conv(const std::complex<double> &in, type &out){
 /***********************************************************************
  * FC32 multiply const implementation
  **********************************************************************/
-class gr_blocks_multiply_const_fc32 : public gr_blocks_multiply_const{
+class multiply_const_fc32 : public multiply_const{
 public:
     typedef std::complex<float> type;
 
-    gr_blocks_multiply_const_fc32(void):
+    multiply_const_fc32(void):
         gr_sync_block(
             "multiply const fc32",
             gr_make_io_signature (1, 1, sizeof(type)),
@@ -83,11 +85,11 @@ protected:
 /***********************************************************************
  * FC32 multiply const implementation
  **********************************************************************/
-class gr_blocks_multiply_const_f32 : public gr_blocks_multiply_const{
+class multiply_const_f32 : public multiply_const{
 public:
     typedef float type;
 
-    gr_blocks_multiply_const_f32(void):
+    multiply_const_f32(void):
         gr_sync_block(
             "multiply const f32",
             gr_make_io_signature (1, 1, sizeof(type)),
@@ -128,9 +130,9 @@ protected:
  * Generic multiply const implementation
  **********************************************************************/
 template <typename type>
-class gr_blocks_multiply_const_generic : public gr_blocks_multiply_const{
+class multiply_const_generic : public multiply_const{
 public:
-    gr_blocks_multiply_const_generic(const size_t vlen):
+    multiply_const_generic(const size_t vlen):
         gr_sync_block(
             "multiply const generic",
             gr_make_io_signature (1, 1, sizeof(type)*vlen),
@@ -182,29 +184,29 @@ protected:
 /***********************************************************************
  * factory function
  **********************************************************************/
-gr_blocks_multiply_const::sptr gr_blocks_multiply_const::make(op_type type, const size_t vlen){
+multiply_const::sptr multiply_const::make(op_type type, const size_t vlen){
 
-    if (type == OP_FC32 && vlen == 1) return sptr(new gr_blocks_multiply_const_fc32());
-    if (type == OP_F32 && vlen == 1) return sptr(new gr_blocks_multiply_const_f32());
+    if (type == OP_FC32 && vlen == 1) return sptr(new multiply_const_fc32());
+    if (type == OP_F32 && vlen == 1) return sptr(new multiply_const_f32());
 
     switch(type){
-    case OP_FC64: return sptr(new gr_blocks_multiply_const_generic<std::complex<double> >(vlen));
-    case OP_F64: return sptr(new gr_blocks_multiply_const_generic<double>(vlen));
+    case OP_FC64: return sptr(new multiply_const_generic<std::complex<double> >(vlen));
+    case OP_F64: return sptr(new multiply_const_generic<double>(vlen));
 
-    case OP_FC32: return sptr(new gr_blocks_multiply_const_generic<std::complex<float> >(vlen));
-    case OP_F32: return sptr(new gr_blocks_multiply_const_generic<float>(vlen));
+    case OP_FC32: return sptr(new multiply_const_generic<std::complex<float> >(vlen));
+    case OP_F32: return sptr(new multiply_const_generic<float>(vlen));
 
-    case OP_SC64: return sptr(new gr_blocks_multiply_const_generic<std::complex<int64_t> >(vlen));
-    case OP_S64: return sptr(new gr_blocks_multiply_const_generic<int64_t>(vlen));
+    case OP_SC64: return sptr(new multiply_const_generic<std::complex<int64_t> >(vlen));
+    case OP_S64: return sptr(new multiply_const_generic<int64_t>(vlen));
 
-    case OP_SC32: return sptr(new gr_blocks_multiply_const_generic<std::complex<int32_t> >(vlen));
-    case OP_S32: return sptr(new gr_blocks_multiply_const_generic<int32_t>(vlen));
+    case OP_SC32: return sptr(new multiply_const_generic<std::complex<int32_t> >(vlen));
+    case OP_S32: return sptr(new multiply_const_generic<int32_t>(vlen));
 
-    case OP_SC16: return sptr(new gr_blocks_multiply_const_generic<std::complex<int16_t> >(vlen));
-    case OP_S16: return sptr(new gr_blocks_multiply_const_generic<int16_t>(vlen));
+    case OP_SC16: return sptr(new multiply_const_generic<std::complex<int16_t> >(vlen));
+    case OP_S16: return sptr(new multiply_const_generic<int16_t>(vlen));
 
-    case OP_SC8: return sptr(new gr_blocks_multiply_const_generic<std::complex<int8_t> >(vlen));
-    case OP_S8: return sptr(new gr_blocks_multiply_const_generic<int8_t>(vlen));
+    case OP_SC8: return sptr(new multiply_const_generic<std::complex<int8_t> >(vlen));
+    case OP_S8: return sptr(new multiply_const_generic<int8_t>(vlen));
 
     default: throw std::invalid_argument("make multiply const got unknown type");
     }

@@ -19,12 +19,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_sig_source.h>
+#include <gnuradio/blocks/sig_source.h>
 #include <gr_io_signature.h>
 #include <stdexcept>
 #include <complex>
 #include <cmath>
 #include <boost/math/special_functions/round.hpp>
+
+using namespace gnuradio::blocks;
 
 static const size_t wave_table_size = 4096;
 
@@ -43,9 +45,9 @@ template <typename type> void conv(const std::complex<double> &in, type &out){
  * Generic add const implementation
  **********************************************************************/
 template <typename type>
-class gr_blocks_sig_source_impl : public gr_blocks_sig_source{
+class sig_source_impl : public sig_source{
 public:
-    gr_blocks_sig_source_impl(void):
+    sig_source_impl(void):
         gr_sync_block(
             "signal source",
             gr_make_io_signature (0, 0, 0),
@@ -138,25 +140,25 @@ private:
 /***********************************************************************
  * Adder factory function
  **********************************************************************/
-gr_blocks_sig_source::sptr gr_blocks_sig_source::make(op_type type){
+sig_source::sptr sig_source::make(op_type type){
     switch(type){
-    case OP_FC64: return sptr(new gr_blocks_sig_source_impl<std::complex<double> >());
-    case OP_F64: return sptr(new gr_blocks_sig_source_impl<double>());
+    case OP_FC64: return sptr(new sig_source_impl<std::complex<double> >());
+    case OP_F64: return sptr(new sig_source_impl<double>());
 
-    case OP_FC32: return sptr(new gr_blocks_sig_source_impl<std::complex<float> >());
-    case OP_F32: return sptr(new gr_blocks_sig_source_impl<float>());
+    case OP_FC32: return sptr(new sig_source_impl<std::complex<float> >());
+    case OP_F32: return sptr(new sig_source_impl<float>());
 
-    case OP_SC64: return sptr(new gr_blocks_sig_source_impl<std::complex<int64_t> >());
-    case OP_S64: return sptr(new gr_blocks_sig_source_impl<int64_t>());
+    case OP_SC64: return sptr(new sig_source_impl<std::complex<int64_t> >());
+    case OP_S64: return sptr(new sig_source_impl<int64_t>());
 
-    case OP_SC32: return sptr(new gr_blocks_sig_source_impl<std::complex<int32_t> >());
-    case OP_S32: return sptr(new gr_blocks_sig_source_impl<int32_t>());
+    case OP_SC32: return sptr(new sig_source_impl<std::complex<int32_t> >());
+    case OP_S32: return sptr(new sig_source_impl<int32_t>());
 
-    case OP_SC16: return sptr(new gr_blocks_sig_source_impl<std::complex<int16_t> >());
-    case OP_S16: return sptr(new gr_blocks_sig_source_impl<int16_t>());
+    case OP_SC16: return sptr(new sig_source_impl<std::complex<int16_t> >());
+    case OP_S16: return sptr(new sig_source_impl<int16_t>());
 
-    case OP_SC8: return sptr(new gr_blocks_sig_source_impl<std::complex<int8_t> >());
-    case OP_S8: return sptr(new gr_blocks_sig_source_impl<int8_t>());
+    case OP_SC8: return sptr(new sig_source_impl<std::complex<int8_t> >());
+    case OP_S8: return sptr(new sig_source_impl<int8_t>());
 
     default: throw std::invalid_argument("make sig source got unknown type");
     }

@@ -23,38 +23,34 @@
 // block headers
 ////////////////////////////////////////////////////////////////////////
 %{
-#include <gr_blocks_add.h>
-#include <gr_blocks_add_const.h>
-#include <gr_blocks_divide.h>
-#include <gr_blocks_multiply.h>
-#include <gr_blocks_multiply_const.h>
-#include <gr_blocks_subtract.h>
+#include <gnuradio/blocks/add.h>
+#include <gnuradio/blocks/add_const.h>
+#include <gnuradio/blocks/divide.h>
+#include <gnuradio/blocks/multiply.h>
+#include <gnuradio/blocks/multiply_const.h>
+#include <gnuradio/blocks/subtract.h>
 %}
 
-%include <gr_blocks_add.h>
-%include <gr_blocks_add_const.h>
-%include <gr_blocks_divide.h>
-%include <gr_blocks_multiply.h>
-%include <gr_blocks_multiply_const.h>
-%include <gr_blocks_subtract.h>
-
-////////////////////////////////////////////////////////////////////////
-// import types
-////////////////////////////////////////////////////////////////////////
-%include <gr_blocks_op_types.h>
+%include <gnuradio/blocks/add.h>
+%include <gnuradio/blocks/add_const.h>
+%include <gnuradio/blocks/divide.h>
+%include <gnuradio/blocks/multiply.h>
+%include <gnuradio/blocks/multiply_const.h>
+%include <gnuradio/blocks/subtract.h>
 
 ////////////////////////////////////////////////////////////////////////
 // template foo
 ////////////////////////////////////////////////////////////////////////
-%template(set_value) gr_blocks_add_const::set_value<std::complex<double> >;
-%template(set_value) gr_blocks_multiply_const::set_value<std::complex<double> >;
+%template(set_value) gnuradio::blocks::add_const::set_value<std::complex<double> >;
+%template(set_value) gnuradio::blocks::multiply_const::set_value<std::complex<double> >;
 
 ////////////////////////////////////////////////////////////////////////
 // block magic
 ////////////////////////////////////////////////////////////////////////
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,add)
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,add_const)
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,divide)
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,multiply)
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,multiply_const)
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,subtract)
+using namespace gnuradio::blocks;
+GR_SWIG_BLOCK_MAGIC1(add)
+GR_SWIG_BLOCK_MAGIC1(add_const)
+GR_SWIG_BLOCK_MAGIC1(divide)
+GR_SWIG_BLOCK_MAGIC1(multiply)
+GR_SWIG_BLOCK_MAGIC1(multiply_const)
+GR_SWIG_BLOCK_MAGIC1(subtract)

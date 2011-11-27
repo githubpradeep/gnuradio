@@ -19,18 +19,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_add.h>
+#include <gnuradio/blocks/add.h>
 #include <gr_io_signature.h>
 #include <stdexcept>
 #include <complex>
 #include <volk/volk.h>
 
+using namespace gnuradio::blocks;
+
 /***********************************************************************
  * Adder implementation with float32 - calls volk
  **********************************************************************/
-class gr_blocks_add_f32 : public gr_blocks_add{
+class add_f32 : public add{
 public:
-    gr_blocks_add_f32(const size_t vlen):
+    add_f32(const size_t vlen):
         gr_sync_block(
             "add f32",
             gr_make_io_signature (1, -1, sizeof(float)*vlen),
@@ -68,9 +70,9 @@ private:
  * Generic adder implementation
  **********************************************************************/
 template <typename type>
-class gr_blocks_add_generic : public gr_blocks_add{
+class add_generic : public add{
 public:
-    gr_blocks_add_generic(const size_t vlen):
+    add_generic(const size_t vlen):
         gr_sync_block(
             "add generic",
             gr_make_io_signature (1, -1, sizeof(type)*vlen),
@@ -108,25 +110,25 @@ private:
 /***********************************************************************
  * factory function
  **********************************************************************/
-gr_blocks_add::sptr gr_blocks_add::make(op_type type, const size_t vlen){
+add::sptr add::make(op_type type, const size_t vlen){
     switch(type){
-    case OP_FC64: return sptr(new gr_blocks_add_generic<double>(2*vlen));
-    case OP_F64: return sptr(new gr_blocks_add_generic<double>(vlen));
+    case OP_FC64: return sptr(new add_generic<double>(2*vlen));
+    case OP_F64: return sptr(new add_generic<double>(vlen));
 
-    case OP_FC32: return sptr(new gr_blocks_add_f32(2*vlen));
-    case OP_F32: return sptr(new gr_blocks_add_f32(vlen));
+    case OP_FC32: return sptr(new add_f32(2*vlen));
+    case OP_F32: return sptr(new add_f32(vlen));
 
-    case OP_SC64: return sptr(new gr_blocks_add_generic<int64_t>(2*vlen));
-    case OP_S64: return sptr(new gr_blocks_add_generic<int64_t>(vlen));
+    case OP_SC64: return sptr(new add_generic<int64_t>(2*vlen));
+    case OP_S64: return sptr(new add_generic<int64_t>(vlen));
 
-    case OP_SC32: return sptr(new gr_blocks_add_generic<int32_t>(2*vlen));
-    case OP_S32: return sptr(new gr_blocks_add_generic<int32_t>(vlen));
+    case OP_SC32: return sptr(new add_generic<int32_t>(2*vlen));
+    case OP_S32: return sptr(new add_generic<int32_t>(vlen));
 
-    case OP_SC16: return sptr(new gr_blocks_add_generic<int16_t>(2*vlen));
-    case OP_S16: return sptr(new gr_blocks_add_generic<int16_t>(vlen));
+    case OP_SC16: return sptr(new add_generic<int16_t>(2*vlen));
+    case OP_S16: return sptr(new add_generic<int16_t>(vlen));
 
-    case OP_SC8: return sptr(new gr_blocks_add_generic<int8_t>(2*vlen));
-    case OP_S8: return sptr(new gr_blocks_add_generic<int8_t>(vlen));
+    case OP_SC8: return sptr(new add_generic<int8_t>(2*vlen));
+    case OP_S8: return sptr(new add_generic<int8_t>(vlen));
 
     default: throw std::invalid_argument("make add got unknown type");
     }

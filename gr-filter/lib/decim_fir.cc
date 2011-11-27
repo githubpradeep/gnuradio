@@ -19,7 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_filter_decim_fir.h>
+#include <gnuradio/filter/decim_fir.h>
 #include <gr_io_signature.h>
 #include <gruel/thread.h>
 #include <algorithm>
@@ -27,14 +27,16 @@
 #include <volk/volk.h>
 #include <iostream>
 
+using namespace gnuradio::filter;
+
 /***********************************************************************
  * FIR filter FC32 implementation
  **********************************************************************/
-class gr_filter_decim_fir_fc32 : public gr_filter_decim_fir{
+class decim_fir_fc32 : public gnuradio::filter::decim_fir{
 public:
     typedef std::complex<float> type;
 
-    gr_filter_decim_fir_fc32(const size_t decim):
+    decim_fir_fc32(const size_t decim):
         gr_sync_decimator(
             "FIR filter FC32",
             gr_make_io_signature (1, 1, sizeof(type)),
@@ -84,11 +86,11 @@ private:
 /***********************************************************************
  * FIR filter F32 implementation
  **********************************************************************/
-class gr_filter_decim_fir_f32 : public gr_filter_decim_fir{
+class decim_fir_f32 : public gnuradio::filter::decim_fir{
 public:
     typedef float type;
 
-    gr_filter_decim_fir_f32(const size_t decim):
+    decim_fir_f32(const size_t decim):
         gr_sync_decimator(
             "FIR filter F32",
             gr_make_io_signature (1, 1, sizeof(type)),
@@ -138,10 +140,12 @@ private:
 /***********************************************************************
  * FIR filter factory function
  **********************************************************************/
-gr_filter_decim_fir::sptr gr_filter_decim_fir::make(filter_type type, const size_t decim){
+decim_fir::sptr decim_fir::make(
+    filter_type type, const size_t decim
+){
     switch(type){
-    case FILTER_FC32_IO_FC32_TAPS: return sptr(new gr_filter_decim_fir_fc32(decim));
-    case FILTER_F32_IO_F32_TAPS:   return sptr(new gr_filter_decim_fir_f32(decim));
+    case FILTER_FC32_IO_FC32_TAPS: return sptr(new decim_fir_fc32(decim));
+    case FILTER_F32_IO_F32_TAPS:   return sptr(new decim_fir_f32(decim));
     default: throw std::invalid_argument("make FIR filter got unknown type");
     }
 }

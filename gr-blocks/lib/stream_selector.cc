@@ -19,7 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_stream_selector.h>
+#include <gnuradio/blocks/stream_selector.h>
 #include <gruel/thread.h>
 #include <gr_sync_block.h>
 #include <gr_io_signature.h>
@@ -27,12 +27,14 @@
 #include <cstring> //memcpy
 #include <iostream>
 
+using namespace gnuradio::blocks;
+
 /***********************************************************************
  * A single selector output
  **********************************************************************/
-class gr_blocks_stream_selector_output : public gr_sync_block{
+class stream_selector_output : public gr_sync_block{
 public:
-    gr_blocks_stream_selector_output(const size_t item_size):
+    stream_selector_output(const size_t item_size):
         gr_sync_block(
             "stream selector output",
             gr_make_io_signature (0, 0, 0),
@@ -92,9 +94,9 @@ private:
 /***********************************************************************
  * A single selector input
  **********************************************************************/
-class gr_blocks_stream_selector_input : public gr_sync_block{
+class stream_selector_input : public gr_sync_block{
 public:
-    gr_blocks_stream_selector_input(const size_t item_size):
+    stream_selector_input(const size_t item_size):
         gr_sync_block(
             "stream selector input",
             gr_make_io_signature (1, 1, item_size),
@@ -105,7 +107,7 @@ public:
         this->set_output(NULL);
     }
 
-    void set_output(gr_blocks_stream_selector_output *output, bool block = true){
+    void set_output(stream_selector_output *output, bool block = true){
         gruel::scoped_lock lock(_mutex);
         _output = output;
         _block = block;
@@ -135,16 +137,16 @@ private:
     const size_t _item_size;
     gruel::mutex _mutex;
     gruel::condition_variable _blocker;
-    gr_blocks_stream_selector_output *_output;
+    stream_selector_output *_output;
     bool _block;
 };
 
 /***********************************************************************
  * The selector implementation glue
  **********************************************************************/
-class gr_blocks_stream_selector_impl : public gr_blocks_stream_selector{
+class stream_selector_impl : public stream_selector{
 public:
-    gr_blocks_stream_selector_impl(
+    stream_selector_impl(
         gr_io_signature_sptr in_sig,
         gr_io_signature_sptr out_sig
     ):
@@ -163,16 +165,16 @@ public:
 
         //create and connect input blocks
         for (size_t i = 0; i < size_t(in_sig->min_streams()); i++){
-            _inputs.push_back(boost::shared_ptr<gr_blocks_stream_selector_input>(
-                new gr_blocks_stream_selector_input(in_sig->sizeof_stream_item(i))
+            _inputs.push_back(boost::shared_ptr<stream_selector_input>(
+                new stream_selector_input(in_sig->sizeof_stream_item(i))
             ));
             this->connect(this->self(), i, _inputs.back(), 0);
         }
 
         //create and connect output blocks
         for (size_t i = 0; i < size_t(out_sig->min_streams()); i++){
-            _outputs.push_back(boost::shared_ptr<gr_blocks_stream_selector_output>(
-                new gr_blocks_stream_selector_output(out_sig->sizeof_stream_item(i))
+            _outputs.push_back(boost::shared_ptr<stream_selector_output>(
+                new stream_selector_output(out_sig->sizeof_stream_item(i))
             ));
             this->connect(_outputs.back(), 0, this->self(), i);
         }
@@ -206,15 +208,15 @@ public:
     }
 
 private:
-    std::vector<boost::shared_ptr<gr_blocks_stream_selector_input> > _inputs;
-    std::vector<boost::shared_ptr<gr_blocks_stream_selector_output> > _outputs;
+    std::vector<boost::shared_ptr<stream_selector_input> > _inputs;
+    std::vector<boost::shared_ptr<stream_selector_output> > _outputs;
 };
 
 /***********************************************************************
  * Factory function
  **********************************************************************/
-gr_blocks_stream_selector::sptr gr_blocks_stream_selector::make(
+stream_selector::sptr stream_selector::make(
     gr_io_signature_sptr in_sig, gr_io_signature_sptr out_sig
 ){
-    return gnuradio::get_initial_sptr(new gr_blocks_stream_selector_impl(in_sig, out_sig));
+    return gnuradio::get_initial_sptr(new stream_selector_impl(in_sig, out_sig));
 }

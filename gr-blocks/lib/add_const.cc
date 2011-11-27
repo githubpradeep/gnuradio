@@ -19,11 +19,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_add_const.h>
+#include <gnuradio/blocks/add_const.h>
 #include <gr_io_signature.h>
 #include <stdexcept>
 #include <complex>
 #include <volk/volk.h>
+
+using namespace gnuradio::blocks;
 
 /***********************************************************************
  * Helper routines for conversion
@@ -40,9 +42,9 @@ template <typename type> void conv(const std::complex<double> &in, type &out){
  * Generic add const implementation
  **********************************************************************/
 template <typename type>
-class gr_blocks_add_const_generic : public gr_blocks_add_const{
+class add_const_generic : public add_const{
 public:
-    gr_blocks_add_const_generic(const size_t vlen):
+    add_const_generic(const size_t vlen):
         gr_sync_block(
             "add const generic",
             gr_make_io_signature (1, 1, sizeof(type)*vlen),
@@ -94,25 +96,25 @@ private:
 /***********************************************************************
  * factory function
  **********************************************************************/
-gr_blocks_add_const::sptr gr_blocks_add_const::make(op_type type, const size_t vlen){
+add_const::sptr add_const::make(op_type type, const size_t vlen){
     switch(type){
-    case OP_FC64: return sptr(new gr_blocks_add_const_generic<std::complex<double> >(vlen));
-    case OP_F64: return sptr(new gr_blocks_add_const_generic<double>(vlen));
+    case OP_FC64: return sptr(new add_const_generic<std::complex<double> >(vlen));
+    case OP_F64: return sptr(new add_const_generic<double>(vlen));
 
-    case OP_FC32: return sptr(new gr_blocks_add_const_generic<std::complex<float> >(vlen));
-    case OP_F32: return sptr(new gr_blocks_add_const_generic<float>(vlen));
+    case OP_FC32: return sptr(new add_const_generic<std::complex<float> >(vlen));
+    case OP_F32: return sptr(new add_const_generic<float>(vlen));
 
-    case OP_SC64: return sptr(new gr_blocks_add_const_generic<std::complex<int64_t> >(vlen));
-    case OP_S64: return sptr(new gr_blocks_add_const_generic<int64_t>(vlen));
+    case OP_SC64: return sptr(new add_const_generic<std::complex<int64_t> >(vlen));
+    case OP_S64: return sptr(new add_const_generic<int64_t>(vlen));
 
-    case OP_SC32: return sptr(new gr_blocks_add_const_generic<std::complex<int32_t> >(vlen));
-    case OP_S32: return sptr(new gr_blocks_add_const_generic<int32_t>(vlen));
+    case OP_SC32: return sptr(new add_const_generic<std::complex<int32_t> >(vlen));
+    case OP_S32: return sptr(new add_const_generic<int32_t>(vlen));
 
-    case OP_SC16: return sptr(new gr_blocks_add_const_generic<std::complex<int16_t> >(vlen));
-    case OP_S16: return sptr(new gr_blocks_add_const_generic<int16_t>(vlen));
+    case OP_SC16: return sptr(new add_const_generic<std::complex<int16_t> >(vlen));
+    case OP_S16: return sptr(new add_const_generic<int16_t>(vlen));
 
-    case OP_SC8: return sptr(new gr_blocks_add_const_generic<std::complex<int8_t> >(vlen));
-    case OP_S8: return sptr(new gr_blocks_add_const_generic<int8_t>(vlen));
+    case OP_SC8: return sptr(new add_const_generic<std::complex<int8_t> >(vlen));
+    case OP_S8: return sptr(new add_const_generic<int8_t>(vlen));
 
     default: throw std::invalid_argument("make add const got unknown type");
     }

@@ -18,17 +18,20 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+
 #ifndef INCLUDED_GR_BLOCKS_SIG_SOURCE_H
 #define INCLUDED_GR_BLOCKS_SIG_SOURCE_H
 
-#include <gr_blocks_api.h>
+#include <gnuradio/blocks/api.h>
+#include <gnuradio/blocks/op_types.h>
 #include <gr_sync_block.h>
-#include <gr_blocks_op_types.h>
 #include <complex>
 
-class GR_BLOCKS_API gr_blocks_sig_source : virtual public gr_sync_block{
+namespace gnuradio{ namespace blocks{
+
+class GR_BLOCKS_API sig_source : virtual public gr_sync_block{
 public:
-    typedef boost::shared_ptr<gr_blocks_sig_source> sptr;
+    typedef boost::shared_ptr<sig_source> sptr;
 
     //! Make a new signal source given data type
     static sptr make(op_type type);
@@ -51,5 +54,7 @@ public:
     }
 
 };
+
+}}
 
 #endif /* INCLUDED_GR_BLOCKS_SIG_SOURCE_H */

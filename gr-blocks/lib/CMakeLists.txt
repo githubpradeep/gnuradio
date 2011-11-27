@@ -33,23 +33,23 @@ link_directories(${Boost_LIBRARY_DIRS})
 # Setup library
 ########################################################################
 list(APPEND gr_blocks_sources
-    gr_blocks_add.cc
-    gr_blocks_add_const.cc
-    gr_blocks_delay.cc
-    gr_blocks_divide.cc
-    gr_blocks_multiply.cc
-    gr_blocks_multiply_const.cc
-    gr_blocks_sig_source.cc
-    gr_blocks_stream_selector.cc
-    gr_blocks_subtract.cc
+    add.cc
+    add_const.cc
+    delay.cc
+    divide.cc
+    multiply.cc
+    multiply_const.cc
+    sig_source.cc
+    stream_selector.cc
+    subtract.cc
 )
 
-list(APPEND blocks_libs
+list(APPEND gr_blocks_libs
     gnuradio-core
     ${Boost_LIBRARIES}
     volk
 )
 
 add_library(gnuradio-blocks SHARED ${gr_blocks_sources})
-target_link_libraries(gnuradio-blocks ${blocks_libs})
+target_link_libraries(gnuradio-blocks ${gr_blocks_libs})
 GR_LIBRARY_FOO(gnuradio-blocks RUNTIME_COMPONENT "blocks_runtime" DEVEL_COMPONENT "blocks_devel")

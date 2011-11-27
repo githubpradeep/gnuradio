@@ -18,18 +18,21 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+
 #ifndef INCLUDED_GR_BLOCKS_STREAM_SELECTOR_H
 #define INCLUDED_GR_BLOCKS_STREAM_SELECTOR_H
 
-#include <gr_blocks_api.h>
+#include <gnuradio/blocks/api.h>
 #include <gr_hier_block2.h>
+
+namespace gnuradio{ namespace blocks{
 
 /*!
  * The sector blocks allows streams to be dynamically routed at runtime.
  */
-class GR_BLOCKS_API gr_blocks_stream_selector : virtual public gr_hier_block2{
+class GR_BLOCKS_API stream_selector : virtual public gr_hier_block2{
 public:
-    typedef boost::shared_ptr<gr_blocks_stream_selector> sptr;
+    typedef boost::shared_ptr<stream_selector> sptr;
 
     /*!
      * Make a new stream selector block
@@ -47,5 +50,7 @@ public:
     virtual void set_paths(const std::vector<int> &paths) = 0;
 
 };
+
+}}
 
 #endif /* INCLUDED_GR_BLOCKS_STREAM_SELECTOR_H */

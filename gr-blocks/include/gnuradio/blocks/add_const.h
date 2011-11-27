@@ -18,17 +18,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INCLUDED_GR_BLOCKS_MULTIPLY_CONST_H
-#define INCLUDED_GR_BLOCKS_MULTIPLY_CONST_H
+#ifndef INCLUDED_GR_BLOCKS_ADD_CONST_H
+#define INCLUDED_GR_BLOCKS_ADD_CONST_H
 
-#include <gr_blocks_api.h>
+#include <gnuradio/blocks/api.h>
+#include <gnuradio/blocks/op_types.h>
 #include <gr_sync_block.h>
-#include <gr_blocks_op_types.h>
 #include <complex>
 
-class GR_BLOCKS_API gr_blocks_multiply_const : virtual public gr_sync_block{
+namespace gnuradio{ namespace blocks{
+
+class GR_BLOCKS_API add_const : virtual public gr_sync_block{
 public:
-    typedef boost::shared_ptr<gr_blocks_multiply_const> sptr;
+    typedef boost::shared_ptr<add_const> sptr;
 
     static sptr make(op_type type, const size_t vlen = 1);
 
@@ -51,4 +53,6 @@ private:
 
 };
 
-#endif /* INCLUDED_GR_BLOCKS_MULTIPLY_CONST_H */
+}}
+
+#endif /* INCLUDED_GR_BLOCKS_ADD_CONST_H */

@@ -19,21 +19,23 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_divide.h>
+#include <gnuradio/blocks/subtract.h>
 #include <gr_io_signature.h>
 #include <stdexcept>
 #include <complex>
 #include <volk/volk.h>
 
+using namespace gnuradio::blocks;
+
 /***********************************************************************
- * Generic divideer implementation
+ * Generic subtracter implementation
  **********************************************************************/
 template <typename type>
-class gr_blocks_divide_generic : public gr_blocks_divide{
+class subtract_generic : public subtract{
 public:
-    gr_blocks_divide_generic(const size_t vlen):
+    subtract_generic(const size_t vlen):
         gr_sync_block(
-            "divide generic",
+            "subtract generic",
             gr_make_io_signature (1, -1, sizeof(type)*vlen),
             gr_make_io_signature (1, 1, sizeof(type)*vlen)
         ),
@@ -54,9 +56,9 @@ public:
         for (size_t n = 1; n < input_items.size(); n++){
             const type *in = reinterpret_cast<const type *>(input_items[n]);
             for (size_t i = 0; i < n_nums; i++){
-                out[i] = in0[i] / in[i];
+                out[i] = in0[i] - in[i];
             }
-            in0 = out; //for next input, we do output /= input
+            in0 = out; //for next input, we do output -= input
         }
 
         return noutput_items;
@@ -69,26 +71,26 @@ private:
 /***********************************************************************
  * factory function
  **********************************************************************/
-gr_blocks_divide::sptr gr_blocks_divide::make(op_type type, const size_t vlen){
+subtract::sptr subtract::make(op_type type, const size_t vlen){
     switch(type){
-    case OP_FC64: return sptr(new gr_blocks_divide_generic<std::complex<double> >(vlen));
-    case OP_F64: return sptr(new gr_blocks_divide_generic<double>(vlen));
+    case OP_FC64: return sptr(new subtract_generic<double>(2*vlen));
+    case OP_F64: return sptr(new subtract_generic<double>(vlen));
 
-    case OP_FC32: return sptr(new gr_blocks_divide_generic<std::complex<float> >(vlen));
-    case OP_F32: return sptr(new gr_blocks_divide_generic<float>(vlen));
+    case OP_FC32: return sptr(new subtract_generic<float>(2*vlen));
+    case OP_F32: return sptr(new subtract_generic<float>(vlen));
 
-    case OP_SC64: return sptr(new gr_blocks_divide_generic<std::complex<int64_t> >(vlen));
-    case OP_S64: return sptr(new gr_blocks_divide_generic<int64_t>(vlen));
+    case OP_SC64: return sptr(new subtract_generic<int64_t>(2*vlen));
+    case OP_S64: return sptr(new subtract_generic<int64_t>(vlen));
 
-    case OP_SC32: return sptr(new gr_blocks_divide_generic<std::complex<int32_t> >(vlen));
-    case OP_S32: return sptr(new gr_blocks_divide_generic<int32_t>(vlen));
+    case OP_SC32: return sptr(new subtract_generic<int32_t>(2*vlen));
+    case OP_S32: return sptr(new subtract_generic<int32_t>(vlen));
 
-    case OP_SC16: return sptr(new gr_blocks_divide_generic<std::complex<int16_t> >(vlen));
-    case OP_S16: return sptr(new gr_blocks_divide_generic<int16_t>(vlen));
+    case OP_SC16: return sptr(new subtract_generic<int16_t>(2*vlen));
+    case OP_S16: return sptr(new subtract_generic<int16_t>(vlen));
 
-    case OP_SC8: return sptr(new gr_blocks_divide_generic<std::complex<int8_t> >(vlen));
-    case OP_S8: return sptr(new gr_blocks_divide_generic<int8_t>(vlen));
+    case OP_SC8: return sptr(new subtract_generic<int8_t>(2*vlen));
+    case OP_S8: return sptr(new subtract_generic<int8_t>(vlen));
 
-    default: throw std::invalid_argument("make divide got unknown type");
+    default: throw std::invalid_argument("make subtract got unknown type");
     }
 }

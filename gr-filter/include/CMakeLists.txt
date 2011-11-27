@@ -21,9 +21,9 @@
 # Install header files
 ########################################################################
 install(FILES
-    gr_filter_api.h
-    gr_filter_types.h
-    gr_filter_decim_fir.h
-    DESTINATION ${GR_INCLUDE_DIR}/gnuradio
+    gnuradio/filter/api.h
+    gnuradio/filter/types.h
+    gnuradio/filter/decim_fir.h
+    DESTINATION ${GR_INCLUDE_DIR}/gnuradio/filter
     COMPONENT "filter_devel"
 )

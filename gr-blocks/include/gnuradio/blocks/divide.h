@@ -21,15 +21,19 @@
 #ifndef INCLUDED_GR_BLOCKS_DIVIDE_H
 #define INCLUDED_GR_BLOCKS_DIVIDE_H
 
-#include <gr_blocks_api.h>
+#include <gnuradio/blocks/api.h>
+#include <gnuradio/blocks/op_types.h>
 #include <gr_sync_block.h>
-#include <gr_blocks_op_types.h>
 
-class GR_BLOCKS_API gr_blocks_divide : virtual public gr_sync_block{
+namespace gnuradio{ namespace blocks{
+
+class GR_BLOCKS_API divide : virtual public gr_sync_block{
 public:
-    typedef boost::shared_ptr<gr_blocks_divide> sptr;
+    typedef boost::shared_ptr<divide> sptr;
 
     static sptr make(op_type type, const size_t vlen = 1);
 };
+
+}}
 
 #endif /* INCLUDED_GR_BLOCKS_DIVIDE_H */

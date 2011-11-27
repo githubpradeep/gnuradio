@@ -21,15 +21,17 @@
 #ifndef INCLUDED_GR_BLOCKS_DELAY_H
 #define INCLUDED_GR_BLOCKS_DELAY_H
 
-#include <gr_blocks_api.h>
+#include <gnuradio/blocks/api.h>
 #include <gr_block.h>
+
+namespace gnuradio{ namespace blocks{
 
 /*!
  * This block delays a stream by a selectable number of items.
  */
-class GR_BLOCKS_API gr_blocks_delay : virtual public gr_block{
+class GR_BLOCKS_API delay : virtual public gr_block{
 public:
-    typedef boost::shared_ptr<gr_blocks_delay> sptr;
+    typedef boost::shared_ptr<delay> sptr;
 
     //! Make a new delay block
     static sptr make(const size_t itemsize);
@@ -37,5 +39,7 @@ public:
     //! Change the number of items worth of delay
     virtual void set_delay(const int nitems) = 0;
 };
+
+}}
 
 #endif /* INCLUDED_GR_BLOCKS_DELAY_H */

@@ -19,18 +19,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gr_blocks_multiply.h>
+#include <gnuradio/blocks/multiply.h>
 #include <gr_io_signature.h>
 #include <stdexcept>
 #include <complex>
 #include <volk/volk.h>
 
+using namespace gnuradio::blocks;
+
 /***********************************************************************
  * Multiplier implementation with complex float32 - calls volk
  **********************************************************************/
-class gr_blocks_multiply_fc32 : public gr_blocks_multiply{
+class multiply_fc32 : public multiply{
 public:
-    gr_blocks_multiply_fc32(const size_t vlen):
+    multiply_fc32(const size_t vlen):
         gr_sync_block(
             "multiply fc32",
             gr_make_io_signature (1, -1, sizeof(std::complex<float>)*vlen),
@@ -67,9 +69,9 @@ private:
 /***********************************************************************
  * Multiplier implementation with float32 - calls volk
  **********************************************************************/
-class gr_blocks_multiply_f32 : public gr_blocks_multiply{
+class multiply_f32 : public multiply{
 public:
-    gr_blocks_multiply_f32(const size_t vlen):
+    multiply_f32(const size_t vlen):
         gr_sync_block(
             "multiply f32",
             gr_make_io_signature (1, -1, sizeof(float)*vlen),
@@ -107,9 +109,9 @@ private:
  * Generic multiplyer implementation
  **********************************************************************/
 template <typename type>
-class gr_blocks_multiply_generic : public gr_blocks_multiply{
+class multiply_generic : public multiply{
 public:
-    gr_blocks_multiply_generic(const size_t vlen):
+    multiply_generic(const size_t vlen):
         gr_sync_block(
             "multiply generic",
             gr_make_io_signature (1, -1, sizeof(type)*vlen),
@@ -147,25 +149,25 @@ private:
 /***********************************************************************
  * factory function
  **********************************************************************/
-gr_blocks_multiply::sptr gr_blocks_multiply::make(op_type type, const size_t vlen){
+multiply::sptr multiply::make(op_type type, const size_t vlen){
     switch(type){
-    case OP_FC64: return sptr(new gr_blocks_multiply_generic<std::complex<double> >(vlen));
-    case OP_F64: return sptr(new gr_blocks_multiply_generic<double>(vlen));
+    case OP_FC64: return sptr(new multiply_generic<std::complex<double> >(vlen));
+    case OP_F64: return sptr(new multiply_generic<double>(vlen));
 
-    case OP_FC32: return sptr(new gr_blocks_multiply_fc32(vlen));
-    case OP_F32: return sptr(new gr_blocks_multiply_f32(vlen));
+    case OP_FC32: return sptr(new multiply_fc32(vlen));
+    case OP_F32: return sptr(new multiply_f32(vlen));
 
-    case OP_SC64: return sptr(new gr_blocks_multiply_generic<std::complex<int64_t> >(vlen));
-    case OP_S64: return sptr(new gr_blocks_multiply_generic<int64_t>(vlen));
+    case OP_SC64: return sptr(new multiply_generic<std::complex<int64_t> >(vlen));
+    case OP_S64: return sptr(new multiply_generic<int64_t>(vlen));
 
-    case OP_SC32: return sptr(new gr_blocks_multiply_generic<std::complex<int32_t> >(vlen));
-    case OP_S32: return sptr(new gr_blocks_multiply_generic<int32_t>(vlen));
+    case OP_SC32: return sptr(new multiply_generic<std::complex<int32_t> >(vlen));
+    case OP_S32: return sptr(new multiply_generic<int32_t>(vlen));
 
-    case OP_SC16: return sptr(new gr_blocks_multiply_generic<std::complex<int16_t> >(vlen));
-    case OP_S16: return sptr(new gr_blocks_multiply_generic<int16_t>(vlen));
+    case OP_SC16: return sptr(new multiply_generic<std::complex<int16_t> >(vlen));
+    case OP_S16: return sptr(new multiply_generic<int16_t>(vlen));
 
-    case OP_SC8: return sptr(new gr_blocks_multiply_generic<std::complex<int8_t> >(vlen));
-    case OP_S8: return sptr(new gr_blocks_multiply_generic<int8_t>(vlen));
+    case OP_SC8: return sptr(new multiply_generic<std::complex<int8_t> >(vlen));
+    case OP_S8: return sptr(new multiply_generic<int8_t>(vlen));
 
     default: throw std::invalid_argument("make multiply got unknown type");
     }

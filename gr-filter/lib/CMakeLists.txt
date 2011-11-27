@@ -33,7 +33,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 # Setup library
 ########################################################################
 list(APPEND gr_filter_sources
-    gr_filter_decim_fir.cc
+    decim_fir.cc
 )
 
 list(APPEND filter_libs

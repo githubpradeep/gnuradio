@@ -23,12 +23,13 @@
 // block headers
 ////////////////////////////////////////////////////////////////////////
 %{
-#include <gr_blocks_stream_selector.h>
+#include <gnuradio/blocks/stream_selector.h>
 %}
 
-%include <gr_blocks_stream_selector.h>
+%include <gnuradio/blocks/stream_selector.h>
 
 ////////////////////////////////////////////////////////////////////////
 // block magic
 ////////////////////////////////////////////////////////////////////////
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,stream_selector)
+using namespace gnuradio::blocks;
+GR_SWIG_BLOCK_MAGIC1(stream_selector)

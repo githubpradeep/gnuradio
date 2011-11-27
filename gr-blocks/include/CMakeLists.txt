@@ -21,17 +21,17 @@
 # Install header files
 ########################################################################
 install(FILES
-    gr_blocks_api.h
-    gr_blocks_add.h
-    gr_blocks_add_const.h
-    gr_blocks_delay.h
-    gr_blocks_divide.h
-    gr_blocks_multiply.h
-    gr_blocks_multiply_const.h
-    gr_blocks_op_types.h
-    gr_blocks_sig_source.h
-    gr_blocks_stream_selector.h
-    gr_blocks_subtract.h
-    DESTINATION ${GR_INCLUDE_DIR}/gnuradio
+    gnuradio/blocks/api.h
+    gnuradio/blocks/add.h
+    gnuradio/blocks/add_const.h
+    gnuradio/blocks/delay.h
+    gnuradio/blocks/divide.h
+    gnuradio/blocks/multiply.h
+    gnuradio/blocks/multiply_const.h
+    gnuradio/blocks/op_types.h
+    gnuradio/blocks/sig_source.h
+    gnuradio/blocks/stream_selector.h
+    gnuradio/blocks/subtract.h
+    DESTINATION ${GR_INCLUDE_DIR}/gnuradio/blocks
     COMPONENT "blocks_devel"
 )

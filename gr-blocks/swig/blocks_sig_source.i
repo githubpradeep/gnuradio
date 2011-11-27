@@ -23,12 +23,13 @@
 // block headers
 ////////////////////////////////////////////////////////////////////////
 %{
-#include <gr_blocks_sig_source.h>
+#include <gnuradio/blocks/sig_source.h>
 %}
 
-%include <gr_blocks_sig_source.h>
+%include <gnuradio/blocks/sig_source.h>
 
 ////////////////////////////////////////////////////////////////////////
 // block magic
 ////////////////////////////////////////////////////////////////////////
-GR_SWIG_BLOCK_MAGIC2(gr_blocks,sig_source)
+using namespace gnuradio::blocks;
+GR_SWIG_BLOCK_MAGIC1(sig_source)

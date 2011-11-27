@@ -22,14 +22,16 @@
 #ifndef INCLUDED_GR_FILTER_DECIM_FIR_H
 #define INCLUDED_GR_FILTER_DECIM_FIR_H
 
-#include <gr_filter_api.h>
+#include <gnuradio/filter/api.h>
+#include <gnuradio/filter/types.h>
 #include <gr_sync_decimator.h>
-#include <gr_filter_types.h>
 #include <complex>
 
-class GR_FILTER_API gr_filter_decim_fir : virtual public gr_sync_decimator{
+namespace gnuradio{ namespace filter{
+
+class GR_FILTER_API decim_fir : virtual public gr_sync_decimator{
 public:
-    typedef boost::shared_ptr<gr_filter_decim_fir> sptr;
+    typedef boost::shared_ptr<decim_fir> sptr;
 
     //! Make a new FIR filter given data type
     static sptr make(filter_type type, const size_t decim = 1);
@@ -38,5 +40,7 @@ public:
     virtual void set_taps(const std::vector<std::complex<double> > &taps) = 0;
 
 };
+
+}}
 
 #endif /* INCLUDED_GR_FILTER_DECIM_FIR_H */

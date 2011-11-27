@@ -21,18 +21,22 @@
  */
 
 //----------------------------------------------------------------------
-//-- GR_SWIG_BLOCK_MAGIC2
+//-- GR_SWIG_BLOCK_MAGIC1 and GR_SWIG_BLOCK_MAGIC2
 //----------------------------------------------------------------------
-%define GR_SWIG_BLOCK_MAGIC2(PKG, BASE_NAME)
-_GR_SWIG_BLOCK_MAGIC2_HELPER(PKG, BASE_NAME, PKG ## _ ## BASE_NAME)
+%define GR_SWIG_BLOCK_MAGIC1(NAME)
+_GR_SWIG_BLOCK_MAGIC2_HELPER(NAME, NAME)
+%enddef
+
+%define GR_SWIG_BLOCK_MAGIC2(FULL_NAME, BASE_NAME)
+_GR_SWIG_BLOCK_MAGIC2_HELPER(FULL_NAME, BASE_NAME)
 %enddef
 
 #ifdef SWIGPYTHON
-%define _GR_SWIG_BLOCK_MAGIC2_HELPER(PKG, BASE_NAME, FULL_NAME)
-%template(FULL_NAME ## _sptr) boost::shared_ptr<FULL_NAME>;
+%define _GR_SWIG_BLOCK_MAGIC2_HELPER(FULL_NAME, BASE_NAME)
+%template(BASE_NAME ## _sptr) boost::shared_ptr<FULL_NAME>;
 %pythoncode %{
-FULL_NAME ## _sptr.__repr__ = lambda self: "<gr_block %s (%d)>" % (self.name(), self.unique_id ())
-BASE_NAME = FULL_NAME.make
+BASE_NAME ## _sptr.__repr__ = lambda self: "<gr_block %s (%d)>" % (self.name(), self.unique_id ())
+BASE_NAME = BASE_NAME.make
 %}
 %enddef
 #endif
