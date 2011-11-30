@@ -42,7 +42,7 @@ install(
     FILES
     blocks_swig.i
     blocks_delay.i
-    blocks_sig_source.i
+    blocks_sources.i
     blocks_stream_selector.i
     blocks_ops.i
     DESTINATION ${GR_INCLUDE_DIR}/gnuradio/swig

@@ -19,8 +19,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_GR_BLOCKS_SIG_SOURCE_H
-#define INCLUDED_GR_BLOCKS_SIG_SOURCE_H
+#ifndef INCLUDED_GR_BLOCKS_NOISE_SOURCE_H
+#define INCLUDED_GR_BLOCKS_NOISE_SOURCE_H
 
 #include <gnuradio/blocks/api.h>
 #include <gnuradio/blocks/op_types.h>
@@ -29,14 +29,14 @@
 
 namespace gnuradio{ namespace blocks{
 
-class GR_BLOCKS_API sig_source : virtual public gr_sync_block{
+class GR_BLOCKS_API noise_source : virtual public gr_sync_block{
 public:
-    typedef boost::shared_ptr<sig_source> sptr;
+    typedef boost::shared_ptr<noise_source> sptr;
 
-    //! Make a new signal source given data type
-    static sptr make(op_type type);
+    //! Make a new noise source given data type
+    static sptr make(op_type type, const long seed = 42);
 
-    //! Set the waveform type (CONST, COSINE, RAMP, SQUARE)
+    //! Set the waveform type (UNIFORM, GAUSSIAN, LAPLACIAN, IMPULSE)
     virtual void set_waveform(const std::string &) = 0;
 
     //! Set the offset, this is a free addition operation
@@ -45,16 +45,8 @@ public:
     //! Set the scaler, this is a free multiply scalar operation
     virtual void set_scaler(const std::complex<double> &) = 0;
 
-    //! Set the frequency, this is a fractional number between -1 and 1
-    virtual void set_frequency(const double) = 0;
-
-    //! Convenience call to set frequency with sample rate
-    void set_frequency(const double samp_rate, const double wave_freq){
-        return this->set_frequency(wave_freq/samp_rate);
-    }
-
 };
 
 }}
 
-#endif /* INCLUDED_GR_BLOCKS_SIG_SOURCE_H */
+#endif /* INCLUDED_GR_BLOCKS_NOISE_SOURCE_H */

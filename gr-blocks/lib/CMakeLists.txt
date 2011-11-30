@@ -39,7 +39,8 @@ list(APPEND gr_blocks_sources
     divide.cc
     multiply.cc
     multiply_const.cc
-    sig_source.cc
+    noise_source.cc
+    signal_source.cc
     stream_selector.cc
     subtract.cc
 )

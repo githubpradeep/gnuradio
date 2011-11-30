@@ -19,8 +19,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <gnuradio/blocks/sig_source.h>
+#include <gnuradio/blocks/noise_source.h>
 #include <gr_io_signature.h>
+#include <gr_random.h>
 #include <stdexcept>
 #include <complex>
 #include <cmath>
@@ -45,18 +46,19 @@ template <typename type> void conv(const std::complex<double> &in, type &out){
  * Generic add const implementation
  **********************************************************************/
 template <typename type>
-class sig_source_impl : public sig_source{
+class noise_source_impl : public noise_source{
 public:
-    sig_source_impl(void):
+    noise_source_impl(const long seed):
         gr_sync_block(
-            "signal source",
+            "noise source",
             gr_make_io_signature (0, 0, 0),
             gr_make_io_signature (1, 1, sizeof(type))
         ),
-        _index(0), _step(0),
+        _index(0),
         _table(wave_table_size),
         _offset(0.0), _scaler(1.0),
-        _wave("CONST")
+        _wave("GAUSSIAN"),
+        _random(seed)
     {
         this->update_table();
     }
@@ -69,7 +71,7 @@ public:
         type *out = reinterpret_cast<type *>(output_items[0]);
         for (size_t i = 0; i < size_t(noutput_items); i++){
             out[i] = _table[_index % wave_table_size];
-            _index += _step;
+            _index++;
         }
         return noutput_items;
     }
@@ -89,40 +91,29 @@ public:
         this->update_table();
     }
 
-    void set_frequency(const double freq){
-        _step = boost::math::iround(freq*_table.size());
-    }
-
     void update_table(void){
-        if (_wave == "CONST"){
+        if (_wave == "UNIFORM"){
             for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, 1.0);
+                this->set_elem(i, std::complex<double>(2*_random.ran1()-1, 2*_random.ran1()-1));
             }
         }
-        else if (_wave == "COSINE"){
+        else if (_wave == "GAUSSIAN"){
             for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, std::pow(M_E, std::complex<double>(0, M_PI*2*i/_table.size())));
+                this->set_elem(i, std::complex<double>(_random.gasdev(), _random.gasdev()));
             }
         }
-        else if (_wave == "RAMP"){
+        else if (_wave == "LAPLACIAN"){
             for (size_t i = 0; i < _table.size(); i++){
-                const size_t q = (i+(3*_table.size())/4)%_table.size();
-                this->set_elem(i, std::complex<double>(
-                    2.0*i/(_table.size()-1) - 1.0,
-                    2.0*q/(_table.size()-1) - 1.0
-                ));
+                this->set_elem(i, std::complex<double>(_random.laplacian(), _random.laplacian()));
             }
         }
-        else if (_wave == "SQUARE"){
+        else if (_wave == "IMPULSE"){
+            const float factor = 9; //TODO pass as param
             for (size_t i = 0; i < _table.size(); i++){
-                const size_t q = (i+(3*_table.size())/4)%_table.size();
-                this->set_elem(i, std::complex<double>(
-                    (i < _table.size()/2)? 0.0 : 1.0,
-                    (q < _table.size()/2)? 0.0 : 1.0
-                ));
+                this->set_elem(i, std::complex<double>(_random.impulse(factor), _random.impulse(factor)));
             }
         }
-        else throw std::invalid_argument("sig source got unknown wave type: " + _wave);
+        else throw std::invalid_argument("noise source got unknown wave type: " + _wave);
     }
 
     inline void set_elem(const size_t index, const std::complex<double> &val){
@@ -131,35 +122,35 @@ public:
 
 private:
     size_t _index;
-    size_t _step;
     std::vector<type> _table;
     std::complex<double> _offset, _scaler;
     std::string _wave;
+    gr_random _random;
 };
 
 /***********************************************************************
  * Adder factory function
  **********************************************************************/
-sig_source::sptr sig_source::make(op_type type){
+noise_source::sptr noise_source::make(op_type type, const long seed){
     switch(type){
-    case OP_FC64: return sptr(new sig_source_impl<std::complex<double> >());
-    case OP_F64: return sptr(new sig_source_impl<double>());
+    case OP_FC64: return sptr(new noise_source_impl<std::complex<double> >(seed));
+    case OP_F64: return sptr(new noise_source_impl<double>(seed));
 
-    case OP_FC32: return sptr(new sig_source_impl<std::complex<float> >());
-    case OP_F32: return sptr(new sig_source_impl<float>());
+    case OP_FC32: return sptr(new noise_source_impl<std::complex<float> >(seed));
+    case OP_F32: return sptr(new noise_source_impl<float>(seed));
 
-    case OP_SC64: return sptr(new sig_source_impl<std::complex<int64_t> >());
-    case OP_S64: return sptr(new sig_source_impl<int64_t>());
+    case OP_SC64: return sptr(new noise_source_impl<std::complex<int64_t> >(seed));
+    case OP_S64: return sptr(new noise_source_impl<int64_t>(seed));
 
-    case OP_SC32: return sptr(new sig_source_impl<std::complex<int32_t> >());
-    case OP_S32: return sptr(new sig_source_impl<int32_t>());
+    case OP_SC32: return sptr(new noise_source_impl<std::complex<int32_t> >(seed));
+    case OP_S32: return sptr(new noise_source_impl<int32_t>(seed));
 
-    case OP_SC16: return sptr(new sig_source_impl<std::complex<int16_t> >());
-    case OP_S16: return sptr(new sig_source_impl<int16_t>());
+    case OP_SC16: return sptr(new noise_source_impl<std::complex<int16_t> >(seed));
+    case OP_S16: return sptr(new noise_source_impl<int16_t>(seed));
 
-    case OP_SC8: return sptr(new sig_source_impl<std::complex<int8_t> >());
-    case OP_S8: return sptr(new sig_source_impl<int8_t>());
+    case OP_SC8: return sptr(new noise_source_impl<std::complex<int8_t> >(seed));
+    case OP_S8: return sptr(new noise_source_impl<int8_t>(seed));
 
-    default: throw std::invalid_argument("make sig source got unknown type");
+    default: throw std::invalid_argument("make noise source got unknown type");
     }
 }

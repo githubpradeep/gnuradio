@@ -1,21 +1,20 @@
 <?xml version="1.0"?>
 <!--
 ###################################################
-##Signal source block
+##Noise source block
 ###################################################
  -->
 <block>
-    <name>Signal Source</name>
-    <key>gr_blocks_sig_source</key>
+    <name>Noise Source</name>
+    <key>gr_blocks_noise_source</key>
     <import>import gnuradio.blocks as gr_blocks</import>
-    <make>gr_blocks.sig_source(gr_blocks.OP_$($type().upper()))
+    <make>gr_blocks.noise_source(gr_blocks.OP_$($type().upper()), $seed)
 self.$(id).set_waveform($wave)
 self.$(id).set_offset($off)
-self.$(id).set_scaler($scaler)
-self.$(id).set_frequency($freq)</make>
+self.$(id).set_scaler($scaler)</make>
     <callback>set_waveform($wave)</callback>
     <callback>set_offset($off)</callback>
-    <callback>set_scaleritude($scaler)</callback>
+    <callback>set_scaler($scaler)</callback>
     <callback>set_frequency($freq)</callback>
     <param>
         <name>Output Type</name>
@@ -38,12 +37,18 @@ self.$(id).set_frequency($freq)</make>
     <param>
         <name>Waveform</name>
         <key>wave</key>
-        <value>COSINE</value>
+        <value>GAUSSIAN</value>
         <type>string</type>
-        <option><name>Constant</name><key>CONST</key></option>
-        <option><name>Cosine</name><key>COSINE</key></option>
-        <option><name>Ramp</name><key>RAMP</key></option>
-        <option><name>Square</name><key>SQUARE</key></option>
+        <option><name>Uniform</name><key>UNIFORM</key></option>
+        <option><name>Gaussian</name><key>GAUSSIAN</key></option>
+        <option><name>Laplacian</name><key>LAPLACIAN</key></option>
+        <option><name>Impulse</name><key>IMPLUSE</key></option>
+    </param>
+    <param>
+        <name>Seed</name>
+        <key>seed</key>
+        <value>42</value>
+        <type>int</type>
     </param>
     <param>
         <name>Offset</name>
@@ -56,12 +61,6 @@ self.$(id).set_frequency($freq)</make>
         <key>scaler</key>
         <value>1.0</value>
         <type>complex</type>
-    </param>
-    <param>
-        <name>Frequency (frac)</name>
-        <key>freq</key>
-        <value>0.1</value>
-        <type>real</type>
     </param>
     <source>
         <name>out</name>

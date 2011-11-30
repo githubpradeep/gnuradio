@@ -29,7 +29,8 @@ install(FILES
     gnuradio/blocks/multiply.h
     gnuradio/blocks/multiply_const.h
     gnuradio/blocks/op_types.h
-    gnuradio/blocks/sig_source.h
+    gnuradio/blocks/noise_source.h
+    gnuradio/blocks/signal_source.h
     gnuradio/blocks/stream_selector.h
     gnuradio/blocks/subtract.h
     DESTINATION ${GR_INCLUDE_DIR}/gnuradio/blocks

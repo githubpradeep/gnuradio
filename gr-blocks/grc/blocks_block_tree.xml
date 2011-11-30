@@ -30,7 +30,8 @@
     <name></name> <!-- Blank for Root Name -->
     <cat>
         <name>Blocks</name>
-        <block>gr_blocks_sig_source</block>
+        <block>gr_blocks_signal_source</block>
+        <block>gr_blocks_noise_source</block>
         <block>gr_blocks_stream_selector</block>
         <block>gr_blocks_delay</block>
         <block>gr_blocks_add</block>

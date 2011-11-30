@@ -40,5 +40,5 @@
 ////////////////////////////////////////////////////////////////////////
 %include <blocks_ops.i>
 %include <blocks_delay.i>
-%include <blocks_sig_source.i>
+%include <blocks_sources.i>
 %include <blocks_stream_selector.i>
