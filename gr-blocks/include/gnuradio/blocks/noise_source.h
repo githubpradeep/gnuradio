@@ -29,6 +29,10 @@
 
 namespace gnuradio{ namespace blocks{
 
+/*!
+ * \brief random number source
+ * \ingroup source_blk
+ */
 class GR_BLOCKS_API noise_source : virtual public gr_sync_block{
 public:
     typedef boost::shared_ptr<noise_source> sptr;
@@ -44,6 +48,9 @@ public:
 
     //! Set the scaler, this is a free multiply scalar operation
     virtual void set_scaler(const std::complex<double> &) = 0;
+
+    //! Set the factor, this is used for the IMPULSE waveform
+    virtual void set_factor(const double &factor) = 0;
 
 };
 

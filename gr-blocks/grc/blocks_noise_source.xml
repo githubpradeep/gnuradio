@@ -11,11 +11,12 @@
     <make>gr_blocks.noise_source(gr_blocks.OP_$($type().upper()), $seed)
 self.$(id).set_waveform($wave)
 self.$(id).set_offset($off)
-self.$(id).set_scaler($scaler)</make>
+self.$(id).set_scaler($scaler)
+self.$(id).set_factor($factor)</make>
     <callback>set_waveform($wave)</callback>
     <callback>set_offset($off)</callback>
     <callback>set_scaler($scaler)</callback>
-    <callback>set_frequency($freq)</callback>
+    <callback>set_factor($factor)</callback>
     <param>
         <name>Output Type</name>
         <key>type</key>
@@ -61,6 +62,13 @@ self.$(id).set_scaler($scaler)</make>
         <key>scaler</key>
         <value>1.0</value>
         <type>complex</type>
+    </param>
+    <param>
+        <name>Factor</name>
+        <key>factor</key>
+        <value>9.0</value>
+        <type>real</type>
+        <hide>'part'</hide>
     </param>
     <source>
         <name>out</name>

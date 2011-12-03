@@ -56,7 +56,7 @@ public:
         ),
         _index(0),
         _table(wave_table_size),
-        _offset(0.0), _scaler(1.0),
+        _offset(0.0), _scaler(1.0), _factor(9.0),
         _wave("GAUSSIAN"),
         _random(seed)
     {
@@ -68,6 +68,8 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
+        _index += size_t(_random.ran1()*wave_table_size); //lookup into table is random each work()
+
         type *out = reinterpret_cast<type *>(output_items[0]);
         for (size_t i = 0; i < size_t(noutput_items); i++){
             out[i] = _table[_index % wave_table_size];
@@ -91,6 +93,11 @@ public:
         this->update_table();
     }
 
+    void set_factor(const double &factor){
+        _factor = factor;
+        this->update_table();
+    }
+
     void update_table(void){
         if (_wave == "UNIFORM"){
             for (size_t i = 0; i < _table.size(); i++){
@@ -108,7 +115,7 @@ public:
             }
         }
         else if (_wave == "IMPULSE"){
-            const float factor = 9; //TODO pass as param
+            const float factor = float(_factor);
             for (size_t i = 0; i < _table.size(); i++){
                 this->set_elem(i, std::complex<double>(_random.impulse(factor), _random.impulse(factor)));
             }
@@ -124,6 +131,7 @@ private:
     size_t _index;
     std::vector<type> _table;
     std::complex<double> _offset, _scaler;
+    double _factor;
     std::string _wave;
     gr_random _random;
 };

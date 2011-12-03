@@ -29,6 +29,10 @@
 
 namespace gnuradio{ namespace blocks{
 
+/*!
+ * \brief signal generator source
+ * \ingroup source_blk
+ */
 class GR_BLOCKS_API signal_source : virtual public gr_sync_block{
 public:
     typedef boost::shared_ptr<signal_source> sptr;
