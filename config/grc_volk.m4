@@ -26,12 +26,14 @@ AC_DEFUN([GRC_VOLK],[
     dnl Test if $enable_volk is:
     dnl   yes  : if the --enable code passed muster and all dependencies are met
     dnl   no   : otherwise, then do not set variables
-    if test $passed != with && test x$enable_volk == xyes; then
+    if test $passed != with && test x$enable_volk != xno; then
     	dnl how and where to find INCLUDES and LA
 	volk_INCLUDES="-I\${abs_top_srcdir}/volk/include"
-	volk_LA="\${abs_top_builddir}/volk/lib/libvolk.la \
-	         \${abs_top_builddir}/volk/lib/libvolk_runtime.la"
+	volk_LA="\${abs_top_builddir}/volk/lib/libvolk.la"
     fi
+
+    AC_SUBST(volk_INCLUDES)
+    AC_SUBST(volk_LA)
 
     dnl volk uses a subsidiary configure.ac
     dnl only run if building Volk

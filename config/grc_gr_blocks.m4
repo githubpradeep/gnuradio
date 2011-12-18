@@ -23,7 +23,7 @@ AC_DEFUN([GRC_GR_BLOCKS],[
     dnl Don't do gr-blocks if gnuradio-core skipped
     GRC_CHECK_DEPENDENCY(gr-blocks, gnuradio-core)
 
-    if test $passed != with; then
+    if test $passed != with && test x$enable_volk != xno; then
 	dnl how and where to find INCLUDES and LA and such
         gr_blocks_INCLUDES="\
 -I\${abs_top_srcdir}/gr-blocks/include \

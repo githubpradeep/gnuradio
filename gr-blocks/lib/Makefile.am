@@ -22,7 +22,7 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(STD_DEFINES_AND_INCLUDES) $(PYTHON_CPPFLAGS) \
-	$(GR_BLOCKS_INCLUDES) $(WITH_INCLUDES)
+	$(GR_BLOCKS_INCLUDES) $(VOLK_INCLUDE_DIRS) $(WITH_INCLUDES)
 
 lib_LTLIBRARIES = libgnuradio-blocks.la
 
@@ -40,6 +40,7 @@ libgnuradio_blocks_la_SOURCES = \
 
 
 libgnuradio_blocks_la_LIBADD =	\
-	$(GNURADIO_CORE_LA)
+	$(GNURADIO_CORE_LA)	\
+	$(VOLK_LA)
 
 libgnuradio_blocks_la_LDFLAGS = $(NO_UNDEFINED) $(LTVERSIONFLAGS)

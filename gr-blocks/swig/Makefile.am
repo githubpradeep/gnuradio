@@ -63,4 +63,6 @@ blocks_swig_swig_args = \
 if GUILE
 gnuradio/%.scm: %.i
 	echo "Not building guile."
+	echo "INCLUDES: $(VOLK_LA)"
+	echo "LA: $(VOLK_LA)"
 endif
