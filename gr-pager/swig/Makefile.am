@@ -41,8 +41,22 @@ noinst_GUILE  = pager.test
 
 ##############################
 # SWIG interface and library
+
+TOP_SWIG_DOC_IFILES = \
+	pager_swig_doc.i
+
 TOP_SWIG_IFILES = \
+	$(TOP_SWIG_DOC_IFILES) 	\
 	pager_swig.i
+
+BUILT_SOURCES += \
+	$(TOP_SWIG_DOC_IFILES)
+
+EXTRA_DIST += \
+	$(TOP_SWIG_DOC_IFILES)
+
+$(TOP_SWIG_DOC_IFILES):
+	`echo "" > $@`
 
 # Install so that they end up available as:
 #   import gnuradio.pager
@@ -57,11 +71,12 @@ pager_swig_la_swig_libadd = \
 
 # additional SWIG files to be installed
 pager_swig_swiginclude_headers = \
-	pager_flex_deinterleave.i \
-	pager_flex_frame.i \
-	pager_flex_parse.i \
-	pager_flex_sync.i \
-	pager_slicer_fb.i
+	pager_flex_deinterleave.i 	\
+	pager_flex_frame.i 		\
+	pager_flex_parse.i 		\
+	pager_flex_sync.i 		\
+	pager_slicer_fb.i		\
+	$(TOP_SWIG_DOC_IFILES)
 
 if GUILE
 TESTS += run_guile_tests

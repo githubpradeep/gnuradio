@@ -388,11 +388,11 @@ public:
         while (true){
             #ifdef GR_UHD_USE_STREAM_API
             const size_t bpi = uhd::convert::get_bytes_per_item(_stream_args.cpu_format);
-            const size_t num_samps = _rx_stream->recv(
+            _rx_stream->recv(
                 outputs, nbytes/bpi, _metadata, 0.0
             );
             #else
-            const size_t num_samps = _dev->get_device()->recv(
+            _dev->get_device()->recv(
                 outputs, nbytes/_type->size, _metadata,
                 *_type, uhd::device::RECV_MODE_FULL_BUFF, 0.0
             );
@@ -407,6 +407,25 @@ public:
         this->flush();
 
         return true;
+    }
+
+    std::vector<std::complex<float> > finite_acquisition(const size_t nsamps){
+        #ifdef GR_UHD_USE_STREAM_API
+        uhd::stream_cmd_t cmd(uhd::stream_cmd_t::STREAM_MODE_NUM_SAMPS_AND_DONE);
+        cmd.num_samps = nsamps;
+        cmd.stream_now = true;
+        _dev->issue_stream_cmd(cmd);
+
+        std::vector<std::complex<float> > samps(nsamps);
+        const size_t actual_num_samps = _rx_stream->recv(
+            &samps.front(), nsamps, _metadata, 0.1
+        );
+        samps.resize(actual_num_samps);
+
+        return samps;
+        #else
+        throw std::runtime_error("not implemented in this version");
+        #endif
     }
 
 private:

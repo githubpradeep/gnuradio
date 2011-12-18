@@ -42,8 +42,21 @@ AM_CPPFLAGS = \
 # The SWIG library
 # TESTS = run_tests
 
+TOP_SWIG_DOC_IFILES = \
+	noaa_swig_doc.i
+
 TOP_SWIG_IFILES = \
+	$(TOP_SWIG_DOC_IFILES) 	\
 	noaa_swig.i
+
+BUILT_SOURCES += \
+	$(TOP_SWIG_DOC_IFILES)
+
+EXTRA_DIST += \
+	$(TOP_SWIG_DOC_IFILES)
+
+$(TOP_SWIG_DOC_IFILES):
+	`echo "" > $@`
 
 # Install so that they end up available as:
 #   import gnuradio.noaa
@@ -62,9 +75,10 @@ noaa_swig_python = \
 
 # additional SWIG files to be installed
 noaa_swig_swiginclude_headers =	\
-	noaa_hrpt_decoder.i \
-	noaa_hrpt_deframer.i \
-	noaa_hrpt_pll_cf.i
+	noaa_hrpt_decoder.i 	\
+	noaa_hrpt_deframer.i 	\
+	noaa_hrpt_pll_cf.i 	\
+	$(TOP_SWIG_DOC_IFILES)
 
 if GUILE
 TESTS += run_guile_tests

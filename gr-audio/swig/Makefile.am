@@ -33,8 +33,21 @@ AM_CPPFLAGS = \
 # ----------------------------------------------------------------
 # The SWIG library
 
+TOP_SWIG_DOC_IFILES = \
+	audio_swig_doc.i
+
 TOP_SWIG_IFILES = \
+	$(TOP_SWIG_DOC_IFILES) 	\
 	audio_swig.i
+
+BUILT_SOURCES += \
+	$(TOP_SWIG_DOC_IFILES)
+
+EXTRA_DIST += \
+	$(TOP_SWIG_DOC_IFILES)
+
+$(TOP_SWIG_DOC_IFILES):
+	`echo "" > $@`
 
 # Install so that they end up available as:
 #   import gnuradio.audio
@@ -52,6 +65,7 @@ audio_swig_python = \
 	__init__.py
 
 # additional SWIG files to be installed
-audio_swig_swiginclude_headers =
+audio_swig_swiginclude_headers = \
+	$(TOP_SWIG_DOC_IFILES)
 
 audio_swig_swig_args = $(AUDIO_CPPFLAGS)

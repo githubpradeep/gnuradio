@@ -66,7 +66,8 @@ static inline void volk_32fc_x2_conjugate_dot_prod_32fc_u_generic(lv_32fc_t* res
 
 static inline void volk_32fc_x2_conjugate_dot_prod_32fc_u_sse3(lv_32fc_t* result, const lv_32fc_t* input, const lv_32fc_t* taps, unsigned int num_bytes) {
 
-  __VOLK_ATTR_ALIGNED(16) static const uint32_t conjugator[4]= {0x00000000, 0x80000000, 0x00000000, 0x80000000};
+  // Variable never used?
+  //__VOLK_ATTR_ALIGNED(16) static const uint32_t conjugator[4]= {0x00000000, 0x80000000, 0x00000000, 0x80000000};
 
   union HalfMask {
     uint32_t intRep[4];
@@ -96,9 +97,9 @@ static inline void volk_32fc_x2_conjugate_dot_prod_32fc_u_sse3(lv_32fc_t* result
 
     in1 = _mm_loadu_ps( (float*) (input+offset) );
     in2 = _mm_loadu_ps( (float*) (taps+offset) );
-    Rv = in1*in2;
+    Rv = _mm_mul_ps(in1, in2);
     fehg = _mm_shuffle_ps(in2, in2, _MM_SHUFFLE(2,3,0,1));
-    Iv = in1*fehg;
+    Iv = _mm_mul_ps(in1, fehg);
     Rs = _mm_hadd_ps( _mm_hadd_ps(Rv, zv) ,zv);
     Ivm = _mm_xor_ps( negMask.vec, Iv );
     Is = _mm_hadd_ps( _mm_hadd_ps(Ivm, zv) ,zv);
@@ -119,9 +120,9 @@ static inline void volk_32fc_x2_conjugate_dot_prod_32fc_u_sse3(lv_32fc_t* result
 
     in1 = _mm_loadu_ps( (float*) (input+offset) );
     in2 = _mm_loadu_ps( (float*) (taps+offset) );
-    Rv = _mm_and_ps(in1*in2, halfMask.vec);
+    Rv = _mm_and_ps(_mm_mul_ps(in1, in2), halfMask.vec);
     fehg = _mm_shuffle_ps(in2, in2, _MM_SHUFFLE(2,3,0,1));
-    Iv = _mm_and_ps(in1*fehg, halfMask.vec);
+    Iv = _mm_and_ps(_mm_mul_ps(in1, fehg), halfMask.vec);
     Rs = _mm_hadd_ps(_mm_hadd_ps(Rv, zv),zv);
     Ivm = _mm_xor_ps( negMask.vec, Iv );
     Is = _mm_hadd_ps(_mm_hadd_ps(Ivm, zv),zv);

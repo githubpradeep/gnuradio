@@ -7,44 +7,37 @@
 #include <string.h>
 
 
-#ifdef LV_HAVE_GENERIC 
+#ifdef LV_HAVE_GENERIC
 
 
 static inline void volk_32fc_x2_dot_prod_32fc_u_generic(lv_32fc_t* result, const lv_32fc_t* input, const lv_32fc_t* taps, unsigned int num_points) {
-  
+
   float * res = (float*) result;
   float * in = (float*) input;
   float * tp = (float*) taps;
   unsigned int n_2_ccomplex_blocks = num_points/2;
   unsigned int isodd = num_points &1;
-  
-  
-  
+
   float sum0[2] = {0,0};
   float sum1[2] = {0,0};
   unsigned int i = 0;
 
-  
   for(i = 0; i < n_2_ccomplex_blocks; ++i) {
-    
+
 
     sum0[0] += in[0] * tp[0] - in[1] * tp[1];
     sum0[1] += in[0] * tp[1] + in[1] * tp[0];
     sum1[0] += in[2] * tp[2] - in[3] * tp[3];
     sum1[1] += in[2] * tp[3] + in[3] * tp[2];
-    
-    
+
     in += 4;
     tp += 4;
 
   }
 
-  
   res[0] = sum0[0] + sum1[0];
   res[1] = sum0[1] + sum1[1];
-  
-  
-  
+
   for(i = 0; i < isodd; ++i) {
 
 
@@ -61,7 +54,6 @@ static inline void volk_32fc_x2_dot_prod_32fc_u_generic(lv_32fc_t* result, const
 #include <pmmintrin.h>
 
 static inline void volk_32fc_x2_dot_prod_32fc_u_sse3(lv_32fc_t* result, const lv_32fc_t* input, const lv_32fc_t* taps, unsigned int num_points) {
-  
 
   lv_32fc_t dotProduct;
   memset(&dotProduct, 0x0, 2*sizeof(float));
@@ -77,19 +69,18 @@ static inline void volk_32fc_x2_dot_prod_32fc_u_sse3(lv_32fc_t* result, const lv
   dotProdVal = _mm_setzero_ps();
 
   for(;number < halfPoints; number++){
-      
     x = _mm_loadu_ps((float*)a); // Load the ar + ai, br + bi as ar,ai,br,bi
     y = _mm_loadu_ps((float*)b); // Load the cr + ci, dr + di as cr,ci,dr,di
-      
+
     yl = _mm_moveldup_ps(y); // Load yl with cr,cr,dr,dr
     yh = _mm_movehdup_ps(y); // Load yh with ci,ci,di,di
-      
+
     tmp1 = _mm_mul_ps(x,yl); // tmp1 = ar*cr,ai*cr,br*dr,bi*dr
-      
+
     x = _mm_shuffle_ps(x,x,0xB1); // Re-arrange x to be ai,ar,bi,br
-      
+
     tmp2 = _mm_mul_ps(x,yh); // tmp2 = ai*ci,ar*ci,bi*di,br*di
-      
+
     z = _mm_addsub_ps(tmp1,tmp2); // ar*cr-ai*ci, ai*cr+ar*ci, br*dr-bi*di, bi*dr+br*di
 
     dotProdVal = _mm_add_ps(dotProdVal, z); // Add the complex multiplication results together
@@ -109,7 +100,7 @@ static inline void volk_32fc_x2_dot_prod_32fc_u_sse3(lv_32fc_t* result, const lv
   }
 
   *result = dotProduct;
-}  
+}
 
 #endif /*LV_HAVE_SSE3*/
 
