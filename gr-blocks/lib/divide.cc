@@ -49,6 +49,18 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
+      if(input_items.size() == 1) {
+        const size_t n_nums = noutput_items * _vlen;
+        type *out = reinterpret_cast<type *>(output_items[0]);
+        const type *in = reinterpret_cast<const type *>(input_items[0]);
+
+	for (size_t i = 0; i < n_nums; i++){
+	  out[i] = static_cast<type>(1) / in[i];
+	}
+
+        return noutput_items;
+      }
+      else {
         const size_t n_nums = noutput_items * _vlen;
         type *out = reinterpret_cast<type *>(output_items[0]);
         const type *in0 = reinterpret_cast<const type *>(input_items[0]);
@@ -62,6 +74,7 @@ public:
         }
 
         return noutput_items;
+      }
     }
 
 private:
