@@ -83,6 +83,10 @@ GRUEL_LA = @gruel_LA@
 VOLK_INCLUDES = @volk_INCLUDES@
 VOLK_LA = @volk_LA@
 
+# GR-BLOCKS includes and libraries
+GR_BLOCKS_INCLUDES = @gr_blocks_INCLUDES@
+GR_BLOCKS_LA = @gr_blocks_LA@
+
 # GR-DIGITAL includes and libraries
 GR_DIGITAL_INCLUDES = @gr_digital_INCLUDES@
 GR_DIGITAL_LA = @gr_digital_LA@

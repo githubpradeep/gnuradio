@@ -351,6 +351,7 @@ build_dirs="config"
 GRC_GRUEL                       dnl must come first
 GRC_VOLK
 GRC_GNURADIO_CORE
+GRC_GR_BLOCKS
 GRC_GR_DIGITAL
 GRC_GR_AUDIO
 GRC_GR_VOCODER

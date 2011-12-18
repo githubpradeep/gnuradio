@@ -66,4 +66,6 @@ multiply_vii = multiply_ii
 multiply_vss = multiply_ss
 
 try: from gnuradio.blocks import *
-except ImportError: pass
+except ImportError:
+    sys.stderr.write("Warning: could not import gnuradio.blocks\n")
+    

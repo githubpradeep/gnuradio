@@ -28,29 +28,31 @@
 
 namespace gnuradio{ namespace blocks{
 
-class GR_BLOCKS_API add_const : virtual public gr_sync_block{
-public:
-    typedef boost::shared_ptr<add_const> sptr;
+class GR_BLOCKS_API add_const : virtual public gr_sync_block
+{
+ public:
+  typedef boost::shared_ptr<add_const> sptr;
 
-    static sptr make(op_type type, const size_t vlen = 1);
-
-    //! Set the value from any vector type
-    template <typename type> void set_value(const std::vector<type> &val){
-        std::vector<std::complex<double> > new_val;
-        for (size_t i = 0; i < val.size(); i++){
-            new_val.push_back(std::complex<double>(val[i]));
-        }
-        return this->_set_value(new_val);
+  static sptr make(op_type type, const size_t vlen = 1);
+  
+  //! Set the value from any vector type
+  template <typename type> void
+  set_value(const std::vector<type> &val)
+  {
+    std::vector<std::complex<double> > new_val;
+    for (size_t i = 0; i < val.size(); i++){
+      new_val.push_back(std::complex<double>(val[i]));
     }
+    return this->_set_value(new_val);
+  }
 
-    //! Set the value when vlen == 1
-    template <typename type> void set_value(const type &val){
-        return this->set_value(std::vector<type>(1, val));
-    }
-
-private:
-    virtual void _set_value(const std::vector<std::complex<double> > &val) = 0;
-
+  //! Set the value when vlen == 1
+  template <typename type> void set_value(const type &val){
+    return this->set_value(std::vector<type>(1, val));
+  }
+  
+ private:
+  virtual void _set_value(const std::vector<std::complex<double> > &val) = 0;
 };
 
 }}
