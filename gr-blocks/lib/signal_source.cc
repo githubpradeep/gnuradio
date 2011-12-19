@@ -53,10 +53,10 @@ public:
             gr_make_io_signature (0, 0, 0),
             gr_make_io_signature (1, 1, sizeof(type))
         ),
-        _index(0), _step(0),
-        _table(wave_table_size),
-        _offset(0.0), _scaler(1.0),
-        _wave("CONST")
+        d_index(0), d_step(0),
+        d_table(wave_table_size),
+        d_offset(0.0), d_ampl(1.0),
+        d_wave("CONST")
     {
         this->update_table();
     }
@@ -68,73 +68,73 @@ public:
     ){
         type *out = reinterpret_cast<type *>(output_items[0]);
         for (size_t i = 0; i < size_t(noutput_items); i++){
-            out[i] = _table[_index % wave_table_size];
-            _index += _step;
+            out[i] = d_table[d_index % wave_table_size];
+            d_index += d_step;
         }
         return noutput_items;
     }
 
     void set_waveform(const std::string &wave){
-        _wave = wave;
+        d_wave = wave;
         this->update_table();
     }
 
     void set_offset(const std::complex<double> &offset){
-        _offset = offset;
+        d_offset = offset;
         this->update_table();
     }
 
-    void set_scaler(const std::complex<double> &scaler){
-        _scaler = scaler;
+    void set_amplitude(const std::complex<double> &ampl){
+        d_ampl = ampl;
         this->update_table();
     }
 
     void set_frequency(const double freq){
-        _step = boost::math::iround(freq*_table.size());
+        d_step = boost::math::iround(freq*d_table.size());
     }
 
     void update_table(void){
-        if (_wave == "CONST"){
-            for (size_t i = 0; i < _table.size(); i++){
+        if (d_wave == "CONST"){
+            for (size_t i = 0; i < d_table.size(); i++){
                 this->set_elem(i, 1.0);
             }
         }
-        else if (_wave == "COSINE"){
-            for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, std::pow(M_E, std::complex<double>(0, M_PI*2*i/_table.size())));
+        else if (d_wave == "COSINE"){
+            for (size_t i = 0; i < d_table.size(); i++){
+                this->set_elem(i, std::pow(M_E, std::complex<double>(0, M_PI*2*i/d_table.size())));
             }
         }
-        else if (_wave == "RAMP"){
-            for (size_t i = 0; i < _table.size(); i++){
-                const size_t q = (i+(3*_table.size())/4)%_table.size();
+        else if (d_wave == "RAMP"){
+            for (size_t i = 0; i < d_table.size(); i++){
+                const size_t q = (i+(3*d_table.size())/4)%d_table.size();
                 this->set_elem(i, std::complex<double>(
-                    2.0*i/(_table.size()-1) - 1.0,
-                    2.0*q/(_table.size()-1) - 1.0
+                    2.0*i/(d_table.size()-1) - 1.0,
+                    2.0*q/(d_table.size()-1) - 1.0
                 ));
             }
         }
-        else if (_wave == "SQUARE"){
-            for (size_t i = 0; i < _table.size(); i++){
-                const size_t q = (i+(3*_table.size())/4)%_table.size();
+        else if (d_wave == "SQUARE"){
+            for (size_t i = 0; i < d_table.size(); i++){
+                const size_t q = (i+(3*d_table.size())/4)%d_table.size();
                 this->set_elem(i, std::complex<double>(
-                    (i < _table.size()/2)? 0.0 : 1.0,
-                    (q < _table.size()/2)? 0.0 : 1.0
+                    (i < d_table.size()/2)? 0.0 : 1.0,
+                    (q < d_table.size()/2)? 0.0 : 1.0
                 ));
             }
         }
-        else throw std::invalid_argument("sig source got unknown wave type: " + _wave);
+        else throw std::invalid_argument("sig source got unknown wave type: " + d_wave);
     }
 
     inline void set_elem(const size_t index, const std::complex<double> &val){
-        conv(_scaler * val + _offset, _table[index]);
+        conv(d_ampl * val + d_offset, d_table[index]);
     }
 
 private:
-    size_t _index;
-    size_t _step;
-    std::vector<type> _table;
-    std::complex<double> _offset, _scaler;
-    std::string _wave;
+    size_t d_index;
+    size_t d_step;
+    std::vector<type> d_table;
+    std::complex<double> d_offset, d_ampl;
+    std::string d_wave;
 };
 
 /***********************************************************************

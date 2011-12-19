@@ -37,14 +37,14 @@ public:
             gr_make_io_signature (1, 1, itemsize),
             gr_make_io_signature (1, 1, itemsize)
         ),
-        _itemsize(itemsize)
+        d_itemsize(itemsize)
     {
         this->set_delay(0);
     }
 
     void set_delay(const int nitems){
-        gruel::scoped_lock l(_delay_mutex);
-        _delay_items = nitems;
+        gruel::scoped_lock l(d_delay_mutex);
+        d_delay_items = nitems;
     }
 
     int general_work(
@@ -53,8 +53,9 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        gruel::scoped_lock l(_delay_mutex);
-        const int delta = int64_t(nitems_read(0)) - int64_t(nitems_written(0)) - _delay_items;
+        gruel::scoped_lock l(d_delay_mutex);
+        const int delta = int64_t(nitems_read(0)) \
+	  - int64_t(nitems_written(0)) - d_delay_items;
 
         //consume but not produce (drops samples)
         if (delta < 0){
@@ -65,21 +66,21 @@ public:
         //produce but not consume (inserts zeros)
         if (delta > 0){
             noutput_items = std::min(noutput_items, delta);
-            std::memset(output_items[0], 0, noutput_items*_itemsize);
+            std::memset(output_items[0], 0, noutput_items*d_itemsize);
             return noutput_items;
         }
 
         //otherwise just memcpy
         noutput_items = std::min(noutput_items, ninput_items[0]);
-        std::memcpy(output_items[0], input_items[0], noutput_items*_itemsize);
+        std::memcpy(output_items[0], input_items[0], noutput_items*d_itemsize);
         consume_each(noutput_items);
         return noutput_items;
     }
 
 private:
-    int _delay_items;
-    const size_t _itemsize;
-    gruel::mutex _delay_mutex;
+    int d_delay_items;
+    const size_t d_itemsize;
+    gruel::mutex d_delay_mutex;
 };
 
 /***********************************************************************

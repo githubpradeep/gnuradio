@@ -54,11 +54,11 @@ public:
             gr_make_io_signature (0, 0, 0),
             gr_make_io_signature (1, 1, sizeof(type))
         ),
-        _index(0),
-        _table(wave_table_size),
-        _offset(0.0), _scaler(1.0), _factor(9.0),
-        _wave("GAUSSIAN"),
-        _random(seed)
+        d_index(0),
+        d_table(wave_table_size),
+        d_offset(0.0), d_ampl(1.0), d_factor(9.0),
+        d_wave("GAUSSIAN"),
+        d_random(seed)
     {
         this->update_table();
     }
@@ -68,72 +68,72 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        _index += size_t(_random.ran1()*wave_table_size); //lookup into table is random each work()
+        d_index += size_t(d_random.ran1()*wave_table_size); //lookup into table is random each work()
 
         type *out = reinterpret_cast<type *>(output_items[0]);
         for (size_t i = 0; i < size_t(noutput_items); i++){
-            out[i] = _table[_index % wave_table_size];
-            _index++;
+            out[i] = d_table[d_index % wave_table_size];
+            d_index++;
         }
         return noutput_items;
     }
 
     void set_waveform(const std::string &wave){
-        _wave = wave;
+        d_wave = wave;
         this->update_table();
     }
 
     void set_offset(const std::complex<double> &offset){
-        _offset = offset;
+        d_offset = offset;
         this->update_table();
     }
 
-    void set_scaler(const std::complex<double> &scaler){
-        _scaler = scaler;
+    void set_amplitude(const std::complex<double> &ampl){
+        d_ampl = ampl;
         this->update_table();
     }
 
     void set_factor(const double &factor){
-        _factor = factor;
+        d_factor = factor;
         this->update_table();
     }
 
     void update_table(void){
-        if (_wave == "UNIFORM"){
-            for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, std::complex<double>(2*_random.ran1()-1, 2*_random.ran1()-1));
+        if (d_wave == "UNIFORM"){
+            for (size_t i = 0; i < d_table.size(); i++){
+                this->set_elem(i, std::complex<double>(2*d_random.ran1()-1, 2*d_random.ran1()-1));
             }
         }
-        else if (_wave == "GAUSSIAN"){
-            for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, std::complex<double>(_random.gasdev(), _random.gasdev()));
+        else if (d_wave == "GAUSSIAN"){
+            for (size_t i = 0; i < d_table.size(); i++){
+                this->set_elem(i, std::complex<double>(d_random.gasdev(), d_random.gasdev()));
             }
         }
-        else if (_wave == "LAPLACIAN"){
-            for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, std::complex<double>(_random.laplacian(), _random.laplacian()));
+        else if (d_wave == "LAPLACIAN"){
+            for (size_t i = 0; i < d_table.size(); i++){
+                this->set_elem(i, std::complex<double>(d_random.laplacian(), d_random.laplacian()));
             }
         }
-        else if (_wave == "IMPULSE"){
-            const float factor = float(_factor);
-            for (size_t i = 0; i < _table.size(); i++){
-                this->set_elem(i, std::complex<double>(_random.impulse(factor), _random.impulse(factor)));
+        else if (d_wave == "IMPULSE"){
+            const float factor = float(d_factor);
+            for (size_t i = 0; i < d_table.size(); i++){
+                this->set_elem(i, std::complex<double>(d_random.impulse(factor), d_random.impulse(factor)));
             }
         }
-        else throw std::invalid_argument("noise source got unknown wave type: " + _wave);
+        else throw std::invalid_argument("noise source got unknown wave type: " + d_wave);
     }
 
     inline void set_elem(const size_t index, const std::complex<double> &val){
-        conv(_scaler * val + _offset, _table[index]);
+        conv(d_ampl * val + d_offset, d_table[index]);
     }
 
 private:
-    size_t _index;
-    std::vector<type> _table;
-    std::complex<double> _offset, _scaler;
-    double _factor;
-    std::string _wave;
-    gr_random _random;
+    size_t d_index;
+    std::vector<type> d_table;
+    std::complex<double> d_offset, d_ampl;
+    double d_factor;
+    std::string d_wave;
+    gr_random d_random;
 };
 
 /***********************************************************************

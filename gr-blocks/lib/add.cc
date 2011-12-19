@@ -38,7 +38,7 @@ public:
             gr_make_io_signature (1, -1, sizeof(float)*vlen),
             gr_make_io_signature (1, 1, sizeof(float)*vlen)
         ),
-        _vlen(vlen)
+        d_vlen(vlen)
     {
         const int alignment_multiple = volk_get_alignment() / (sizeof(float)*vlen);
         set_output_multiple(std::max(1, alignment_multiple));
@@ -49,7 +49,7 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        const size_t n_nums = noutput_items * _vlen;
+        const size_t n_nums = noutput_items * d_vlen;
         float *out = reinterpret_cast<float *>(output_items[0]);
         const float *in0 = reinterpret_cast<const float *>(input_items[0]);
 
@@ -78,7 +78,7 @@ public:
             gr_make_io_signature (1, -1, sizeof(type)*vlen),
             gr_make_io_signature (1, 1, sizeof(type)*vlen)
         ),
-        _vlen(vlen)
+        d_vlen(vlen)
     {
         //NOP
     }
@@ -88,7 +88,7 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        const size_t n_nums = noutput_items * _vlen;
+        const size_t n_nums = noutput_items * d_vlen;
         type *out = reinterpret_cast<type *>(output_items[0]);
         const type *in0 = reinterpret_cast<const type *>(input_items[0]);
 
@@ -104,7 +104,7 @@ public:
     }
 
 private:
-    const size_t _vlen;
+    const size_t d_vlen;
 };
 
 /***********************************************************************

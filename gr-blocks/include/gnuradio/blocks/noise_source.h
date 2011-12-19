@@ -46,8 +46,8 @@ public:
     //! Set the offset, this is a free addition operation
     virtual void set_offset(const std::complex<double> &) = 0;
 
-    //! Set the scaler, this is a free multiply scalar operation
-    virtual void set_scaler(const std::complex<double> &) = 0;
+    //! Set the amplitude, this is a free multiply scalar operation
+    virtual void set_amplitude(const std::complex<double> &) = 0;
 
     //! Set the factor, this is used for the IMPULSE waveform
     virtual void set_factor(const double &factor) = 0;

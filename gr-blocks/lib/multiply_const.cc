@@ -52,7 +52,7 @@ public:
             gr_make_io_signature (1, 1, sizeof(type))
         )
     {
-        _val.resize(1);
+        d_val.resize(1);
         const int alignment_multiple = volk_get_alignment() / (sizeof(type));
         set_output_multiple(std::max(1, alignment_multiple));
     }
@@ -62,7 +62,7 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        const type scalar = _val[0];
+        const type scalar = d_val[0];
         type *out = reinterpret_cast<type *>(output_items[0]);
         const type *in = reinterpret_cast<const type *>(input_items[0]);
         volk_32fc_s32fc_multiply_32fc_a(out, in, scalar, noutput_items);
@@ -70,16 +70,16 @@ public:
     }
 
     void _set_value(const std::vector<std::complex<double> > &val){
-        if (val.size() != _val.size()){
+        if (val.size() != d_val.size()){
             throw std::invalid_argument("set_value called with the wrong length");
         }
         for (size_t i = 0; i < val.size(); i++){
-            conv(val[i], _val[i]);
+            conv(val[i], d_val[i]);
         }
     }
 
 protected:
-    std::vector<type> _val;
+    std::vector<type> d_val;
 };
 
 /***********************************************************************
@@ -96,7 +96,7 @@ public:
             gr_make_io_signature (1, 1, sizeof(type))
         )
     {
-        _val.resize(1);
+        d_val.resize(1);
         const int alignment_multiple = volk_get_alignment() / sizeof(type);
         set_output_multiple(std::max(1, alignment_multiple));
     }
@@ -106,7 +106,7 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        const type scalar = _val[0];
+        const type scalar = d_val[0];
         type *out = reinterpret_cast<type *>(output_items[0]);
         const type *in = reinterpret_cast<const type *>(input_items[0]);
         volk_32f_s32f_multiply_32f_a(out, in, scalar, noutput_items);
@@ -114,16 +114,16 @@ public:
     }
 
     void _set_value(const std::vector<std::complex<double> > &val){
-        if (val.size() != _val.size()){
+        if (val.size() != d_val.size()){
             throw std::invalid_argument("set_value called with the wrong length");
         }
         for (size_t i = 0; i < val.size(); i++){
-            conv(val[i], _val[i]);
+            conv(val[i], d_val[i]);
         }
     }
 
 protected:
-    std::vector<type> _val;
+    std::vector<type> d_val;
 };
 
 /***********************************************************************
@@ -139,7 +139,7 @@ public:
             gr_make_io_signature (1, 1, sizeof(type)*vlen)
         )
     {
-        _val.resize(vlen);
+        d_val.resize(vlen);
     }
 
     int work(
@@ -147,13 +147,13 @@ public:
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items
     ){
-        const size_t n_nums = noutput_items * _val.size();
+        const size_t n_nums = noutput_items * d_val.size();
         type *out = reinterpret_cast<type *>(output_items[0]);
         const type *in = reinterpret_cast<const type *>(input_items[0]);
 
         //simple vec len 1 for the fast
-        if (_val.size() == 1){
-            const type val = _val[0];
+        if (d_val.size() == 1){
+            const type val = d_val[0];
             for (size_t i = 0; i < n_nums; i++){
                 out[i] = in[i] * val;
             }
@@ -162,23 +162,23 @@ public:
         //general case for any vlen
         else{
             for (size_t i = 0; i < n_nums; i++){
-                out[i] = in[i] * _val[i%_val.size()];
+                out[i] = in[i] * d_val[i%d_val.size()];
             }
         }
         return noutput_items;
     }
 
     void _set_value(const std::vector<std::complex<double> > &val){
-        if (val.size() != _val.size()){
+        if (val.size() != d_val.size()){
             throw std::invalid_argument("set_value called with the wrong length");
         }
         for (size_t i = 0; i < val.size(); i++){
-            conv(val[i], _val[i]);
+            conv(val[i], d_val[i]);
         }
     }
 
 protected:
-    std::vector<type> _val;
+    std::vector<type> d_val;
 };
 
 /***********************************************************************
