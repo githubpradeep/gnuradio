@@ -29,6 +29,12 @@ TESTS += run_tests
 
 blocksdir = $(grpythondir)/blocks
 
+noinst_PYTHON = \
+	qa_add_and_friends.py   \
+	qa_delay.py		\
+	qa_noise_source.py	\
+	qa_signal_source.py
+
 blocks_PYTHON = \
 	__init__.py
 
