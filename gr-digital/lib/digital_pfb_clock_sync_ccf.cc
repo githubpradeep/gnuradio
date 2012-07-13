@@ -62,7 +62,19 @@ digital_pfb_clock_sync_ccf::digital_pfb_clock_sync_ccf (double sps, float loop_b
 	      gr_make_io_signaturev (1, 4, iosig)),
     d_updated (false), d_nfilters(filter_size),
     d_max_dev(max_rate_deviation),
-    d_osps(osps), d_error(0), d_out_idx(0)
+    d_osps(osps), d_error(0), d_out_idx(0),
+    d_error_rpc(d_name, "error", unique_id(), &d_error, 
+    		pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+    		"float", "Error signal of loop",
+    		RPC_PRIVLVL_MIN, DISPTIMESERIES),
+    d_rate_rpc(d_name, "rate", unique_id(), &d_rate_f, 
+	       pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+	       "float", "Rate change of phase",
+	       RPC_PRIVLVL_MIN, DISPTIMESERIES),
+    d_phase_rpc(d_name, "phase", unique_id(), &d_k, 
+    		pmt::mp(0), pmt::mp((float)filter_size), pmt::mp(0.0f),
+    		"float", "Current filter phase arm",
+    		RPC_PRIVLVL_MIN, DISPTIMESERIES)
 {
   d_nfilters = filter_size;
   d_sps = floor(sps);

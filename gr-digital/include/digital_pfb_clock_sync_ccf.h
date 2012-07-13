@@ -26,6 +26,7 @@
 
 #include <digital_api.h>
 #include <gr_block.h>
+#include <ctrlport/rpcregisterhelpers.h>
 
 class digital_pfb_clock_sync_ccf;
 typedef boost::shared_ptr<digital_pfb_clock_sync_ccf> digital_pfb_clock_sync_ccf_sptr;
@@ -199,6 +200,11 @@ class DIGITAL_API digital_pfb_clock_sync_ccf : public gr_block
   int                               d_osps;
   float                             d_error;
   int                               d_out_idx;
+
+
+  rpcbasic_register_variable<float> d_error_rpc;
+  rpcbasic_register_variable<float> d_rate_rpc;
+  rpcbasic_register_variable<float> d_phase_rpc;
 
   /*!
    * Build the polyphase filterbank timing synchronizer.
