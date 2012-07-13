@@ -1,0 +1,31 @@
+/*! \page page_filter filter Signal Processing Blocks
+
+\section Introduction
+
+This is the gr-ctroport package. It is a tool to create distributed
+contol applications for GNU Radio. It provides blocks that can be
+connected to an output stream to plot the signal remotely. It also
+provides an API that allows blocks to export variables that can be
+set, monitored, and plotted remotely.
+
+The Python namespace is in gnuradio.ctrlport, which would be normally
+imported as:
+
+\code
+    from gnuradio import ctrlport
+\endcode
+
+
+See the Doxygen documentation for details about the blocks available
+in this package. A quick listing of the details can be found in Python
+after importing by using:
+
+\code
+    help(ctrlport)
+\endcode
+
+\section Dependencies
+
+The filter blocks depend on GNU Radio Core and Zeroc's ICE.
+
+*/

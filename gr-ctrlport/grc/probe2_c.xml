@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<block>
+  <name>Complex Probe (fixed len)</name>
+  <key>probe2_c</key>
+  <category>Control Port</category>
+  <import>from gnuradio import ctrlport</import>
+  <make>ctrlport.probe2_c($name, $desc, $len);</make>
+
+  <param>
+    <name>Name</name>
+    <key>name</key>
+    <value>constellation</value>
+    <type>string</type>
+  </param>
+
+  <param>
+    <name>Description</name>
+    <key>desc</key>
+    <value>Constellation Points</value>
+    <type>string</type>
+  </param>
+  
+  <param>
+    <name>Length</name>
+    <key>len</key>
+    <value>1024</value>
+    <type>int</type>
+  </param>
+
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <doc>
+    Place this in a graph to export complex values to a GRCP port probe.
+
+    * Version 2 allows you to specify a length in samples that you wish to get every probe
+  </doc>
+
+</block>
+

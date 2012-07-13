@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<block>
+  <name>CtrlPort Monitor</name>
+  <key>monitor</key>
+  <category>Control Port</category>
+  <import>from gnuradio.ctrlport.monitor import *;</import>
+  <make>not $en or monitor();</make>
+  <param>
+    <name>Enabled</name>
+    <key>en</key>
+    <value></value>
+    <type>enum</type>
+        <option>
+            <name>True</name>
+            <key>True</key>
+        </option>
+        <option>
+            <name>False</name>
+            <key>False</key>
+      </option>
+  </param>
+
+  <doc>
+    Place this in a graph to launch a QtPy GR CtrlPort Monitor app.
+  </doc>
+
+</block>
+

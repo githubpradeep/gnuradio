@@ -231,6 +231,7 @@ add_subdirectory(grc)
 
 add_subdirectory(gr-fft)
 add_subdirectory(gr-filter)
+add_subdirectory(gr-ctrlport)
 add_subdirectory(gr-atsc)
 add_subdirectory(gr-audio)
 add_subdirectory(gr-comedi)

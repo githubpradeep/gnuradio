@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<block>
+  <name>Complex Probe</name>
+  <key>probe_c</key>
+  <category>Control Port</category>
+  <import>from gnuradio import ctrlport</import>
+  <make>ctrlport.probe_c($name, $desc);</make>
+
+  <param>
+    <name>Name</name>
+    <key>name</key>
+    <value>constellation</value>
+    <type>string</type>
+  </param>
+
+  <param>
+    <name>Description</name>
+    <key>desc</key>
+    <value>Constellation Points</value>
+    <type>string</type>
+  </param>
+
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <doc>
+    Place this in a graph to export complex values to a GRCP port probe.
+  </doc>
+
+</block>
+
