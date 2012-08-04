@@ -37,7 +37,7 @@ class monitor:
     def start(self):
         print "monitor::endpoints() = %s" % (ctrlport.rpcmanager_get().endpoints())
         try:
-            self.proc = subprocess.Popen(map(lambda a: ["ctrlport-monitor.py",
+            self.proc = subprocess.Popen(map(lambda a: ["gr-ctrlport-monitor.py",
                                                         re.search("\d+\.\d+\.\d+\.\d+",a).group(0),
                                                         re.search("-p (\d+)",a).group(1)],
                                              ctrlport.rpcmanager_get().endpoints())[0])
