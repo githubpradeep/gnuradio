@@ -59,50 +59,35 @@ if(ENABLE_GR_CTRLPORT)
 # Setup CPack components
 ########################################################################
 include(GrPackage)
-CPACK_SET(CPACK_COMPONENT_GROUP_FILTER_DESCRIPTION "GNU Radio Filter Blocks")
+CPACK_SET(CPACK_COMPONENT_GROUP_CONTROLPORT_DESCRIPTION "GNU Radio ControlPort Blocks")
 
-CPACK_COMPONENT("filter_runtime"
-    GROUP        "Filter"
+CPACK_COMPONENT("ctrlport_runtime"
+    GROUP        "ControlPort"
     DISPLAY_NAME "Runtime"
     DESCRIPTION  "Runtime"
     DEPENDS      "core_runtime"
 )
 
-CPACK_COMPONENT("filter_devel"
-    GROUP        "Filter"
+CPACK_COMPONENT("ctrlport_devel"
+    GROUP        "ControlPort"
     DISPLAY_NAME "Development"
     DESCRIPTION  "C++ headers, package config, import libraries"
     DEPENDS      "core_devel"
 )
 
-CPACK_COMPONENT("filter_python"
-    GROUP        "Filter"
+CPACK_COMPONENT("ctrlport_python"
+    GROUP        "ControlPort"
     DISPLAY_NAME "Python"
     DESCRIPTION  "Python modules for runtime; GRC xml files"
-    DEPENDS      "core_python;filter_runtime"
+    DEPENDS      "core_python;ctrlport_runtime"
 )
 
-CPACK_COMPONENT("filter_swig"
-    GROUP        "Filter"
+CPACK_COMPONENT("ctrlport_swig"
+    GROUP        "ControlPort"
     DISPLAY_NAME "SWIG"
     DESCRIPTION  "SWIG development .i files"
-    DEPENDS      "core_swig;filter_python;filter_devel"
+    DEPENDS      "core_swig;ctrlport_python;ctrlport_devel"
 )
-
-
-########################################################################
-# Add subdirectories
-########################################################################
-add_subdirectory(include/ctrlport)
-add_subdirectory(lib)
-if(ENABLE_PYTHON)
-    add_subdirectory(swig)
-    add_subdirectory(python)
-    add_subdirectory(grc)
-endif(ENABLE_PYTHON)
-add_subdirectory(examples)
-add_subdirectory(doc)
-
 
 ########################################################################
 # Create Pkg Config File
@@ -118,4 +103,38 @@ install(
     COMPONENT "ctrlport_devel"
 )
 
+
+########################################################################
+# Setup preferences file and installation information
+########################################################################
+SET(GR_PKG_CTRL_SLICE_DIR ${GR_PKG_DATA_DIR}/ctrlport)
+file(TO_NATIVE_PATH ${CMAKE_INSTALL_PREFIX}/${GR_PKG_CTRL_SLICE_DIR} slicedir)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/ctrlport.conf.in
+    ${CMAKE_CURRENT_BINARY_DIR}/ctrlport.conf
+@ONLY)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/ctrlport.conf
+    DESTINATION ${GR_PREFSDIR}
+    COMPONENT "grc"
+)
+
+########################################################################
+# Add subdirectories
+########################################################################
+add_subdirectory(include/ctrlport)
+add_subdirectory(lib)
+add_subdirectory(slice)
+if(ENABLE_PYTHON)
+    add_subdirectory(swig)
+    add_subdirectory(python)
+    add_subdirectory(grc)
+endif(ENABLE_PYTHON)
+add_subdirectory(examples)
+add_subdirectory(doc)
+
+
 endif(ENABLE_GR_CTRLPORT)
+

@@ -20,25 +20,25 @@
 # Boston, MA 02110-1301, USA.
 #
 
-from gnuradio import ctrlport;
+from gnuradio import gr, ctrlport
 
 from PyQt4 import QtCore,Qt
 import PyQt4.QtGui as QtGui
-import sys, time, subprocess;
+import sys, time
 import Ice
-from gnuradio.ctrlport.IceRadioClient import *;
-from gnuradio.ctrlport.DataPlotter import *;
+from gnuradio.ctrlport.IceRadioClient import *
+from gnuradio.ctrlport.DataPlotter import *
 
-p1 = subprocess.Popen(["pkg-config", "gnuradio-ctrlport", "--variable=prefix"],
-                      stdout=subprocess.PIPE);
-prefix = p1.communicate()[0][:-1];
-Ice.loadSlice(prefix + '/include/gnuradio/ctrlport/gnuradio.ice')
+_gr_prefs = gr.prefs()
+ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
+print ice_directory
+Ice.loadSlice(ice_directory + '/gnuradio.ice')
 
 import GNURadio
 
 class MAINWindow(QtGui.QMainWindow):
     def minimumSizeHint(self):
-        return Qtgui.QSize(800,600);
+        return Qtgui.QSize(800,600)
     def __init__(self, radio, port):
         
         super(MAINWindow, self).__init__()

@@ -18,23 +18,8 @@
 # Boston, MA 02110-1301, USA.
 
 INSTALL(FILES
-    api.h
-    ice_application_base.h
-    ice_server_template.h
-    rpccallbackregister_base.h
-    rpcmanager_base.h
-    rpcmanager.h
-    rpcpmtconverters_ice.h
-    rpcregisterhelpers.h
-    rpcserver_aggregator.h
-    rpcserver_base.h
-    rpcserver_booter_aggregator.h
-    rpcserver_booter_base.h
-    rpcserver_booter_ice.h
-    rpcserver_selector.h
-    probe_c.h
-    probe2_c.h
-    DESTINATION ${GR_INCLUDE_DIR}/gnuradio/ctrlport
-    COMPONENT "ctrlport_devel"
+    gnuradio.ice
+    frontend.ice
+    DESTINATION ${GR_PKG_CTRL_SLICE_DIR}
+    COMPONENT "ctrlport_runtime"
 )
-

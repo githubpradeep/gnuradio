@@ -22,12 +22,13 @@
 
 import Ice, Glacier2
 from PyQt4 import QtGui, QtCore
-import sys, time, Ice, subprocess;
+import sys, time, Ice
+from gnuradio import gr
 
-p1 = subprocess.Popen(["pkg-config", "gnuradio-ctrlport", "--variable=prefix"],
-                      stdout=subprocess.PIPE);
-prefix = p1.communicate()[0][:-1];
-Ice.loadSlice(prefix + '/include/gnuradio/ctrlport/gnuradio.ice')
+_gr_prefs = gr.prefs()
+ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
+print ice_directory
+Ice.loadSlice(ice_directory + '/gnuradio.ice')
 
 import GNURadio
 
