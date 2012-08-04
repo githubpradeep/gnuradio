@@ -26,7 +26,10 @@
 
 #include <digital_api.h>
 #include <gr_block.h>
+
+#ifdef ENABLE_GR_CTRLPORT
 #include <ctrlport/rpcregisterhelpers.h>
+#endif
 
 class digital_pfb_clock_sync_ccf;
 typedef boost::shared_ptr<digital_pfb_clock_sync_ccf> digital_pfb_clock_sync_ccf_sptr;
@@ -202,9 +205,14 @@ class DIGITAL_API digital_pfb_clock_sync_ccf : public gr_block
   int                               d_out_idx;
 
 
-  rpcbasic_register_variable<float> d_error_rpc;
-  rpcbasic_register_variable<float> d_rate_rpc;
-  rpcbasic_register_variable<float> d_phase_rpc;
+#ifdef ENABLE_GR_CTRLPORT
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_error_rpc;
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_rate_rpc;
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_phase_rpc;
+
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_loop_bw_get;
+  rpcbasic_register_set<digital_pfb_clock_sync_ccf, float> d_loop_bw_set;
+#endif /* ENABLE_GR_CTRLPORT */
 
   /*!
    * Build the polyphase filterbank timing synchronizer.
@@ -368,6 +376,21 @@ public:
    */
   float get_clock_rate() const;
 
+  /*!
+   * \brief Returns the current error of the control loop.
+   */
+  float get_error() const;
+  
+  /*!
+   * \brief Returns the current rate of the control loop.
+   */
+  float get_rate() const;
+
+  /*!
+   * \brief Returns the current phase arm of the control loop.
+   */
+  float get_phase() const;
+  
   /*******************************************************************
   *******************************************************************/
 
