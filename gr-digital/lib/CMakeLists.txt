@@ -22,7 +22,6 @@
 ########################################################################
 include_directories(
     ${GNURADIO_CORE_INCLUDE_DIRS}
-    ${GR_CTRLPORT_INCLUDE_DIRS}
     ${GR_DIGITAL_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}/../include
 )
@@ -30,7 +29,11 @@ include_directories(
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
-link_directories(${GR_CTRLPORT_LIBRARY_DIRS})
+if(ENABLE_GR_CTRLPORT)
+  include_directories(${GR_CTRLPORT_INCLUDE_DIRS})
+  link_directories(${GR_CTRLPORT_LIBRARY_DIRS})
+  add_definitions(-DENABLE_GR_CTRLPORT=1)
+endif(ENABLE_GR_CTRLPORT)
 
 ########################################################################
 # generate helper scripts to expand templated files
@@ -142,8 +145,14 @@ list(APPEND gr_digital_sources
 list(APPEND digital_libs
     gnuradio-core
     ${Boost_LIBRARIES}
-    gnuradio-ctrlport
 )
+
+if(ENABLE_GR_CTRLPORT)
+  list(APPEND digital_libs
+    gnuradio-ctrlport
+  )
+endif(ENABLE_GR_CTRLPORT)
+
 
 add_library(gnuradio-digital SHARED ${gr_digital_sources})
 target_link_libraries(gnuradio-digital ${digital_libs})
