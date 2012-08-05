@@ -1,5 +1,5 @@
-
-from PyQt4 import Qt, QtGui, QtCore
+from PyQt4.QtCore import Qt;
+from PyQt4 import QtGui, QtCore
 import PyQt4.Qwt5 as Qwt
 from PyQt4.Qwt5.anynumpy import *
 
@@ -18,9 +18,9 @@ class Zoomer(Qwt.QwtPlotZoomer):
 
 
 class DataPlotterBase(Qwt.QwtPlot):
-    DefaultColors = ( Qt.Qt.green, Qt.Qt.red, Qt.Qt.blue,
-              Qt.Qt.cyan, Qt.Qt.magenta, Qt.Qt.black, Qt.Qt.darkRed, 
-	      Qt.Qt.darkGray, Qt.Qt.darkGreen, Qt.Qt.darkBlue, Qt.Qt.yellow)
+    DefaultColors = ( Qt.green, Qt.red, Qt.blue,
+              Qt.cyan, Qt.magenta, Qt.black, Qt.darkRed, 
+	      Qt.darkGray, Qt.darkGreen, Qt.darkBlue, Qt.yellow)
 
     dropSignal = QtCore.pyqtSignal(QtCore.QEvent)
  
@@ -28,10 +28,8 @@ class DataPlotterBase(Qwt.QwtPlot):
         menu = QtGui.QMenu(self);
         menu.addAction(self.gridAct);
         menu.addAction(self.axesAct);
-#        print dir(menu);
+        menu.addAction(self.curvAct);
         menu.exec_(e.globalPos());
-#        print "context menu event!"
-#        print e;
 
     def dragEnterEvent(self,e):
         e.accept();
@@ -46,11 +44,9 @@ class DataPlotterBase(Qwt.QwtPlot):
         Qwt.QwtPlot.__init__(self, parent)
         self.callback = None;
 
-#        self.newPlotAct = QtGui.QAction("&New Plot",
-#                self, shortcut=QtGui.QKeySequence.New,
-#                statusTip="Create a new file", triggered=self.newPlot)
         self.gridAct = QtGui.QAction("Toggle &Grid", self, triggered=self.toggleGrid);
         self.axesAct = QtGui.QAction("Toggle &Axes", self, triggered=self.toggleAxes);
+        self.curvAct = QtGui.QAction("Toggle &Lines", self, triggered=self.toggleCurve);
 
         # Set up the zoomer   
         self.zoomer = Zoomer(Qwt.QwtPlot.xBottom,
@@ -78,58 +74,28 @@ class DataPlotterBase(Qwt.QwtPlot):
         # Allow panning with middle mouse
         panner = Qwt.QwtPlotPanner(self.canvas())
         panner.setAxisEnabled(Qwt.QwtPlot.yRight, False)
-        panner.setMouseButton(Qt.Qt.MidButton)
+        panner.setMouseButton(Qt.MidButton)
 
         # Accept dropping of stats
         self.setAcceptDrops(True);
         self.grid = None
-        self.setCanvasBackground(Qt.Qt.black)
+        self.curve_en = False
+        self.setCanvasBackground(Qt.black)
 
-#        self.alignScales()
-        #        self.x = arange(-1.5, 100.1, 1.5)
-        #        self.y = zeros(len(self.x), Float)
-        #self.setTitle(title)
         self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.TopLegend);
-                #self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.BottomLegend);
-        #        self.curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.XCross,
-        #                Qt.QBrush(), Qt.QPen(Qt.Qt.blue), Qt.QSize(3, 3)))
-        
-        #        self.curve.setStyle(Qwt.QwtPlotCurve.NoCurve)
 
-#        mY = Qwt.QwtPlotMarker()
-#        mY.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
-#        mY.setLineStyle(Qwt.QwtPlotMarker.HLine)
-#        mY.setYValue(0.0)
-#        mY.attach(self)
-
-#AAA
-#        self.axisEnabled(False);
         self.axisEnabled(True);
 
-        #self.setAxisTitle(Qwt.QwtPlot.xBottom, xlabel)
-        #self.setAxisTitle(Qwt.QwtPlot.yLeft, ylabel)
         self.resize(size, size)
-#        self.setGeometry(x, y, size, size)
         self.setAutoReplot(False)
         self.show()
         self.updateTimerInt = 500
         self.startTimer(self.updateTimerInt)
     
+        # Set Axis on and Grid off by default
         #self.toggleGrid();
         self.toggleAxes();
 
-#    def alignScales(self):
-#        self.canvas().setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Plain)
-#        self.canvas().setLineWidth(1)
-#        for i in range(Qwt.QwtPlot.axisCnt):
-#            scaleWidget = self.axisWidget(i)
-#            if scaleWidget:
-#                scaleWidget.setMargin(0)
-#            scaleDraw = self.axisScaleDraw(i)
-##            scaleDraw = False;
-#            if scaleDraw:
-#                scaleDraw.enableComponent(
-#                    Qwt.QwtAbstractScaleDraw.Backbone, False)
 
     def toggleAxes(self):
         self.axisEnable = not self.axisEnable;
@@ -142,8 +108,8 @@ class DataPlotterBase(Qwt.QwtPlot):
         if self.grid == None:
             self.grid = Qwt.QwtPlotGrid()
             self.grid.enableXMin(True)
-            self.grid.setMajPen(Qt.QPen(Qt.Qt.gray, 0, Qt.Qt.DotLine))
-            self.grid.setMinPen(Qt.QPen(Qt.Qt.gray, 0 , Qt.Qt.DotLine))
+            self.grid.setMajPen(QtGui.QPen(Qt.gray, 0, Qt.DotLine))
+            self.grid.setMinPen(QtGui.QPen(Qt.gray, 0 , Qt.DotLine))
             self.grid.attach(self)
         else:
             self.grid.detach()
@@ -151,20 +117,29 @@ class DataPlotterBase(Qwt.QwtPlot):
 
     	return self
 
+    def toggleCurve(self):
+        self.curve_en = not self.curve_en;
+        
+
 class DataPlotterVector(DataPlotterBase):
     def __init__(self, parent, legend, title, xlabel, ylabel, size, x, y):
         DataPlotterBase.__init__(self, parent, title, xlabel, ylabel, size, x, y)
         self.curve = Qwt.QwtPlotCurve(legend)
         self.curve.attach(self)
         self.tag = None;
+        self.x = self.y = [0.0];
 
-    #def offerDataComplexVector(self, data):
-    #      self.x = data[::2]; self.y = data[1::2]
     def offerData(self, data, tag):
         if(tag == self.tag):
             self.x = data[::2]; self.y = data[1::2]
 
     def timerEvent(self, e):
+        if(self.curve_en):
+            self.curve.setStyle(Qwt.QwtPlotCurve.Lines)
+            self.curve.setPen(QtGui.QPen(Qt.green))
+        else:
+            self.curve.setStyle(Qwt.QwtPlotCurve.NoCurve)
+
         self.curve.setData(self.x, self.y)
         self.replot()
 
@@ -175,27 +150,44 @@ class DataPlotterVector(DataPlotterBase):
     def setSeries(self,tag,name):
         self.tag = tag;
         self.curve.setTitle(name)
+    
 
+class DataPlotterVectorOne(DataPlotterVector):
+    def __init__(self, parent, legend, title, xlabel, ylabel, size, x, y):
+        DataPlotterVector.__init__(self, parent, legend, title, xlabel, ylabel, size, x, y)
+        self.curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.XCross,
+        	QtGui.QBrush(), QtGui.QPen(Qt.green), QtCore.QSize(2, 2)))
+        self.setAxisAutoScale(True)
+        self.axisSet = False;
+
+        # Lines on by default
+        self.toggleCurve();
+
+    def offerData(self, data, tag):
+        if(tag == self.tag):
+            if not self.axisSet:
+                self.setAxisScale(1, 0, len(data));
+                self.axisSet = True;
+            self.x = range(0,len(data));
+            self.y = data;
+    
 
 class DataPlotterConst(DataPlotterVector):
     def __init__(self, parent, legend, title, xlabel, ylabel, size, x, y):
         DataPlotterVector.__init__(self, parent, legend, title, xlabel, ylabel, size, x, y)
         self.x = arange(-2, 100.1, 2)
         self.y = zeros(len(self.x), Float)
-#       #self.curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.NoSymbol,
-#        	Qt.QBrush(), Qt.QPen(Qt.Qt.blue), Qt.QSize(1, 1)))
         self.curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.XCross,
-        	Qt.QBrush(), Qt.QPen(Qt.Qt.green), Qt.QSize(2, 2)))
+        	QtGui.QBrush(), QtGui.QPen(Qt.green), QtCore.QSize(2, 2)))
         self.curve.setStyle(Qwt.QwtPlotCurve.NoCurve)
         self.setAxisAutoScale(False)
-        #self.setAxisAutoScale(False)
 
 class DataPlotterEqTaps(DataPlotterVector):
     def __init__(self, parent, legend, title, xlabel, ylabel, size, x, y, qtcolor):
 	DataPlotterVector.__init__(self, parent, legend, title, xlabel, ylabel, size, x, y)
         self.x = arange(-.5, .5, 1)
         self.y = zeros(len(self.x), Float)
-        self.curve.setPen(Qt.QPen(qtcolor))
+        self.curve.setPen(QtGui.QPen(qtcolor))
 
 class DataPlotterTicker(DataPlotterBase):
     def __init__(self, parent, title, xlabel, ylabel, size, x, y, seconds = 60):
@@ -220,7 +212,7 @@ class DataPlotterTicker(DataPlotterBase):
     			self.value = None
     			self.alpha = alpha
     			self.curve = Qwt.QwtPlotCurve(label)
-    			self.curve.setPen(Qt.QPen(qtcolor))
+    			self.curve.setPen(QtGui.QPen(qtcolor))
     			self.plot = plot
     
     	if qtcolor == None: qtcolor = self.DefaultColors[len(self.series)]
@@ -289,13 +281,13 @@ class DataPlotterTickerWithSeriesButtons(DataPlotterTicker):
     	self.addSeries(tag, legend, qtcolor, alpha)
     	lenbtns = len(self.btns)
     
-        btn = Qt.QToolButton(self)
+        btn = QtGui.QToolButton(self)
     	btn.rank = lenbtns
         btn.setText(str(btn.rank))
     	btn.tag = tag
         #btn.setIcon(Qt.QIcon(Qt.QPixmap(print_xpm)))
         #btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-    	#btn.setForegroundColor(Qt.Qt.red)
+    	#btn.setForegroundColor(Qt.red)
     	self.btns.append(btn)
     	btn.setGeometry(self.buttonx, self.buttony, self.buttonSize, self.buttonSize)
     	self.buttonx += self.buttonSize
@@ -308,7 +300,7 @@ class DataPlotterTickerWithSeriesButtons(DataPlotterTicker):
     	if lenbtns == 5: callback = self.print_5
     	if lenbtns == 6: callback = self.print_6
     	if lenbtns == 7: callback = self.print_7
-        self.connect(btn, Qt.SIGNAL('clicked()'), callback)
+        self.connect(btn, QtCore.SIGNAL('clicked()'), callback)
     	return self
 
     def toggleSeriesWithButton(self,btn):
@@ -340,8 +332,17 @@ class DataPlotterValueTable:
         self.treeWidget.resizeColumnToContents(0)
 
     def updateItems(self, knobs, knobprops):
+        # save previous selection if exists
+        sel = self.treeWidget.currentItem();
+        row = self.treeWidget.indexOfTopLevelItem(sel);
         items = [];
         self.treeWidget.clear()
         for k, v in knobs.iteritems():
             items.append(QtGui.QTreeWidgetItem([str(k), str(v.value), knobprops[k].units, knobprops[k].description]))
         self.treeWidget.insertTopLevelItems(0, items)
+        # re-set previous selection if exists
+        if(row != -1):
+            try:
+                self.treeWidget.setCurrentItem(self.treeWidget.topLevelItem(row));
+            except:
+                pass

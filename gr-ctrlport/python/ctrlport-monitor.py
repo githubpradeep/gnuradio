@@ -1,44 +1,24 @@
 #!/usr/bin/env python
-#
-# Copyright 2012 Free Software Foundation, Inc.
-#
-# This file is part of GNU Radio
-#
-# GNU Radio is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3, or (at your option)
-# any later version.
-#
-# GNU Radio is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with GNU Radio; see the file COPYING.  If not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street,
-# Boston, MA 02110-1301, USA.
-#
 
-from gnuradio import gr, ctrlport
+import grcp;
 
-from PyQt4 import QtCore,Qt
+from PyQt4.QtCore import Qt;
+#from PyQt4 import QtCore,Qt
+from PyQt4 import QtCore
 import PyQt4.QtGui as QtGui
-import sys, time
-import Ice
-from gnuradio.ctrlport.IceRadioClient import *
-from gnuradio.ctrlport.DataPlotter import *
+import sys, time, Ice, subprocess;
+from grcp.IceRadioClient import *;
+from grcp.DataPlotter import *;
 
-_gr_prefs = gr.prefs()
-ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
-print ice_directory
-Ice.loadSlice(ice_directory + '/gnuradio.ice')
+p1 = subprocess.Popen(["pkg-config", "gnuradio-controlport", "--variable=prefix"],stdout=subprocess.PIPE);
+prefix = p1.communicate()[0][:-1];
+Ice.loadSlice(prefix + '/include/gnuradio-controlport/gnuradio.ice')
 
 import GNURadio
 
 class MAINWindow(QtGui.QMainWindow):
     def minimumSizeHint(self):
-        return Qtgui.QSize(800,600)
+        return Qtgui.QSize(800,600);
     def __init__(self, radio, port):
         
         super(MAINWindow, self).__init__()
@@ -69,7 +49,7 @@ class MAINWindow(QtGui.QMainWindow):
         self.newCon(radio,port);
 #        self.mdiArea.addSubWindow(child);
 #        child.resize(QtCore.QSize(800,600));
-        icon = QtGui.QIcon( ctrlport.__path__[0] + "/icon.png" );
+        icon = QtGui.QIcon( grcp.__path__[0] + "/icon.png" );
         self.setWindowIcon(icon);
 
 # add empty plots ?
@@ -87,26 +67,45 @@ class MAINWindow(QtGui.QMainWindow):
         return child;
 
 
+    def newUpd(self,k,r):
+        updater = UpdaterWindow(k,r,None);
+        updater.setWindowTitle("Updater: " + k);
+        self.mdiArea.addSubWindow(updater);
+        updater.show();
+        
+
     def newSub(self,e):
         tag = str(e.text(0));
         knobprop = self.knobprops[tag]
-        print "NEW SUB: ", tag, knobprop
         
-        if(type(knobprop.min) == GNURadio.KnobVecF):
-            plot = self.newConstPlot();
-            plot.setSeries(tag,tag);
-#            plot.setSeries(tag, knobprop.description);
-
-#            plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
-        else:
+        if(type(knobprop.min) in [GNURadio.KnobVecB, GNURadio.KnobVecC, GNURadio.KnobVecI,GNURadio.KnobVecF,GNURadio.KnobVecD,GNURadio.KnobVecL]):
+            if(knobprop.display == grcp.DISPTIMESERIES):
+                #plot = self.newConstPlot();
+                plot = self.newVecSeriesPlot();
+                plot.setSeries(tag,tag);
+                plot.setWindowTitle(str(tag));
+            else:   # Plot others as XY for now
+                plot = self.newConstPlot();
+                plot.setSeries(tag,tag);
+                plot.setWindowTitle(str(tag));
+        elif(type(knobprop.min) in [GNURadio.KnobB,GNURadio.KnobC,GNURadio.KnobI,GNURadio.KnobF,GNURadio.KnobD,GNURadio.KnobL]):
             plot = self.newPlot();
             plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
-        plot.setWindowTitle(str(tag));
+            plot.setWindowTitle(str(tag));
+        else:
+            print "WARNING: plotting of this knob-type not yet supported, ignoring attempt..."
             
         
+    def newVecSeriesPlot(self):
+        #plot = DataPlotterEqTaps(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0, Qt.green)
+        plot = DataPlotterVectorOne(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0);
+        self.mdiArea.addSubWindow(plot);
+        plot.dropSignal.connect(self.plotDropEvent );
+        plot.show();
+        self.plots.append(plot);
+        return plot;
+
     def newConstPlot(self):
-#        plot = DataPlotterConst(None,"",'units', '', 250,0,0,120);
-        #(self, parent, tag, legend, title, xlabel, ylabel, size, x, y)
         plot = DataPlotterConst(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0)
         self.mdiArea.addSubWindow(plot);
         plot.dropSignal.connect(self.plotDropEvent );
@@ -134,7 +133,10 @@ class MAINWindow(QtGui.QMainWindow):
         model.dropMimeData(e.mimeData(), QtCore.Qt.CopyAction,0,0,QtCore.QModelIndex())
         tag =  str(QtGui.QTreeWidgetItem([model.item(0,0).text()]).text(0));
         knobprop = self.knobprops[tag]
-        self.sender().addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
+        try:
+            self.sender().addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
+        except:
+            print "This plot does not accept additional data items! ignoring..."
 
 
     def setActiveSubWindow(self, window):
@@ -348,12 +350,90 @@ class ConInfoDialog(QtGui.QDialog):
 
 
 
+class UpdaterWindow(QtGui.QWidget):
+    def __init__(self, key, radio, parent):
+        QtGui.QWidget.__init__(self,parent)
+
+        self.key = key;
+        self.radio = radio;
+
+        self.resize(300,200)
+        self.layout = QtGui.QVBoxLayout();
+
+        self.textInput = QtGui.QLineEdit();
+        self.setButton = QtGui.QPushButton("Set Value")
+
+        rv = radio.get([key]);
+        self.textInput.setText(str(rv[key].value));
+        self.sv = rv[key];
+
+
+        self.props = radio.properties([key])[key];
+        info = str(self.props);
+
+        self.infoLabel = QtGui.QLabel(info);
+        self.layout.addWidget(self.infoLabel);
+
+        self.layout.addWidget(self.textInput);
+ 
+        self.setButton.connect(self.setButton, QtCore.SIGNAL('clicked()'), self._set)
+ 
+        self.is_num = ((type(self.sv.value)==float) or (type(self.sv.value)==int));
+        if(self.is_num):
+            self.sliderlayout = QtGui.QHBoxLayout();
+
+            self.slider = QtGui.QSlider(Qt.Horizontal);
+
+            self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.min.value)));
+            self.sliderlayout.addWidget(self.slider);
+            self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.max.value)));
+            
+
+            self.steps = 10000;
+            self.valspan = self.props.max.value - self.props.min.value;
+            
+            #self.slider.setRange( self.props.min.value, self.props.max.value );
+            self.slider.setRange( 0,10000 );
+            
+            self.slider.setValue( self.sv.value );
+            self.slider.setValue( self.steps*(self.sv.value-self.props.min.value)/self.valspan);
+
+            #self.slider.setTracking(True);
+            #self.connect(self.slider, QtCore.SIGNAL("valueChange(int)"), self._slide);
+            self.connect(self.slider, QtCore.SIGNAL("sliderReleased()"), self._slide);
+
+            self.layout.addLayout(self.sliderlayout);
+
+        self.layout.addWidget(self.setButton);
+
+        # set layout and go...
+        self.setLayout(self.layout);
+                 
+    def _slide(self):
+        val = (self.slider.value()*self.valspan + self.props.min.value)/float(self.steps);
+        self.textInput.setText(str(val));
+
+    def _set(self):
+        if(type(self.sv.value) == str):
+            val = str(self.textInput.text());
+        elif(type(self.sv.value) == int):
+            val = int(round(float(self.textInput.text())));
+        elif(type(self.sv.value) == float):
+            val = float(self.textInput.text());
+        else:
+            print "set type not supported! (%s)"%(type(self.sv.value));
+            sys.exit(-1);
+        #self.sv.value = int(val);
+        self.sv.value = val;
+        km = {};
+        km[self.key] = self.sv;
+        self.radio.set(km);
+
 class MForm(QtGui.QWidget):
     def update(self):
         try:
             st = time.time();
             knobs = self.radio.get([]);
-            #print "GOT KNOBS: ", knobs
             ft = time.time();
             latency = ft-st;
             self.parent.statusBar().showMessage("Current GNU Radio Control Port Query Latency: %f ms"%(latency*1000))
@@ -416,7 +496,12 @@ class MForm(QtGui.QWidget):
         # set up timer   
         self.connect(self.timer, QtCore.SIGNAL('timeout()'), self.update);
         self.connect(self.table.treeWidget, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem*, int)'), self.parent.newSub);
-        self.timer.start(1000)
+
+        # set up context menu .. 
+        self.table.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu);
+        self.table.treeWidget.customContextMenuRequested.connect(self.openMenu);
+
+        self.timer.start(2000)
 
     def plotDropEvent(self, e):
         model = QtGui.QStandardItemModel()
@@ -425,8 +510,16 @@ class MForm(QtGui.QWidget):
         knobprop = self.knobprops[tag]
         self.sender().addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
 
+    def openMenu(self, pos):
+        index = self.table.treeWidget.selectedIndexes();
+        item = self.table.treeWidget.itemFromIndex(index[0]);
+        itemname = str(item.text(0));
+        self.parent.newUpd(itemname, self.radio);
+#        updater = UpdaterWindow(itemname, self.radio, self.parent);
+#        updater.setWindowTitle("Updater: " + itemname);
+#        self.parent.mdiArea.addSubWindow(updater);
+#        print "done"
 
-        
 
 class MyClient(IceRadioClient):
     def __init__(self): IceRadioClient.__init__(self, MAINWindow)
