@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 
-import grcp;
+from gnuradio import ctrlport
 
 from PyQt4.QtCore import Qt;
-#from PyQt4 import QtCore,Qt
 from PyQt4 import QtCore
 import PyQt4.QtGui as QtGui
 import sys, time, Ice, subprocess;
-from grcp.IceRadioClient import *;
-from grcp.DataPlotter import *;
+from gnuradio.ctrlport.IceRadioClient import *;
+from gnuradio.ctrlport.DataPlotter import *;
 
-p1 = subprocess.Popen(["pkg-config", "gnuradio-controlport", "--variable=prefix"],stdout=subprocess.PIPE);
-prefix = p1.communicate()[0][:-1];
-Ice.loadSlice(prefix + '/include/gnuradio-controlport/gnuradio.ice')
+_gr_prefs = gr.prefs()
+ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
+print ice_directory
+Ice.loadSlice(ice_directory + '/gnuradio.ice')
 
 import GNURadio
 
@@ -49,7 +49,7 @@ class MAINWindow(QtGui.QMainWindow):
         self.newCon(radio,port);
 #        self.mdiArea.addSubWindow(child);
 #        child.resize(QtCore.QSize(800,600));
-        icon = QtGui.QIcon( grcp.__path__[0] + "/icon.png" );
+        icon = QtGui.QIcon( ctrlport.__path__[0] + "/icon.png" );
         self.setWindowIcon(icon);
 
 # add empty plots ?
@@ -79,7 +79,7 @@ class MAINWindow(QtGui.QMainWindow):
         knobprop = self.knobprops[tag]
         
         if(type(knobprop.min) in [GNURadio.KnobVecB, GNURadio.KnobVecC, GNURadio.KnobVecI,GNURadio.KnobVecF,GNURadio.KnobVecD,GNURadio.KnobVecL]):
-            if(knobprop.display == grcp.DISPTIMESERIES):
+            if(knobprop.display == ctrlport.DISPTIMESERIES):
                 #plot = self.newConstPlot();
                 plot = self.newVecSeriesPlot();
                 plot.setSeries(tag,tag);
