@@ -73,25 +73,32 @@ class MAINWindow(QtGui.QMainWindow):
         icon = QtGui.QIcon( ctrlport.__path__[0] + "/icon.png" );
         self.setWindowIcon(icon);
 
-# add empty plots ?
-#        self.plots = [];
-#        for i in range(3):
-#            self.newPlot();
-    
     def newCon(self,host=None,port=None):
-        child = MForm(host,port,self);
-        #child.setWindowTitle("Modem Connected :: %s:%s"%(host,port));
-        child.setWindowTitle(str(host));
-        self.mdiArea.addSubWindow(child);
-        child.resize(QtCore.QSize(800,600));
-        child.showMaximized();
-        return child;
+        child = MForm(host,port,self)
+        #child.setWindowTitle("Modem Connected :: %s:%s"%(host,port))
+        child.setWindowTitle(str(host))
+        self.mdiArea.addSubWindow(child)
+        child.resize(QtCore.QSize(800,600))
+        child.showMaximized()
+        return child
 
+    def newUpdater(self, k, r):
+
+        # Should be some test here to make sure that a 'set' function
+        # is available for this key before launching the dialog box.
+        #try:
+        #    a = r.set(r.get([k]))
+        #except:
+        #    return
+
+        updater = UpdaterWindow(k, r, None)
+        updater.setWindowTitle("Updater: " + k)
+        updater.setModal(False)
+        updater.exec_()
 
     def newSub(self,e):
-        tag = str(e.text(0));
+        tag = str(e.text(0))
         knobprop = self.knobprops[tag]
-        print "NEW SUB: ", tag, knobprop.display
 
         if(knobprop.display == GNURadio.DisplayType.DISPXYSCATTER):
             plot = self.newConstPlot(tag);
@@ -360,6 +367,92 @@ class ConInfoDialog(QtGui.QDialog):
         self.done(0);
 
 
+class UpdaterWindow(QtGui.QDialog):
+    def __init__(self, key, radio, parent):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.key = key;
+        self.radio = radio
+
+        self.resize(300,200)
+        self.layout = QtGui.QVBoxLayout()
+
+        self.textInput = QtGui.QLineEdit()
+        self.applyButton = QtGui.QPushButton("Apply")
+        self.setButton = QtGui.QPushButton("OK")
+        self.cancelButton = QtGui.QPushButton("Cancel")
+
+        rv = radio.get([key])
+        self.textInput.setText(str(rv[key].value))
+        self.sv = rv[key]
+
+        self.props = radio.properties([key])[key]
+        info = str(self.props)
+
+        self.infoLabel = QtGui.QLabel(info)
+        self.layout.addWidget(self.infoLabel)
+        self.layout.addWidget(self.textInput)
+ 
+        self.applyButton.connect(self.applyButton, QtCore.SIGNAL('clicked()'), self._apply)
+        self.setButton.connect(self.setButton, QtCore.SIGNAL('clicked()'), self._set)
+        self.cancelButton.connect(self.cancelButton, QtCore.SIGNAL('clicked()'), self.reject)
+ 
+        self.is_num = ((type(self.sv.value)==float) or (type(self.sv.value)==int))
+        if(self.is_num):
+            self.sliderlayout = QtGui.QHBoxLayout()
+
+            self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+
+            self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.min.value)))
+            self.sliderlayout.addWidget(self.slider)
+            self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.max.value)))
+
+            self.steps = 10000
+            self.valspan = self.props.max.value - self.props.min.value
+            
+            self.slider.setRange(0, 10000)
+            self._set_slider_value(self.sv.value)
+
+            self.connect(self.slider, QtCore.SIGNAL("sliderReleased()"), self._slide)
+
+            self.layout.addLayout(self.sliderlayout)
+
+        self.buttonlayout = QtGui.QHBoxLayout()
+        self.buttonlayout.addWidget(self.applyButton)
+        self.buttonlayout.addWidget(self.setButton)
+        self.buttonlayout.addWidget(self.cancelButton)
+        self.layout.addLayout(self.buttonlayout)
+
+        # set layout and go...
+        self.setLayout(self.layout)
+            
+    def _set_slider_value(self, val):
+        self.slider.setValue(self.steps*(val-self.props.min.value)/self.valspan)
+             
+    def _slide(self):
+        val = (self.slider.value()*self.valspan + self.props.min.value)/float(self.steps)
+        self.textInput.setText(str(val))
+
+    def _apply(self):
+        if(type(self.sv.value) == str):
+            val = str(self.textInput.text())
+        elif(type(self.sv.value) == int):
+            val = int(round(float(self.textInput.text())))
+        elif(type(self.sv.value) == float):
+            val = float(self.textInput.text())
+        else:
+            print "set type not supported! (%s)"%(type(self.sv.value))
+            sys.exit(-1)
+
+        self.sv.value = val
+        km = {}
+        km[self.key] = self.sv
+        self.radio.set(km)
+        self._set_slider_value(self.sv.value)
+
+    def _set(self):
+        self._apply()
+        self.done(0)
 
 
 class MForm(QtGui.QWidget):
@@ -412,25 +505,29 @@ class MForm(QtGui.QWidget):
         self.timer = QtCore.QTimer()
         self.constupdatediv = 0
         self.tableupdatediv = 0
-        plotsize=250; 
+        plotsize=250
 
-        print self.knobprops
+        #print self.knobprops
             
         # make table
-        self.table = GrDataPlotterValueTable(self, 0, 0, 400, 200);
+        self.table = GrDataPlotterValueTable(self, 0, 0, 400, 200)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        self.table.treeWidget.setSizePolicy(sizePolicy);
-        self.table.treeWidget.setEditTriggers(QtGui.QAbstractItemView.EditKeyPressed);
-        self.table.treeWidget.setSortingEnabled(True);
+        self.table.treeWidget.setSizePolicy(sizePolicy)
+        self.table.treeWidget.setEditTriggers(QtGui.QAbstractItemView.EditKeyPressed)
+        self.table.treeWidget.setSortingEnabled(True)
         self.table.treeWidget.setDragEnabled(True)
         
         # add things to layouts
         self.horizontalLayout.addWidget(self.table.treeWidget);
-                
+
         # set up timer   
-        self.connect(self.timer, QtCore.SIGNAL('timeout()'), self.update);
+        self.connect(self.timer, QtCore.SIGNAL('timeout()'), self.update)
         self.timer.start(1000)
-        
+
+        # set up context menu .. 
+        self.table.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.table.treeWidget.customContextMenuRequested.connect(self.openMenu)
+
         # Set up double-click to launch default plotter
         self.connect(self.table.treeWidget,
                      QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem*, int)'),
@@ -439,11 +536,15 @@ class MForm(QtGui.QWidget):
     def plotDropEvent(self, e):
         model = QtGui.QStandardItemModel()
         model.dropMimeData(e.mimeData(), QtCore.Qt.CopyAction,0,0,QtCore.QModelIndex())
-        tag =  str(QtGui.QTreeWidgetItem([model.item(0,0).text()]).text(0));
+        tag =  str(QtGui.QTreeWidgetItem([model.item(0,0).text()]).text(0))
         knobprop = self.knobprops[tag]
         #self.sender().addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
 
-
+    def openMenu(self, pos):
+        index = self.table.treeWidget.selectedIndexes()
+        item = self.table.treeWidget.itemFromIndex(index[0])
+        itemname = str(item.text(0))
+        self.parent.newUpdater(itemname, self.radio)
         
 
 class MyClient(IceRadioClient):
