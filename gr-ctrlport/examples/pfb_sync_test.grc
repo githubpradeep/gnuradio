@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Thu Aug  2 22:17:43 2012</timestamp>
+  <timestamp>Sat Aug  4 18:58:42 2012</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -248,64 +248,6 @@
     <param>
       <key>_coordinate</key>
       <value>(846, 32)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>probe2_c</key>
-    <param>
-      <key>id</key>
-      <value>probe2_c_0</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>name</key>
-      <value>constellation</value>
-    </param>
-    <param>
-      <key>desc</key>
-      <value>Constellation Points</value>
-    </param>
-    <param>
-      <key>len</key>
-      <value>1024</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(912, 243)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>digital_costas_loop_cc</key>
-    <param>
-      <key>id</key>
-      <value>digital_costas_loop_cc_0</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>w</key>
-      <value>6.28/100.0</value>
-    </param>
-    <param>
-      <key>order</key>
-      <value>4</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(626, 223)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -608,6 +550,91 @@
       <value>0</value>
     </param>
   </block>
+  <block>
+    <key>digital_costas_loop_cc</key>
+    <param>
+      <key>id</key>
+      <value>digital_costas_loop_cc_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>w</key>
+      <value>6.28/100.0</value>
+    </param>
+    <param>
+      <key>order</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(626, 223)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>probe2_c</key>
+    <param>
+      <key>id</key>
+      <value>probe2_c_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>name</key>
+      <value>constellation</value>
+    </param>
+    <param>
+      <key>desc</key>
+      <value>Constellation Points</value>
+    </param>
+    <param>
+      <key>len</key>
+      <value>10</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(912, 243)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>gr_null_sink</key>
+    <param>
+      <key>id</key>
+      <value>gr_null_sink_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(893, 382)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
   <connection>
     <source_block_id>gr_packed_to_unpacked_xx_0</source_block_id>
     <sink_block_id>gr_throttle_0</sink_block_id>
@@ -647,6 +674,12 @@
   <connection>
     <source_block_id>digital_costas_loop_cc_0</source_block_id>
     <sink_block_id>probe2_c_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>digital_costas_loop_cc_0</source_block_id>
+    <sink_block_id>gr_null_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
