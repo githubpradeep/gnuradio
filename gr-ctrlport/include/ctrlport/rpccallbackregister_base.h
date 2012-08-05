@@ -24,36 +24,14 @@
 #define RPCCALLBACKREGISTER_BASE_H
 
 #include <gruel/msg_accepter.h>
+#include <gruel/msg_producer.h>
 
-//TODO: REMOVE THIS:::
-namespace gruel {
- /*!
-   * \brief Virtual base class that produces messages
-   */
-  class msg_producer
-  {
-  public:
-    msg_producer() {;}
-    virtual ~msg_producer() {;}
-
-    /*!
-     * \brief send \p msg to \p msg_producer
-     *
-     * Sending a message is an asynchronous operation.  The \p post
-     * call will not wait for the message either to arrive at the
-     * destination or to be received.
-     */
-    virtual pmt::pmt_t retrieve() = 0;
-  };
-
-  typedef boost::shared_ptr<msg_producer> msg_producer_sptr;
-};
-
-enum display_type_t { 
-  DISPNULL=0, 
-  DISPTIMESERIES=1, 
-  DISPXYSCATTER=2, 
-  DISPXYLINE=3 
+enum DisplayType { 
+  DISPNULL, 
+  DISPTIMESERIESF,
+  DISPTIMESERIESC,
+  DISPXYSCATTER,
+  DISPXYLINE
 };
 
 enum priv_lvl_t {
@@ -62,25 +40,30 @@ enum priv_lvl_t {
   RPC_PRIVLVL_NONE = 10
 };
 
-enum KnobType { KNOBBOOL,       KNOBCHAR,       KNOBINT,        KNOBFLOAT,
-                KNOBDOUBLE,     KNOBSTRING,     KNOBLONG,       KNOBVECBOOL,
-                KNOBVECCHAR,    KNOBVECINT,     KNOBVECFLOAT,   KNOBVECDOUBLE,
-                KNOBVECSTRING,  KNOBVECLONG };
+enum KnobType {
+  KNOBBOOL,       KNOBCHAR,       KNOBINT,        KNOBFLOAT,
+  KNOBDOUBLE,     KNOBSTRING,     KNOBLONG,       KNOBVECBOOL,
+  KNOBVECCHAR,    KNOBVECINT,     KNOBVECFLOAT,   KNOBVECDOUBLE,
+  KNOBVECSTRING,  KNOBVECLONG
+};
 
 struct callbackregister_base
 {
   struct callback_base_t
   {
   public:
-    callback_base_t(const priv_lvl_t priv_, const std::string& units_, const display_type_t display_,
-		    const std::string& desc_, const pmt::pmt_t min_, const pmt::pmt_t max_, const pmt::pmt_t def) : 
-      priv(priv_), units(units_), description(desc_),
-      min(min_), max(max_), defaultvalue(def), display(display_) {;}
+    callback_base_t(const priv_lvl_t priv_, const std::string& units_,
+		    const DisplayType display_, const std::string& desc_,
+		    const pmt::pmt_t min_, const pmt::pmt_t max_, const pmt::pmt_t def)
+      : priv(priv_), units(units_), description(desc_),
+	min(min_), max(max_), defaultvalue(def), display(display_)
+    {
+    }
 
     priv_lvl_t	priv;
     std::string	units, description;
     pmt::pmt_t	min, max, defaultvalue;
-    display_type_t  display;
+    DisplayType  display;
   };
 
   template<typename T, typename Tsptr>
@@ -88,10 +71,12 @@ struct callbackregister_base
   {
   public:
     callback_t(T* callback_, priv_lvl_t priv_, 
-	       const std::string& units_, const display_type_t display_, const:: std::string& desc_,
+	       const std::string& units_, const DisplayType display_, const:: std::string& desc_,
 	       const pmt::pmt_t& min_, const pmt::pmt_t& max_, const pmt::pmt_t& def_) :
       callback_base_t(priv_, units_, display_, desc_, min_, max_, def_),
-      callback(callback_) {;}
+      callback(callback_)
+    {
+    }
 
     Tsptr callback;
   };

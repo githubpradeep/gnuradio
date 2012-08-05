@@ -50,14 +50,22 @@ enum KnobType { KNOBBOOL, 	KNOBCHAR, 	KNOBINT, 	KNOBFLOAT,
 		KNOBVECCHAR, 	KNOBVECINT,	KNOBVECFLOAT, 	KNOBVECDOUBLE, 
 		KNOBVECSTRING, 	KNOBVECLONG };
 
+enum DisplayType {
+  DISPNULL, 
+  DISPTIMESERIESF,
+  DISPTIMESERIESC,
+  DISPXYSCATTER,
+  DISPXYLINE
+};
+
 struct KnobProp {
-	KnobType	type;
-	string		units;
-	string		description;
-    int	        display;
-	Knob		min;
-	Knob		max;
-	Knob		defaultvalue;
+	KnobType    type;
+	string      units;
+	string      description;
+        DisplayType display;
+	Knob        min;
+	Knob        max;
+	Knob        defaultvalue;
 };
 
 sequence<string> 		KnobIDList;

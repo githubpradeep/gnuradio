@@ -75,7 +75,7 @@ public:
   pycallback_object(std::string name, std::string functionbase,
 		    std::string units, std::string desc,
 		    myType min, myType max, myType deflt,
-		    display_type_t dtype) :
+		    DisplayType dtype) :
     d_callback(NULL),
     d_rpc(name, functionbase.c_str(), this, pycallback_object_count++,
 	  &pycallback_object::get, pmt_assist<myType>::make(min),

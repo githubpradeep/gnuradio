@@ -91,7 +91,7 @@ private:
     get_f(const Ice::Current& _c, TMap& _getcallbackmap,
 	  const priv_lvl_t& _cur_priv, GNURadio::KnobMap& _outknobs) :
       c(_c), d_getcallbackmap(_getcallbackmap), cur_priv(_cur_priv), outknobs(_outknobs)
-    {;}
+    {}
     
     void operator()(const T& p)
     {
@@ -160,6 +160,7 @@ private:
 	prop.description = p.second.description;
 	prop.min   = rpcpmtconverter::from_pmt(p.second.min, c);
 	prop.max   = rpcpmtconverter::from_pmt(p.second.max, c);
+	prop.display = static_cast<GNURadio::DisplayType>(p.second.display);
 	outknobs[p.first] = prop;
       }
       else {
@@ -193,6 +194,7 @@ private:
 	  prop.description = iter->second.description;
 	  prop.min   = rpcpmtconverter::from_pmt(iter->second.min, c);
 	  prop.max   = rpcpmtconverter::from_pmt(iter->second.max, c);
+	  prop.display = static_cast<GNURadio::DisplayType>(iter->second.display);
 	  //outknobs[iter->first] = prop;
 	  outknobs[p] = prop;
 	  //std::cout << "Key " << iter->first << " desc: " << iter->second.description << std::endl;
