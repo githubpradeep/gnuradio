@@ -39,6 +39,7 @@ import GNURadio
 class MAINWindow(QtGui.QMainWindow):
     def minimumSizeHint(self):
         return Qtgui.QSize(800,600)
+
     def __init__(self, radio, port):
         
         super(MAINWindow, self).__init__()
@@ -90,52 +91,51 @@ class MAINWindow(QtGui.QMainWindow):
     def newSub(self,e):
         tag = str(e.text(0));
         knobprop = self.knobprops[tag]
-        print "NEW SUB: ", tag, knobprop
-        
-        if(type(knobprop.min) == GNURadio.KnobVecF):
-            plot = self.newConstPlot();
-            plot.setSeries(tag,tag);
-#            plot.setSeries(tag, knobprop.description);
+        print "NEW SUB: ", tag, knobprop.display
 
-#            plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
-        else:
-            print "Calling newPlot"
-            plot = self.newPlot(tag);
+        if(knobprop.display == GNURadio.DisplayType.DISPXYSCATTER):
+            plot = self.newConstPlot(tag);
+            #plot.setSeries(tag,tag);
+            #plot.setSeries(tag, knobprop.description);
+            #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
+        elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESF):
+            plot = self.newPlotF(tag);
+            #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
+        elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESC):
+            plot = self.newPlotC(tag);
             #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
         #plot.setWindowTitle(str(tag));
             
         
-    def newConstPlot(self):
-#        plot = DataPlotterConst(None,"",'units', '', 250,0,0,120);
+    def newConstPlot(self, tag):
+        #plot = DataPlotterConst(None,"",'units', '', 250,0,0,120);
         #(self, parent, tag, legend, title, xlabel, ylabel, size, x, y)
-        plot = DataPlotterConst(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0)
-        self.mdiArea.addSubWindow(plot);
-        plot.dropSignal.connect(self.plotDropEvent );
-        plot.show();
+        #plot = DataPlotterConst(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0)
+        #self.mdiArea.addSubWindow(plot);
+        #plot.dropSignal.connect(self.plotDropEvent );
+        #plot.show();
+
+        plot = GrDataPlotterConst(tag, 32e6)
+        plot.start();
         self.plots.append(plot);
         return plot;
 
-    def newPlot(self, tag):
+    def newPlotF(self, tag):
         #plot = DataPlotterTickerWithSeriesButtons(None,"",'units', '', 250,0,0,120)
-        plot = GrDataPlotter(tag, 32e6)
         #self.mdiArea.addSubWindow(plot.py_window)
         #plot.dropSignal.connect(self.plotDropEvent )
-        print "Starting new plot"
+        plot = GrDataPlotterF(tag, 32e6)
         plot.start()
         self.plots.append(plot)
         return plot
-        
+
+    def newPlotC(self, tag):
+        plot = GrDataPlotterC(tag, 32e6)
+        plot.start()
+        self.plots.append(plot)
+        return plot     
 
     def update(self, knobs):
-        #for item in knobs.keys():
-        #    for plot in self.plots:
-        #        print "offering key: {0} to plot: {1}".format(
-        #            item, plot)
-        #        #plot.offerData( knobs[item].value, item );
-        #        plot.update(knobs[item].value)
-        #        plot.stop()
-        #        plot.wait()
-        #        plot.start()
         for plot in self.plots:
             data = knobs[plot.name()].value
             plot.update(data)
@@ -163,7 +163,7 @@ class MAINWindow(QtGui.QMainWindow):
         #self.newAct = QtGui.QAction(QtGui.QIcon(':/images/new.png'), "&New Plot",
         self.newPlotAct = QtGui.QAction("&New Plot",
                 self, shortcut=QtGui.QKeySequence.New,
-                statusTip="Create a new file", triggered=self.newPlot)
+                statusTip="Create a new file", triggered=self.newPlotF)
 
 #        self.openAct = QtGui.QAction(QtGui.QIcon(':/images/open.png'),
 #                "&Open...", self, shortcut=QtGui.QKeySequence.Open,
@@ -405,7 +405,6 @@ class MForm(QtGui.QWidget):
         self.horizontalLayout = QtGui.QVBoxLayout(self);
         self.gridLayout = QtGui.QGridLayout()
 
-
         self.radio = radio
         self.knobprops = self.radio.properties([])
         self.parent.knobprops = self.knobprops;
@@ -414,7 +413,8 @@ class MForm(QtGui.QWidget):
         self.constupdatediv = 0
         self.tableupdatediv = 0
         plotsize=250; 
-    
+
+        print self.knobprops
             
         # make table
         self.table = GrDataPlotterValueTable(self, 0, 0, 400, 200);
@@ -429,8 +429,12 @@ class MForm(QtGui.QWidget):
                 
         # set up timer   
         self.connect(self.timer, QtCore.SIGNAL('timeout()'), self.update);
-        self.connect(self.table.treeWidget, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem*, int)'), self.parent.newSub);
         self.timer.start(1000)
+        
+        # Set up double-click to launch default plotter
+        self.connect(self.table.treeWidget,
+                     QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem*, int)'),
+                     self.parent.newSub);
 
     def plotDropEvent(self, e):
         model = QtGui.QStandardItemModel()
@@ -443,6 +447,7 @@ class MForm(QtGui.QWidget):
         
 
 class MyClient(IceRadioClient):
-    def __init__(self): IceRadioClient.__init__(self, MAINWindow)
+    def __init__(self):
+        IceRadioClient.__init__(self, MAINWindow)
 		
 sys.exit(MyClient().main(sys.argv))

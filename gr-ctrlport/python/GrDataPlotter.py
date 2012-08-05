@@ -31,12 +31,9 @@ except ImportError:
     print "Error: Program requires PyQt4 and gr-qtgui."
     sys.exit(1)
 
-class GrDataPlotter(gr.top_block):
+class GrDataPlotterC(gr.top_block):
     def __init__(self, name, rate):
         gr.top_block.__init__(self)
-
-        self.h = open('/tmp/grplotter.log', 'w')
-        self.h.write("{0}: CREATED NEW GRDATAPLOTTER\n".format(time.asctime()))
 
         self._name = name
         self._npts = 500
@@ -52,12 +49,83 @@ class GrDataPlotter(gr.top_block):
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
+        self.snk.set_title(0, "Re{{0}}".format(self._name))
+        self.snk.set_title(1, "Im{{0}}".format(self._name))
+
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
         self.py_window.show()
 
     def __del__(self):
-            self.h.write("{0}: CLOSING FILE\n".format(time.asctime()))
-            self.h.close()
+        pass
+
+    def name(self):
+        return self._name
+
+    def update(self, data):
+        # Ask GUI if there has been a change in nsamps
+        npts = self.snk.nsamps()
+        if(self._npts != npts):
+
+            # Adjust buffers to accomodate new settings
+            if(npts < self._npts):
+                if(self._data_len < npts):
+                    self._last_data = self._last_data[0:npts]
+                else:
+                    self._last_data = self._last_data[self._data_len-npts:self._data_len]
+                    self._data_len = npts
+            else:
+                self._last_data += (npts - self._npts)*[0,]
+            self._npts = npts
+            self.snk.reset()
+        
+        # Update the plot data depending on type
+        if(type(data) == list):
+            data_r = data[0::2]
+            data_i = data[1::2]
+            data = [complex(r,i) for r,i in zip(data_r, data_i)]
+            if(len(data) > self._npts):
+                self.src.set_data(data)
+                self._last_data = data[-self._npts:]
+            else:
+                newdata = self._last_data[-(self._npts-len(data)):]
+                newdata += data
+                self.src.set_data(new_data)
+                self._last_data = newdata
+
+        else: # single value update
+            if(self._data_len < self._npts):
+                self._last_data[self._data_len] = data
+                self._data_len += 1
+            else:
+                self._last_data = self._last_data[1:]
+                self._last_data.append(data)
+            self.src.set_data(self._last_data)
+
+class GrDataPlotterF(gr.top_block):
+    def __init__(self, name, rate):
+        gr.top_block.__init__(self)
+
+        self._name = name
+        self._npts = 500
+        samp_rate = 1.0
+
+        self._last_data = self._npts*[0,]
+        self._data_len = 0
+
+        self.src = gr.vector_source_f([])
+        self.thr = gr.throttle(gr.sizeof_float, rate)
+        self.snk = qtgui.time_sink_f(self._npts, samp_rate,
+                                     self._name, 1)
+
+        self.connect(self.src, self.thr, (self.snk, 0))
+
+        self.snk.set_title(0, self._name)
+
+        self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
+        self.py_window.show()
+
+    def __del__(self):
+        pass
 
     def name(self):
         return self._name
@@ -98,6 +166,75 @@ class GrDataPlotter(gr.top_block):
                 self._last_data = self._last_data[1:]
                 self._last_data.append(data)
             self.src.set_data(self._last_data)
+
+
+class GrDataPlotterConst(gr.top_block):
+    def __init__(self, name, rate):
+        gr.top_block.__init__(self)
+
+        self._name = name
+        self._npts = 500
+        samp_rate = 1.0
+
+        self._last_data = self._npts*[0,]
+        self._data_len = 0
+
+        self.src = gr.vector_source_c([])
+        self.thr = gr.throttle(gr.sizeof_gr_complex, rate)
+        self.snk = qtgui.const_sink_c(self._npts,
+                                     self._name, 1)
+
+        self.connect(self.src, self.thr, (self.snk, 0))
+
+        self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
+        self.py_window.show()
+
+    def __del__(self):
+        pass
+
+    def name(self):
+        return self._name
+
+    def update(self, data):
+        # Ask GUI if there has been a change in nsamps
+        npts = self.snk.nsamps()
+        if(self._npts != npts):
+
+            # Adjust buffers to accomodate new settings
+            if(npts < self._npts):
+                if(self._data_len < npts):
+                    self._last_data = self._last_data[0:npts]
+                else:
+                    self._last_data = self._last_data[self._data_len-npts:self._data_len]
+                    self._data_len = npts
+            else:
+                self._last_data += (npts - self._npts)*[0,]
+            self._npts = npts
+            self.snk.reset()
+        
+        # Update the plot data depending on type
+        if(type(data) == list):
+            data_r = data[0::2]
+            data_i = data[1::2]
+            data = [complex(r,i) for r,i in zip(data_r, data_i)]
+            if(len(data) > self._npts):
+                self.src.set_data(data)
+                self._last_data = data[-self._npts:]
+            else:
+                newdata = self._last_data[-(self._npts-len(data)):]
+                newdata += data
+                self.src.set_data(new_data)
+                self._last_data = newdata
+
+        else: # single value update
+            if(self._data_len < self._npts):
+                self._last_data[self._data_len] = data
+                self._data_len += 1
+            else:
+                self._last_data = self._last_data[1:]
+                self._last_data.append(data)
+            self.src.set_data(self._last_data)
+
 
 class GrDataPlotterValueTable:
     def __init__(self, parent, x, y, xsize, ysize,

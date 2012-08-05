@@ -20,17 +20,39 @@
 ########################################################################
 include(GrPython)
 
-EXECUTE_PROCESS(
-   COMMAND "${ICE_SLICE2PY}" "-I${CMAKE_CURRENT_SOURCE_DIR}/../slice"
-       "--output-dir=${CMAKE_CURRENT_BINARY_DIR}"
-       "${CMAKE_CURRENT_SOURCE_DIR}/../slice/gnuradio.ice"
-   )
+#EXECUTE_PROCESS(
+#   COMMAND "${ICE_SLICE2PY}" "-I${CMAKE_CURRENT_SOURCE_DIR}/../slice"
+#       "--output-dir=${CMAKE_CURRENT_BINARY_DIR}"
+#       "${CMAKE_CURRENT_SOURCE_DIR}/../slice/gnuradio.ice"
+#   )
 
-EXECUTE_PROCESS(
-   COMMAND "${ICE_SLICE2PY}" "-I${CMAKE_CURRENT_SOURCE_DIR}/../slice"
-       "--output-dir=${CMAKE_CURRENT_BINARY_DIR}"
-       "${CMAKE_CURRENT_SOURCE_DIR}/../slice/frontend.ice"
-   )
+#EXECUTE_PROCESS(
+#   COMMAND "${ICE_SLICE2PY}" "-I${CMAKE_CURRENT_SOURCE_DIR}/../slice"
+#       "--output-dir=${CMAKE_CURRENT_BINARY_DIR}"
+#       "${CMAKE_CURRENT_SOURCE_DIR}/../slice/frontend.ice"
+#   )
+
+ADD_CUSTOM_COMMAND(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gnuradio_ice.py
+         ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/__init__.py
+  COMMAND ${ICE_SLICE2PY} -I${CMAKE_CURRENT_SOURCE_DIR}/../slice
+          --output-dir=${CMAKE_CURRENT_BINARY_DIR}
+          ${CMAKE_CURRENT_SOURCE_DIR}/../slice/gnuradio.ice
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../slice/gnuradio.ice
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "Slicing gnuradio.slice"
+)
+
+ADD_CUSTOM_COMMAND(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/frontend_ice.py
+         ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/Frontend/__init__.py
+  COMMAND ${ICE_SLICE2PY} -I${CMAKE_CURRENT_SOURCE_DIR}/../slice
+          --output-dir=${CMAKE_CURRENT_BINARY_DIR}
+          ${CMAKE_CURRENT_SOURCE_DIR}/../slice/frontend.ice
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../slice/frontend.ice
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "Slicing frontend.slice"
+)
 
 GR_PYTHON_INSTALL(
     FILES
@@ -49,6 +71,7 @@ GR_PYTHON_INSTALL(
     ${CMAKE_CURRENT_BINARY_DIR}/frontend_ice.py
 #    DESTINATION ${GR_PYTHON_DIR}/gnuradio/ctrlport/GNURadio
     DESTINATION ${GR_PYTHON_DIR}
+    COMPONENT "filter_python"
 )
 
 GR_PYTHON_INSTALL(

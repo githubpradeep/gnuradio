@@ -33,7 +33,7 @@ Ice.loadSlice(ice_directory + '/gnuradio.ice')
 import GNURadio
 
 class IceRadioClient(Ice.Application):
-    def __init__(self,parentClass):
+    def __init__(self, parentClass):
         self.parentClass = parentClass
 
     def run(self,args):
@@ -42,42 +42,56 @@ class IceRadioClient(Ice.Application):
                 return
         if len(args) == 8:
                 self.useglacier = True
-		guser = args[1]; gpass = args[2];
-                ginst = args[3]; ghost = args[4]; gport = args[5]
-                host = args[6]; port = args[7]
+		guser = args[1]
+                gpass = args[2]
+                ginst = args[3]
+                ghost = args[4]
+                gport = args[5]
+                host = args[6]
+                port = args[7]
         else:
                 self.useglacier = False
-                host = args[1]; port = args[2]
+                host = args[1]
+                port = args[2]
 
         if self.useglacier:
 	  gstring = ginst + "/router -t:tcp -h " + ghost + " -p " + gport
-	  print "GLACIER: %s"%gstring
+	  print "GLACIER: {0}".format(gstring)
 	  
 	  setrouter = Glacier2.RouterPrx.checkedCast(self.communicator().stringToProxy(gstring))
 	  self.communicator().setDefaultRouter(setrouter)
           defaultRouter = self.communicator().getDefaultRouter()
 	  #defaultRouter = self.communicator().stringToProxy(gstring)
-          if not defaultRouter: print self.appName() + ": no default router set"; return 1
-	  else: print str(defaultRouter)
+          if not defaultRouter:
+              print self.appName() + ": no default router set"
+              return 1
+	  else:
+              print str(defaultRouter)
           router = Glacier2.RouterPrx.checkedCast(defaultRouter)
-          if not router: print self.appName() + ": configured router is not a Glacier2 router"; return 1
+          if not router:
+              print self.appName() + ": configured router is not a Glacier2 router"
+              return 1
 
           while True:
             print "This demo accepts any user-id / password combination."
 	    if not guser == '' and not gpass == '':
-		id = guser; pw = gpass
+		id = guser
+                pw = gpass
 	    else:
-            	id = raw_input("user id: "); pw = raw_input("password: ")
+            	id = raw_input("user id: ")
+                pw = raw_input("password: ")
 
             try:
-                router.createSession(id, pw); break
+                router.createSession(id, pw)
+                break
             except Glacier2.PermissionDeniedException, ex:
                 print "permission denied:\n" + ex.reason
 
         base = self.communicator().stringToProxy("gnuradio -t:tcp -h " + host + " -p " + port).ice_twoway().ice_timeout(-1)
         radio = GNURadio.ControlPortPrx.checkedCast(base)
 
-        if not radio: print args[0] + ": invalid proxy"; return 1
+        if not radio:
+            print args[0] + ": invalid proxy"; return 1
 
         app = QtGui.QApplication(sys.argv)
         ex = self.parentClass(radio, port)
