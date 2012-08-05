@@ -272,7 +272,7 @@ struct rpcbasic_register_set
 			const char* units_ = "", 
 			const char* desc_ = "",
 			priv_lvl_t minpriv_ = RPC_PRIVLVL_MIN,
-			display_type_t display_=DISPNULL)
+			DisplayType display_ = DISPNULL)
   {
 #ifdef RPCSERVER_ENABLED
     callbackregister_base::configureCallback_t
@@ -281,7 +281,7 @@ struct rpcbasic_register_set
 		display_, std::string(desc_), min, max, def);
     std::ostringstream oss(std::ostringstream::out);
     oss << namebase << serial << "::" << functionbase; d_id = oss.str();
-    //std::cout << "REGISTERING: " << d_id << desc_ << std::endl;
+    std::cout << "REGISTERING SET: " << d_id << desc_ << "  " << display_ << std::endl;
     rpcmanager::get()->i()->registerConfigureCallback(d_id, extractor);
 #endif
   }
@@ -309,14 +309,14 @@ struct rpcbasic_register_get
 			const char* units_ = "", 
 			const char* desc_ = "",
 			priv_lvl_t minpriv = RPC_PRIVLVL_MIN,
-			display_type_t display_=DISPNULL){
+			DisplayType display_ = DISPNULL){
 #ifdef RPCSERVER_ENABLED
     callbackregister_base::queryCallback_t
       inserter(new rpcbasic_inserter<T,Tfrom>(obj, function), 
 	       minpriv, std::string(units_), display_, std::string(desc_), min, max, def);
     std::ostringstream oss(std::ostringstream::out);
     oss << namebase << serial << "::" << functionbase; d_id = oss.str();
-    //std::cout << "REGISTERING: " << d_id << desc_ << std::endl;
+    std::cout << "REGISTERING GET: " << d_id << desc_ << "  " << display_ << std::endl;
     rpcmanager::get()->i()->registerQueryCallback(d_id, inserter);
 #endif
   }
@@ -330,7 +330,7 @@ struct rpcbasic_register_get
 			const char* units_ = "", 
 			const char* desc_ = "",
 			priv_lvl_t minpriv = RPC_PRIVLVL_MIN,
-			display_type_t display_=DISPNULL)
+			DisplayType display_ = DISPNULL)
   { 
 #ifdef RPCSERVER_ENABLED
     callbackregister_base::queryCallback_t
@@ -338,7 +338,7 @@ struct rpcbasic_register_get
 	       minpriv, std::string(units_), display_, std::string(desc_), min, max, def);
     std::ostringstream oss(std::ostringstream::out);
     oss << namebase << serial << "::" << functionbase; d_id = oss.str();
-    //std::cout << "REGISTERING: " << d_id << desc_ << std::endl;
+    std::cerr << "REGISTERING GET CONST: " << d_id << "   " << desc_ << "   " << display_ << std::endl;
     rpcmanager::get()->i()->registerQueryCallback(d_id, inserter);
 #endif
   }
@@ -392,12 +392,12 @@ public:
 			     const char* units_ = "",
 			     const char* desc_ = "",
 			     priv_lvl_t minpriv = RPC_PRIVLVL_MIN,
-			     display_type_t display_=DISPNULL) :
+			     DisplayType display_=DISPNULL) :
     d_rpc_reg(namebase,functionbase,this,serial,&rpcbasic_register_variable::get,
 	      min,max,def,units_,desc_,minpriv,display_),
     d_variable(variable)
   {
-    // no action
+    std::cout << "REGISTERING VAR: " << serial << desc_ << "   " << display_ << std::endl;
   }
 };
 

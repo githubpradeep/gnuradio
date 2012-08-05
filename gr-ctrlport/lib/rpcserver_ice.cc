@@ -106,8 +106,8 @@ void
 rpcserver_ice::set(const GNURadio::KnobMap& knobs, const Ice::Current& c)
 {
   std::for_each(knobs.begin(), knobs.end(),
-		set_f<GNURadio::KnobMap::value_type,
-		ConfigureCallbackMap_t>(c, d_setcallbackmap, cur_priv));
+		set_f<GNURadio::KnobMap::value_type,ConfigureCallbackMap_t>
+		(c, d_setcallbackmap, cur_priv));
 }
 
 GNURadio::KnobMap
@@ -117,13 +117,13 @@ rpcserver_ice::get(const GNURadio::KnobIDList& knobs, const Ice::Current& c)
 
   if(knobs.size() == 0) {
     std::for_each(d_getcallbackmap.begin(), d_getcallbackmap.end(),
-		  get_all_f<QueryCallbackMap_t::value_type,
-		  QueryCallbackMap_t, GNURadio::KnobMap>(c, d_getcallbackmap, cur_priv, outknobs));
+		  get_all_f<QueryCallbackMap_t::value_type, QueryCallbackMap_t, GNURadio::KnobMap>
+		  (c, d_getcallbackmap, cur_priv, outknobs));
   }
   else {
     std::for_each(knobs.begin(), knobs.end(),
-		  get_f<GNURadio::KnobIDList::value_type,
-		  QueryCallbackMap_t>(c, d_getcallbackmap, cur_priv, outknobs));
+		  get_f<GNURadio::KnobIDList::value_type, QueryCallbackMap_t>
+		  (c, d_getcallbackmap, cur_priv, outknobs));
   }
   return outknobs;
 }
