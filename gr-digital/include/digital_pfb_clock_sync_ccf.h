@@ -206,12 +206,12 @@ class DIGITAL_API digital_pfb_clock_sync_ccf : public gr_block
 
 
 #ifdef ENABLE_GR_CTRLPORT
-  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_error_rpc;
-  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_rate_rpc;
-  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_phase_rpc;
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> *d_error_rpc;
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> *d_rate_rpc;
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> *d_phase_rpc;
 
-  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> d_loop_bw_get;
-  rpcbasic_register_set<digital_pfb_clock_sync_ccf, float> d_loop_bw_set;
+  rpcbasic_register_get<digital_pfb_clock_sync_ccf, float> *d_loop_bw_get;
+  rpcbasic_register_set<digital_pfb_clock_sync_ccf, float> *d_loop_bw_set;
 #endif /* ENABLE_GR_CTRLPORT */
 
   /*!

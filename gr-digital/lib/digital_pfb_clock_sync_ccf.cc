@@ -63,35 +63,44 @@ digital_pfb_clock_sync_ccf::digital_pfb_clock_sync_ccf (double sps, float loop_b
     d_updated (false), d_nfilters(filter_size),
     d_max_dev(max_rate_deviation),
     d_osps(osps), d_error(0), d_out_idx(0)
-
-#ifdef ENABLE_GR_CTRLPORT
-  , d_error_rpc(d_name, "error", this, unique_id(),
-		&digital_pfb_clock_sync_ccf::get_error,
-		pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
-		"", "Error signal of loop",
-		RPC_PRIVLVL_MIN, DISPTIMESERIES),
-    d_rate_rpc(d_name, "rate", this, unique_id(),
-	       &digital_pfb_clock_sync_ccf::get_rate,
-	       pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
-	       "", "Rate change of phase",
-	       RPC_PRIVLVL_MIN, DISPTIMESERIES),
-    d_phase_rpc(d_name, "phase", this, unique_id(),
-		&digital_pfb_clock_sync_ccf::get_phase,
-    		pmt::mp(0), pmt::mp((float)filter_size), pmt::mp(0.0f),
-    		"", "Current filter phase arm",
-    		RPC_PRIVLVL_MIN, DISPTIMESERIES),
-    d_loop_bw_get(d_name, "loop bw", this, unique_id(),
-		  &digital_pfb_clock_sync_ccf::get_loop_bandwidth,
-		  pmt::mp(0.0f), pmt::mp(1.0f), pmt::mp(0.0f),
-		  "", "Loop bandwidth",
-		  RPC_PRIVLVL_MIN, DISPNULL),
-    d_loop_bw_set(d_name, "loop bw", this, unique_id(),
-		  &digital_pfb_clock_sync_ccf::set_loop_bandwidth,
-		  pmt::mp(0.0f), pmt::mp(1.0f), pmt::mp(0.0f),
-		  "", "Loop bandwidth",
-		  RPC_PRIVLVL_MIN, DISPNULL)
-#endif /* ENABLE_GR_CTRLPORT */
 {
+#ifdef ENABLE_GR_CTRLPORT
+  d_error_rpc = new rpcbasic_register_get<digital_pfb_clock_sync_ccf, float>
+    (d_name, "error", this, unique_id(),
+     &digital_pfb_clock_sync_ccf::get_error,
+     pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+     "", "Error signal of loop",
+     RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+
+  d_rate_rpc = new rpcbasic_register_get<digital_pfb_clock_sync_ccf, float>
+    (d_name, "rate", this, unique_id(),
+     &digital_pfb_clock_sync_ccf::get_rate,
+     pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+     "", "Rate change of phase",
+     RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+
+  d_phase_rpc = new rpcbasic_register_get<digital_pfb_clock_sync_ccf, float>
+    (d_name, "phase", this, unique_id(),
+     &digital_pfb_clock_sync_ccf::get_phase,
+     pmt::mp(0), pmt::mp((int)filter_size), pmt::mp(0),
+     "", "Current filter phase arm",
+     RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+
+  d_loop_bw_get = new rpcbasic_register_get<digital_pfb_clock_sync_ccf, float>
+    (d_name, "loop bw", this, unique_id(),
+     &digital_pfb_clock_sync_ccf::get_loop_bandwidth,
+     pmt::mp(0.0f), pmt::mp(1.0f), pmt::mp(0.0f),
+     "", "Loop bandwidth",
+     RPC_PRIVLVL_MIN, DISPNULL);
+
+  d_loop_bw_set = new rpcbasic_register_set<digital_pfb_clock_sync_ccf, float>
+    (d_name, "loop bw", this, unique_id(),
+     &digital_pfb_clock_sync_ccf::set_loop_bandwidth,
+     pmt::mp(0.0f), pmt::mp(1.0f), pmt::mp(0.0f),
+     "", "Loop bandwidth",
+     RPC_PRIVLVL_MIN, DISPNULL);
+#endif /* ENABLE_GR_CTRLPORT */
+
   d_nfilters = filter_size;
   d_sps = floor(sps);
 
@@ -129,6 +138,14 @@ digital_pfb_clock_sync_ccf::digital_pfb_clock_sync_ccf (double sps, float loop_b
 
 digital_pfb_clock_sync_ccf::~digital_pfb_clock_sync_ccf ()
 {
+#ifdef ENABLE_GR_CTRLPORT
+  delete d_error_rpc;
+  delete d_rate_rpc;
+  delete d_phase_rpc;
+  delete d_loop_bw_get;
+  delete d_loop_bw_set;
+#endif /* ENABLE_GR_CTRLPORT */
+
   for(int i = 0; i < d_nfilters; i++) {
     delete d_filters[i];
     delete d_diff_filters[i];
