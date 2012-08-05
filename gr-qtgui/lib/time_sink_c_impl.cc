@@ -192,17 +192,17 @@ namespace gr {
       }
     }
 
-    int
-    time_sink_c_impl::nsamps() const
-    {
-      return d_size;
-    }
-
     void
     time_sink_c_impl::npoints_resize()
     {
       int newsize = d_main_gui->GetNPoints();
       set_nsamps(newsize);
+    }
+
+    int
+    time_sink_c_impl::nsamps() const
+    {
+      return d_size;
     }
 
     void

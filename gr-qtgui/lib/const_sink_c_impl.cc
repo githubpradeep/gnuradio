@@ -199,6 +199,18 @@ namespace gr {
     }
 
     int
+    const_sink_c_impl::nsamps() const
+    {
+      return d_size;
+    }
+
+    void
+    const_sink_c_impl::reset()
+    {
+      d_index = 0;
+    }
+
+    int
     const_sink_c_impl::work(int noutput_items,
 			    gr_vector_const_void_star &input_items,
 			    gr_vector_void_star &output_items)
