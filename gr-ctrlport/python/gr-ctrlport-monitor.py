@@ -122,14 +122,6 @@ class MAINWindow(QtGui.QMainWindow):
         menu.popup(QtGui.QCursor.pos())
 
     def newUpdater(self, key, radio):
-
-        # Should be some test here to make sure that a 'set' function
-        # is available for this key before launching the dialog box.
-        #try:
-        #    a = radio.set(radio.get([key]))
-        #except:
-        #    return
-
         updater = UpdaterWindow(key, radio, None)
         updater.setWindowTitle("Updater: " + key)
         updater.setModal(False)
@@ -428,51 +420,68 @@ class UpdaterWindow(QtGui.QDialog):
         self.resize(300,200)
         self.layout = QtGui.QVBoxLayout()
 
-        self.textInput = QtGui.QLineEdit()
-        self.applyButton = QtGui.QPushButton("Apply")
-        self.setButton = QtGui.QPushButton("OK")
-        self.cancelButton = QtGui.QPushButton("Cancel")
-
-        rv = radio.get([key])
-        self.textInput.setText(str(rv[key].value))
-        self.sv = rv[key]
-
         self.props = radio.properties([key])[key]
         info = str(self.props)
 
         self.infoLabel = QtGui.QLabel(info)
         self.layout.addWidget(self.infoLabel)
-        self.layout.addWidget(self.textInput)
+
+        # Test here to make sure that a 'set' function
+        try:
+            a = radio.set(radio.get([key]))
+            has_set = True
+        except Ice.UnknownException:
+            has_set = False
+
+        if(has_set is False):
+            self.cancelButton = QtGui.QPushButton("Ok")
+            self.cancelButton.connect(self.cancelButton, QtCore.SIGNAL('clicked()'), self.reject)
+
+            self.buttonlayout = QtGui.QHBoxLayout()
+            self.buttonlayout.addWidget(self.cancelButton)
+            self.layout.addLayout(self.buttonlayout)
  
-        self.applyButton.connect(self.applyButton, QtCore.SIGNAL('clicked()'), self._apply)
-        self.setButton.connect(self.setButton, QtCore.SIGNAL('clicked()'), self._set)
-        self.cancelButton.connect(self.cancelButton, QtCore.SIGNAL('clicked()'), self.reject)
+        else: # we have a set function
+            self.textInput = QtGui.QLineEdit()
+            self.layout.addWidget(self.textInput)
+
+            self.applyButton = QtGui.QPushButton("Apply")
+            self.setButton = QtGui.QPushButton("OK")
+            self.cancelButton = QtGui.QPushButton("Cancel")
+
+            rv = radio.get([key])
+            self.textInput.setText(str(rv[key].value))
+            self.sv = rv[key]
+
+            self.applyButton.connect(self.applyButton, QtCore.SIGNAL('clicked()'), self._apply)
+            self.setButton.connect(self.setButton, QtCore.SIGNAL('clicked()'), self._set)
+            self.cancelButton.connect(self.cancelButton, QtCore.SIGNAL('clicked()'), self.reject)
  
-        self.is_num = ((type(self.sv.value)==float) or (type(self.sv.value)==int))
-        if(self.is_num):
-            self.sliderlayout = QtGui.QHBoxLayout()
+            self.is_num = ((type(self.sv.value)==float) or (type(self.sv.value)==int))
+            if(self.is_num):
+                self.sliderlayout = QtGui.QHBoxLayout()
 
-            self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+                self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
 
-            self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.min.value)))
-            self.sliderlayout.addWidget(self.slider)
-            self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.max.value)))
+                self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.min.value)))
+                self.sliderlayout.addWidget(self.slider)
+                self.sliderlayout.addWidget(QtGui.QLabel(str(self.props.max.value)))
 
-            self.steps = 10000
-            self.valspan = self.props.max.value - self.props.min.value
+                self.steps = 10000
+                self.valspan = self.props.max.value - self.props.min.value
             
-            self.slider.setRange(0, 10000)
-            self._set_slider_value(self.sv.value)
+                self.slider.setRange(0, 10000)
+                self._set_slider_value(self.sv.value)
 
-            self.connect(self.slider, QtCore.SIGNAL("sliderReleased()"), self._slide)
+                self.connect(self.slider, QtCore.SIGNAL("sliderReleased()"), self._slide)
 
-            self.layout.addLayout(self.sliderlayout)
+                self.layout.addLayout(self.sliderlayout)
 
-        self.buttonlayout = QtGui.QHBoxLayout()
-        self.buttonlayout.addWidget(self.applyButton)
-        self.buttonlayout.addWidget(self.setButton)
-        self.buttonlayout.addWidget(self.cancelButton)
-        self.layout.addLayout(self.buttonlayout)
+                self.buttonlayout = QtGui.QHBoxLayout()
+                self.buttonlayout.addWidget(self.applyButton)
+                self.buttonlayout.addWidget(self.setButton)
+                self.buttonlayout.addWidget(self.cancelButton)
+                self.layout.addLayout(self.buttonlayout)
 
         # set layout and go...
         self.setLayout(self.layout)
