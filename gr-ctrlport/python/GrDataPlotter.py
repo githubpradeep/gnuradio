@@ -89,7 +89,7 @@ class GrDataPlotterC(gr.top_block):
             else:
                 newdata = self._last_data[-(self._npts-len(data)):]
                 newdata += data
-                self.src.set_data(new_data)
+                self.src.set_data(newdata)
                 self._last_data = newdata
 
         else: # single value update
@@ -155,7 +155,7 @@ class GrDataPlotterF(gr.top_block):
             else:
                 newdata = self._last_data[-(self._npts-len(data)):]
                 newdata += data
-                self.src.set_data(new_data)
+                self.src.set_data(newdata)
                 self._last_data = newdata
 
         else: # single value update
@@ -223,11 +223,156 @@ class GrDataPlotterConst(gr.top_block):
             else:
                 newdata = self._last_data[-(self._npts-len(data)):]
                 newdata += data
-                self.src.set_data(new_data)
+                self.src.set_data(newdata)
                 self._last_data = newdata
 
         else: # single value update
             if(self._data_len < self._npts):
+                self._last_data[self._data_len] = data
+                self._data_len += 1
+            else:
+                self._last_data = self._last_data[1:]
+                self._last_data.append(data)
+            self.src.set_data(self._last_data)
+
+
+class GrDataPlotterPsdC(gr.top_block):
+    def __init__(self, name, rate):
+        gr.top_block.__init__(self)
+
+        self._name = name
+        self._samp_rate = 1.0
+        self._fftsize = 2048
+        self._wintype = gr.firdes.WIN_BLACKMAN_hARRIS
+        self._fc = 0
+        
+        self._last_data = self._fftsize*[0,]
+        self._data_len = 0
+
+        self.src = gr.vector_source_c([])
+        self.thr = gr.throttle(gr.sizeof_gr_complex, rate)
+        self.snk = qtgui.freq_sink_c(self._fftsize, self._wintype,
+                                     self._fc, self._samp_rate,
+                                     self._name, 1)
+
+        self.connect(self.src, self.thr, (self.snk, 0))
+
+        self.snk.set_title(0, "{0}".format(self._name))
+
+        self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
+        self.py_window.show()
+
+    def __del__(self):
+        pass
+
+    def name(self):
+        return self._name
+
+    def update(self, data):
+        # Ask GUI if there has been a change in nsamps
+        fftsize = self.snk.fft_size()
+        if(self._fftsize != fftsize):
+
+            # Adjust buffers to accomodate new settings
+            if(fftsize < self._fftsize):
+                if(self._data_len < fftsize):
+                    self._last_data = self._last_data[0:fftsize]
+                else:
+                    self._last_data = self._last_data[self._data_len-fftsize:self._data_len]
+                    self._data_len = fftsize
+            else:
+                self._last_data += (fftsize - self._fftsize)*[0,]
+            self._fftsize = fftsize
+            self.snk.reset()
+        
+        # Update the plot data depending on type
+        if(type(data) == list):
+            data_r = data[0::2]
+            data_i = data[1::2]
+            data = [complex(r,i) for r,i in zip(data_r, data_i)]
+            if(len(data) > self._fftsize):
+                self.src.set_data(data)
+                self._last_data = data[-self._fftsize:]
+            else:
+                newdata = self._last_data[-(self._fftsize-len(data)):]
+                newdata += data
+                self.src.set_data(newdata)
+                self._last_data = newdata
+
+        else: # single value update
+            if(self._data_len < self._fftsize):
+                self._last_data[self._data_len] = data
+                self._data_len += 1
+            else:
+                self._last_data = self._last_data[1:]
+                self._last_data.append(data)
+            self.src.set_data(self._last_data)
+
+class GrDataPlotterPsdF(gr.top_block):
+    def __init__(self, name, rate):
+        gr.top_block.__init__(self)
+
+        self._name = name
+        self._samp_rate = 1.0
+        self._fftsize = 2048
+        self._wintype = gr.firdes.WIN_BLACKMAN_hARRIS
+        self._fc = 0
+        
+        self._last_data = self._fftsize*[0,]
+        self._data_len = 0
+
+        self.src = gr.vector_source_f([])
+        self.thr = gr.throttle(gr.sizeof_float, rate)
+        self.snk = qtgui.freq_sink_f(self._fftsize, self._wintype,
+                                     self._fc, self._samp_rate,
+                                     self._name, 1)
+
+        self.connect(self.src, self.thr, (self.snk, 0))
+
+        self.snk.set_title(0, "{0}".format(self._name))
+
+        self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
+        self.py_window.show()
+
+    def __del__(self):
+        pass
+
+    def name(self):
+        return self._name
+
+    def update(self, data):
+        # Ask GUI if there has been a change in nsamps
+        fftsize = self.snk.fft_size()
+        if(self._fftsize != fftsize):
+
+            # Adjust buffers to accomodate new settings
+            if(fftsize < self._fftsize):
+                if(self._data_len < fftsize):
+                    self._last_data = self._last_data[0:fftsize]
+                else:
+                    self._last_data = self._last_data[self._data_len-fftsize:self._data_len]
+                    self._data_len = fftsize
+            else:
+                self._last_data += (fftsize - self._fftsize)*[0,]
+            self._fftsize = fftsize
+            self.snk.reset()
+        
+        # Update the plot data depending on type
+        if(type(data) == list):
+            data_r = data[0::2]
+            data_i = data[1::2]
+            data = [complex(r,i) for r,i in zip(data_r, data_i)]
+            if(len(data) > self._fftsize):
+                self.src.set_data(data)
+                self._last_data = data[-self._fftsize:]
+            else:
+                newdata = self._last_data[-(self._fftsize-len(data)):]
+                newdata += data
+                self.src.set_data(newdata)
+                self._last_data = newdata
+
+        else: # single value update
+            if(self._data_len < self._fftsize):
                 self._last_data[self._data_len] = data
                 self._data_len += 1
             else:
