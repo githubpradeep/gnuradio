@@ -28,6 +28,7 @@
 #include <string>
 #include <map>
 #include <gnuradio.h>
+#include <Ice/Exception.h>
 
 class rpcserver_ice : public virtual rpcserver_base, public GNURadio::ControlPort
 {
@@ -76,7 +77,7 @@ private:
 	}
       }
       else {
-	std::cout << "Key " << p.first << " is not in my_map set" << std::endl;
+	throw IceUtil::NullHandleException(__FILE__, __LINE__);
       }
     }
 
@@ -106,7 +107,7 @@ private:
 	}
       }
       else {
-	std::cout << "Key " << p << " is not in my_map get" << std::endl;
+	throw IceUtil::NullHandleException(__FILE__, __LINE__);
       }
     }
 
@@ -205,7 +206,7 @@ private:
 	}
       }
       else {
-	std::cout << "Key " << p << " is not in my_map get" << std::endl;
+	throw IceUtil::NullHandleException(__FILE__, __LINE__);
       }
     }
 

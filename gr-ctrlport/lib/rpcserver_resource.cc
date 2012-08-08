@@ -84,8 +84,7 @@ rpcserver_resource::configure(const CF::Properties& configProperties)
       (*iter->second).post(rpcpmtconverter::to_pmt(configProperties[i].value));
     }
     else {
-      std::cout << "Key " << id << " is not in my_map" << std::endl;
-      //TODO: probably have an SCA exception or some crap :-/
+      throw IceUtil::NullHandleException(__FILE__, __LINE__);
     }
   }
 }
@@ -114,8 +113,7 @@ rpcserver_resource::query(CF::Properties& configProperties)
 	= from_pmt((*iter->second.callback).retrieve(), c);
       }
       else {
-	std::cout << "Key " << id << " is not in my_map" << std::endl;
-	//TODO: probably have an SCA exception or some crap :-/
+	throw IceUtil::NullHandleException(__FILE__, __LINE__);
       }
     }
   }
