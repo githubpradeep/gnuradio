@@ -235,6 +235,12 @@ namespace gr {
     }
 
     void
+    freq_sink_c_impl::reset()
+    {
+      d_index = 0;
+    }
+
+    void
     freq_sink_c_impl::fft(float *data_out, const gr_complex *data_in, int size)
     {
       if(d_window.size()) {

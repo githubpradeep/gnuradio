@@ -236,6 +236,12 @@ namespace gr {
     }
 
     void
+    freq_sink_f_impl::reset()
+    {
+      d_index = 0;
+    }
+
+    void
     freq_sink_f_impl::fft(float *data_out, const float *data_in, int size)
     {
       // float to complex conversion
