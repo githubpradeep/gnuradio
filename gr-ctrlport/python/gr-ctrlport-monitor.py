@@ -82,17 +82,56 @@ class MAINWindow(QtGui.QMainWindow):
         child.showMaximized()
         return child
 
-    def newUpdater(self, k, r):
+    def propertiesMenu(self, key, radio):
+        def newUpdaterProxy():
+            self.newUpdater(key, radio)
+
+        def newPlotterFProxy():
+            self.newPlotF(key)
+
+        def newPlotterCProxy():
+            self.newPlotC(key)
+
+        def newPlotterConstProxy():
+            self.newPlotConst(key)
+
+        def newPlotterPsdFProxy():
+            self.newPlotPsdF(key)
+
+        def newPlotterPsdCProxy():
+            self.newPlotPsdC(key)
+
+        menu = QtGui.QMenu(self)
+        menu.setTitle("Item Actions")
+        menu.setTearOffEnabled(False)
+
+        props = radio.properties([key])
+
+        # object properties
+        menu.addAction("Properties", newUpdaterProxy)
+
+        # displays available if not complex
+        menu.addAction("Plot Time", newPlotterFProxy)
+        menu.addAction("Plot PSD", newPlotterPsdFProxy)
+
+        # displays available if complex
+        menu.addAction("Plot Time (cpx)", newPlotterCProxy)
+        menu.addAction("Plot Constellation", newPlotterConstProxy)
+        menu.addAction("Plot PSD cpx", newPlotterPsdCProxy)
+
+        menu.popup(QtGui.QCursor.pos())
+
+    def newUpdater(self, key, radio):
 
         # Should be some test here to make sure that a 'set' function
         # is available for this key before launching the dialog box.
         #try:
-        #    a = r.set(r.get([k]))
+        #    a = radio.set(radio.get([key]))
         #except:
         #    return
 
-        updater = UpdaterWindow(k, r, None)
-        updater.setWindowTitle("Updater: " + k)
+        updater = UpdaterWindow(key, radio, None)
+        updater.setWindowTitle("Updater: " + key)
         updater.setModal(False)
         updater.exec_()
 
@@ -114,7 +153,7 @@ class MAINWindow(QtGui.QMainWindow):
         #plot.setWindowTitle(str(tag));
             
         
-    def newConstPlot(self, tag):
+    def newPlotConst(self, tag):
         #plot = DataPlotterConst(None,"",'units', '', 250,0,0,120);
         #(self, parent, tag, legend, title, xlabel, ylabel, size, x, y)
         #plot = DataPlotterConst(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0)
@@ -138,6 +177,18 @@ class MAINWindow(QtGui.QMainWindow):
 
     def newPlotC(self, tag):
         plot = GrDataPlotterC(tag, 32e6)
+        plot.start()
+        self.plots.append(plot)
+        return plot     
+
+    def newPlotPsdF(self, tag):
+        plot = GrDataPlotterPsdF(tag, 32e6)
+        plot.start()
+        self.plots.append(plot)
+        return plot
+
+    def newPlotPsdC(self, tag):
+        plot = GrDataPlotterPsdC(tag, 32e6)
         plot.start()
         self.plots.append(plot)
         return plot     
@@ -544,7 +595,7 @@ class MForm(QtGui.QWidget):
         index = self.table.treeWidget.selectedIndexes()
         item = self.table.treeWidget.itemFromIndex(index[0])
         itemname = str(item.text(0))
-        self.parent.newUpdater(itemname, self.radio)
+        self.parent.propertiesMenu(itemname, self.radio)
         
 
 class MyClient(IceRadioClient):
