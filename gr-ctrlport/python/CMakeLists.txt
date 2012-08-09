@@ -20,18 +20,6 @@
 ########################################################################
 include(GrPython)
 
-#EXECUTE_PROCESS(
-#   COMMAND "${ICE_SLICE2PY}" "-I${CMAKE_CURRENT_SOURCE_DIR}/../slice"
-#       "--output-dir=${CMAKE_CURRENT_BINARY_DIR}"
-#       "${CMAKE_CURRENT_SOURCE_DIR}/../slice/gnuradio.ice"
-#   )
-
-#EXECUTE_PROCESS(
-#   COMMAND "${ICE_SLICE2PY}" "-I${CMAKE_CURRENT_SOURCE_DIR}/../slice"
-#       "--output-dir=${CMAKE_CURRENT_BINARY_DIR}"
-#       "${CMAKE_CURRENT_SOURCE_DIR}/../slice/frontend.ice"
-#   )
-
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gnuradio_ice.py
          ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/__init__.py
@@ -57,10 +45,7 @@ ADD_CUSTOM_COMMAND(
 GR_PYTHON_INSTALL(
     FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/DataPlotter.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/GrDataPlotter.py
     ${CMAKE_CURRENT_SOURCE_DIR}/IceRadioClient.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/monitor.py
     DESTINATION ${GR_PYTHON_DIR}/gnuradio/ctrlport/
     COMPONENT "filter_python"
 )
@@ -103,8 +88,17 @@ install(
 
 GR_PYTHON_INSTALL(
     FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/ctrlport-monitor.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/gr-ctrlport-monitor.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/DataPlotter.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/GrDataPlotter.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/monitor.py
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/ctrlport/
+    COMPONENT "filter_python"
+)
+
+GR_PYTHON_INSTALL(
+    FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/ctrlport-monitor
+    ${CMAKE_CURRENT_SOURCE_DIR}/gr-ctrlport-monitor
     DESTINATION ${GR_RUNTIME_DIR}
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE 
 )

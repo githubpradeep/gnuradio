@@ -132,7 +132,7 @@ class MAINWindow(QtGui.QMainWindow):
         knobprop = self.knobprops[tag]
 
         if(knobprop.display == GNURadio.DisplayType.DISPXYSCATTER):
-            plot = self.newConstPlot(tag);
+            plot = self.newPlotConst(tag);
             #plot.setSeries(tag,tag);
             #plot.setSeries(tag, knobprop.description);
             #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
@@ -287,6 +287,7 @@ class MAINWindow(QtGui.QMainWindow):
 #        self.aboutQtAct = QtGui.QAction("About &Qt", self,
 #                statusTip="Show the Qt library's About box",
 #                triggered=QtGui.qApp.aboutQt)
+
     def createMenus(self):
         self.fileMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.newConAct)
