@@ -25,6 +25,10 @@
 
 #include <digital/pfb_clock_sync_ccf.h>
 
+#ifdef ENABLE_GR_CTRLPORT
+#include <ctrlport/rpcregisterhelpers.h>
+#endif
+
 using namespace gr::filter;
 
 namespace gr {
@@ -57,6 +61,15 @@ namespace gr {
       int   d_osps;
       float d_error;
       int   d_out_idx;
+
+#ifdef ENABLE_GR_CTRLPORT
+  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_error_rpc;
+  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_rate_rpc;
+  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_phase_rpc;
+
+  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_loop_bw_get;
+  rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> *d_loop_bw_set;
+#endif /* ENABLE_GR_CTRLPORT */
 
       void create_diff_taps(const std::vector<float> &newtaps,
 			    std::vector<float> &difftaps);
@@ -97,6 +110,21 @@ namespace gr {
       float alpha() const;
       float beta() const;
       float clock_rate() const;
+
+      /*!
+       * \brief Returns the current error of the control loop.
+       */
+      float error() const;
+  
+      /*!
+       * \brief Returns the current rate of the control loop.
+       */
+      float rate() const;
+
+      /*!
+       * \brief Returns the current phase arm of the control loop.
+       */
+      float phase() const;
 
       /*******************************************************************
        *******************************************************************/
