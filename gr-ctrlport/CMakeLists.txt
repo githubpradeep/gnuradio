@@ -22,12 +22,8 @@
 # Setup dependencies
 ########################################################################
 include(GrBoost)
+
 FIND_PACKAGE(ICE)
-
-IF(NOT ICE_FOUND)
-    MESSAGE(FATAL_ERROR "Ice required to compile GR-CTRLPORT")
-ENDIF()
-
 
 ########################################################################
 # Register component
@@ -37,6 +33,7 @@ include(GrComponent)
 GR_REGISTER_COMPONENT("gr-ctrlport" ENABLE_GR_CTRLPORT
     ENABLE_GRUEL
     Boost_FOUND
+    ICE_FOUND
     ENABLE_GR_CORE
 )
 
@@ -45,6 +42,7 @@ GR_SET_GLOBAL(GR_CTRLPORT_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}/lib
     ${CMAKE_CURRENT_BINARY_DIR}/include
+    ${ICE_INCLUDE_DIR}
 )
 
 SET(GR_PKG_CTRL_EXAMPLES_DIR ${GR_PKG_DATA_DIR}/examples/ctrlport)
