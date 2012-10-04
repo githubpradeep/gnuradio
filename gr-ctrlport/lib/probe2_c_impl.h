@@ -40,13 +40,18 @@ namespace gr {
 
       std::vector<gr_complex> d_buffer;
 
-      rpcbasic_register_get<probe2_c, std::vector<std::complex<float> >  > d_const_rpc;
+      rpcbasic_register_get<probe2_c_impl, std::vector<std::complex<float> >  > d_const_rpc;
+      rpcbasic_register_get<probe2_c_impl, int> d_len_get_rpc;
+      rpcbasic_register_set<probe2_c_impl, int> d_len_set_rpc;
 
     public:
       probe2_c_impl(const std::string &id, const std::string &desc, int len);
       ~probe2_c_impl();
 
       std::vector<gr_complex> get();
+
+      void set_length(int len);
+      int length() const;
 
       int work(int noutput_items,
 	       gr_vector_const_void_star &input_items,

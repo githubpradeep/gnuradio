@@ -47,9 +47,15 @@ namespace gr {
 		    pmt::pmt_make_c32vector(0,-2),
 		    pmt::pmt_make_c32vector(0,2),
 		    pmt::pmt_make_c32vector(0,0), 
-		    "volts", desc.c_str(), RPC_PRIVLVL_MIN, DISPXYSCATTER)
+		    "volts", desc.c_str(), RPC_PRIVLVL_MIN, DISPXYSCATTER),
+	d_len_get_rpc(d_name, "length", this, unique_id(), &probe2_c::length,
+		      pmt::mp(1), pmt::mp(10*len), pmt::mp(len),
+		      "samples", "get vector length", RPC_PRIVLVL_MIN, DISPNULL),
+	d_len_set_rpc(d_name, "length", this, unique_id(), &probe2_c::set_length,
+		      pmt::mp(1), pmt::mp(10*len), pmt::mp(len),
+		      "samples", "set vector length", RPC_PRIVLVL_MIN, DISPNULL)
     {
-      d_buffer.reserve(len);
+      set_length(len);
     }
 
 
@@ -79,6 +85,19 @@ namespace gr {
       mutex_buffer.unlock();
 
       return buf_copy;
+    }
+
+    void
+    probe2_c_impl::set_length(int len)
+    {
+      d_len = len;
+      d_buffer.reserve(d_len);
+    }
+
+    int
+    probe2_c_impl::length() const
+    {
+      return (int)d_len;
     }
 
     int

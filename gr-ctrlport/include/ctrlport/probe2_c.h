@@ -45,6 +45,8 @@ namespace gr {
       static sptr make(const std::string &id, const std::string &desc, int len);
 
       virtual std::vector<gr_complex> get() = 0;
+      virtual void set_length(int len) = 0;
+      virtual int length() const = 0;
     };
 
   } /* namespace ctrlport */

@@ -5,6 +5,7 @@
   <category>Control Port</category>
   <import>from gnuradio import ctrlport</import>
   <make>ctrlport.probe2_c($name, $desc, $len);</make>
+  <callback>set_length($len)</callback>
 
   <param>
     <name>Name</name>
