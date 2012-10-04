@@ -40,7 +40,9 @@ public:
     _source(source), _func(func) {;}
   ~rpcextractor_base() {;}
 
-  void post(pmt::pmt_t msg) { assert(0); }
+  void post(pmt::pmt_t msg) {
+    throw std::runtime_error("rpcextractor_base: no post defined for this data type.\n");
+  }
 
 protected:
   T* _source;
@@ -132,6 +134,21 @@ public:
   void post(pmt::pmt_t msg)
   {
     (rpcextractor_base<T,long>::_source->*rpcextractor_base<T,long>::_func)
+      (pmt::pmt_to_long(msg));
+  }
+};
+
+template<typename T>
+class rpcbasic_extractor<T,int> : public virtual rpcextractor_base<T,int>
+{
+public:
+  rpcbasic_extractor(T* source, void (T::*func)(int))
+    : rpcextractor_base<T,int>(source, func)
+  {;}
+
+  void post(pmt::pmt_t msg)
+  {
+    (rpcextractor_base<T,int>::_source->*rpcextractor_base<T,int>::_func)
       (pmt::pmt_to_long(msg));
   }
 };
