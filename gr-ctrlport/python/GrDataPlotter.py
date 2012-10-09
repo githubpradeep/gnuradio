@@ -392,10 +392,11 @@ class GrDataPlotterPsdF(gr.top_block):
 
 
 class GrDataPlotterValueTable:
-    def __init__(self, parent, x, y, xsize, ysize,
+    def __init__(self, uid, parent, x, y, xsize, ysize,
                  headers=['Statistic Key ( Source Block :: Stat Name )  ',
                           'Curent Value', 'Units', 'Description']):
 	# must encapsulate, cuz Qt's bases are not classes
+        self.uid = uid
         self.treeWidget = QtGui.QTreeWidget(parent)
         self.treeWidget.setColumnCount(len(headers))
         self.treeWidget.setGeometry(x,y,xsize,ysize)

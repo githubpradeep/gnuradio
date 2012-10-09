@@ -42,7 +42,9 @@ class MAINWindow(QtGui.QMainWindow):
     def __init__(self, radio, port, interface):
         
         super(MAINWindow, self).__init__()
+        self.conns = []
         self.plots = []
+        self.knobprops = []
         self.interface = interface
 
         self.mdiArea = QtGui.QMdiArea()
@@ -63,17 +65,17 @@ class MAINWindow(QtGui.QMainWindow):
         self.setWindowTitle("GNU Radio Control Port Monitor")
         self.setUnifiedTitleAndToolBarOnMac(True)
 
-        self.newCon(radio,port)
+        self.newCon(radio, port)
         icon = QtGui.QIcon(ctrlport.__path__[0] + "/icon.png" )
         self.setWindowIcon(icon)
 
     def newCon(self, radio=None, port=None):
-        child = MForm(radio, port, self)
+        child = MForm(radio, port, len(self.conns), self)
         if(child.radio is not None):
-            child.setWindowTitle(str(radio))
+            child.setWindowTitle(str(child.radio))
             self.mdiArea.addSubWindow(child)
             child.showMaximized()
-        return child
+        self.conns.append(child)
 
     def propertiesMenu(self, key, radio):
         def newUpdaterProxy():
@@ -120,81 +122,63 @@ class MAINWindow(QtGui.QMainWindow):
         updater.setModal(False)
         updater.exec_()
 
-    def newSub(self,e):
+    def newSub(self, e):
         tag = str(e.text(0))
-        knobprop = self.knobprops[tag]
+        tree = e.treeWidget().parent()
+        knobprop = self.knobprops[tree.uid][tag]
 
         if(knobprop.display == GNURadio.DisplayType.DISPXYSCATTER):
-            plot = self.newPlotConst(tag);
-            #plot.setSeries(tag,tag);
-            #plot.setSeries(tag, knobprop.description);
-            #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
+            self.newPlotConst(tag)
         elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESF):
-            plot = self.newPlotF(tag);
-            #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
+            self.newPlotF(tag)
         elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESC):
-            plot = self.newPlotC(tag);
-            #plot.addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
-        #plot.setWindowTitle(str(tag));
-            
-        
-    def newPlotConst(self, tag):
-        plot = GrDataPlotterConst(tag, 32e6)
-        plot.start();
-        self.plots.append(plot);
+            self.newPlotC(tag)
 
-        self.mdiArea.addSubWindow(plot.qwidget())
-        plot.qwidget().show()
-
-        return plot;
-
-    def newPlotF(self, tag):
-        plot = GrDataPlotterF(tag, 32e6)
+    def createPlot(self, plot):
         plot.start()
         self.plots.append(plot)
 
         self.mdiArea.addSubWindow(plot.qwidget())
+        self.connect(plot.qwidget(),
+                     QtCore.SIGNAL('destroyed(QObject*)'),
+                     self.destroyPlot)
         plot.qwidget().show()
 
-        return plot
+    def destroyPlot(self, obj):
+        for p in self.plots:
+            if p.qwidget() == obj:
+                self.plots.remove(p)
+                break
+
+    def newPlotConst(self, tag):
+        plot = GrDataPlotterConst(tag, 32e6)
+        self.createPlot(plot)
+    
+    def newPlotF(self, tag):
+        plot = GrDataPlotterF(tag, 32e6)
+        self.createPlot(plot)
 
     def newPlotC(self, tag):
         plot = GrDataPlotterC(tag, 32e6)
-        plot.start()
-        self.plots.append(plot)
-
-        self.mdiArea.addSubWindow(plot.qwidget())
-        plot.qwidget().show()
-
-        return plot     
+        self.createPlot(plot)
 
     def newPlotPsdF(self, tag):
         plot = GrDataPlotterPsdF(tag, 32e6)
-        plot.start()
-        self.plots.append(plot)
-
-        self.mdiArea.addSubWindow(plot.qwidget())
-        plot.qwidget().show()
-
-        return plot
+        self.createPlot(plot)
 
     def newPlotPsdC(self, tag):
         plot = GrDataPlotterPsdC(tag, 32e6)
-        plot.start()
-        self.plots.append(plot)
+        self.createPlot(plot)
 
-        self.mdiArea.addSubWindow(plot.qwidget())
-        plot.qwidget().show()
-
-        return plot     
-
-    def update(self, knobs):
+    def update(self, knobs, uid):
+        #sys.stderr.write("KNOB KEYS: {0}\n".format(knobs.keys()))
         for plot in self.plots:
-            data = knobs[plot.name()].value
-            plot.update(data)
-            plot.stop()
-            plot.wait()
-            plot.start()
+            if(knobs.has_key(plot.name())):
+                data = knobs[plot.name()].value
+                plot.update(data)
+                plot.stop()
+                plot.wait()
+                plot.start()
 
     def plotDropEvent(self, e):
         model = QtGui.QStandardItemModel()
@@ -479,21 +463,22 @@ class MForm(QtGui.QWidget):
             sys.stderr.write("ctrlport-monitor: radio.get threw exception ({0}).\n".format(e))
             if(type(self.parent) is MAINWindow):
                 # closing all of these seems to help control shutdown order.
+                self.parent.closeAllAct.trigger()
                 self.parent.closeAct.trigger()
             else:
                 sys.exit(1)
             return
 
-        tableitems = knobs.keys();
+        tableitems = knobs.keys()
             
         #UPDATE TABLE:
         self.table.updateItems(knobs, self.knobprops)
 
         #UPDATE PLOTS
-        self.parent.update( knobs );
+        self.parent.update(knobs, self.uid)
 
 
-    def __init__(self, radio=None, port=None, parent=None):
+    def __init__(self, radio=None, port=None, uid=0, parent=None):
 
         super(MForm, self).__init__()
 
@@ -506,14 +491,15 @@ class MForm(QtGui.QWidget):
             else:
                 self.radio = None
                 return
-
+        
+        self.uid = uid
         self.parent = parent
         self.horizontalLayout = QtGui.QVBoxLayout(self)
         self.gridLayout = QtGui.QGridLayout()
 
         self.radio = radio
         self.knobprops = self.radio.properties([])
-        self.parent.knobprops = self.knobprops
+        self.parent.knobprops.append(self.knobprops)
         self.resize(775,500)
         self.timer = QtCore.QTimer()
         self.constupdatediv = 0
@@ -521,7 +507,7 @@ class MForm(QtGui.QWidget):
         plotsize=250
             
         # make table
-        self.table = GrDataPlotterValueTable(self, 0, 0, 400, 200)
+        self.table = GrDataPlotterValueTable(uid, self, 0, 0, 400, 200)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
         self.table.treeWidget.setSizePolicy(sizePolicy)
         self.table.treeWidget.setEditTriggers(QtGui.QAbstractItemView.EditKeyPressed)
