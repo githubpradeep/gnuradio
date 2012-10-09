@@ -35,6 +35,17 @@ class IceRadioClient(Ice.Application):
     def __init__(self, parentClass):
         self.parentClass = parentClass
 
+    def getRadio(self, host, port):
+        radiostr = "gnuradio -t:tcp -h " + host + " -p " + port + " -t 3000"
+        base = self.communicator().stringToProxy(radiostr).ice_twoway()
+        radio = GNURadio.ControlPortPrx.checkedCast(base)
+
+        if not radio:
+            sys.stderr.write("{0} : invalid proxy.\n".format(args[0]))
+            return None
+
+        return radio
+
     def run(self,args):
         if len(args) < 2:
                 print "useage: [glacierinstance glacierhost glacierport] host port"
@@ -86,13 +97,11 @@ class IceRadioClient(Ice.Application):
             except Glacier2.PermissionDeniedException, ex:
                 print "permission denied:\n" + ex.reason
 
-        base = self.communicator().stringToProxy("gnuradio -t:tcp -h " + host + " -p " + port).ice_twoway().ice_timeout(-1)
-        radio = GNURadio.ControlPortPrx.checkedCast(base)
-
-        if not radio:
-            print args[0] + ": invalid proxy"; return 1
+        radio = self.getRadio(host, port)
+        if(radio is None):
+            return 1
 
         app = QtGui.QApplication(sys.argv)
-        ex = self.parentClass(radio, port)
+        ex = self.parentClass(radio, port, self)
         ex.show();
         app.exec_()

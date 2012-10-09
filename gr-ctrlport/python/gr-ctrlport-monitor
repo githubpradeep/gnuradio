@@ -39,10 +39,11 @@ class MAINWindow(QtGui.QMainWindow):
     def minimumSizeHint(self):
         return Qtgui.QSize(800,600)
 
-    def __init__(self, radio, port):
+    def __init__(self, radio, port, interface):
         
         super(MAINWindow, self).__init__()
-        self.plots = [];
+        self.plots = []
+        self.interface = interface
 
         self.mdiArea = QtGui.QMdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
@@ -59,22 +60,17 @@ class MAINWindow(QtGui.QMainWindow):
         self.createStatusBar()
         self.updateMenus()
 
-#        self.readSettings()
-
         self.setWindowTitle("GNU Radio Control Port Monitor")
         self.setUnifiedTitleAndToolBarOnMac(True)
 
         self.newCon(radio,port)
-#        self.mdiArea.addSubWindow(child)
         icon = QtGui.QIcon(ctrlport.__path__[0] + "/icon.png" )
         self.setWindowIcon(icon)
 
-    def newCon(self,host=None,port=None):
-        child = MForm(host, port, self)
-        #child.setWindowTitle("Modem Connected :: %s:%s"%(host,port))
-        child.setWindowTitle(str(host))
+    def newCon(self, radio=None, port=None):
+        child = MForm(radio, port, self)
+        child.setWindowTitle(str(radio))
         self.mdiArea.addSubWindow(child)
-        child.resize(QtCore.QSize(800,600))
         child.showMaximized()
         return child
 
@@ -142,43 +138,53 @@ class MAINWindow(QtGui.QMainWindow):
             
         
     def newPlotConst(self, tag):
-        #plot = DataPlotterConst(None,"",'units', '', 250,0,0,120);
-        #(self, parent, tag, legend, title, xlabel, ylabel, size, x, y)
-        #plot = DataPlotterConst(None, 'legend', 'title', 'xlabel', 'ylabel', 250, 0, 0)
-        #self.mdiArea.addSubWindow(plot);
-        #plot.dropSignal.connect(self.plotDropEvent );
-        #plot.show();
-
         plot = GrDataPlotterConst(tag, 32e6)
         plot.start();
         self.plots.append(plot);
+
+        self.mdiArea.addSubWindow(plot.qwidget())
+        plot.qwidget().show()
+
         return plot;
 
     def newPlotF(self, tag):
-        #plot = DataPlotterTickerWithSeriesButtons(None,"",'units', '', 250,0,0,120)
-        #self.mdiArea.addSubWindow(plot.py_window)
-        #plot.dropSignal.connect(self.plotDropEvent )
         plot = GrDataPlotterF(tag, 32e6)
         plot.start()
         self.plots.append(plot)
+
+        self.mdiArea.addSubWindow(plot.qwidget())
+        plot.qwidget().show()
+
         return plot
 
     def newPlotC(self, tag):
         plot = GrDataPlotterC(tag, 32e6)
         plot.start()
         self.plots.append(plot)
+
+        self.mdiArea.addSubWindow(plot.qwidget())
+        plot.qwidget().show()
+
         return plot     
 
     def newPlotPsdF(self, tag):
         plot = GrDataPlotterPsdF(tag, 32e6)
         plot.start()
         self.plots.append(plot)
+
+        self.mdiArea.addSubWindow(plot.qwidget())
+        plot.qwidget().show()
+
         return plot
 
     def newPlotPsdC(self, tag):
         plot = GrDataPlotterPsdC(tag, 32e6)
         plot.start()
         self.plots.append(plot)
+
+        self.mdiArea.addSubWindow(plot.qwidget())
+        plot.qwidget().show()
+
         return plot     
 
     def update(self, knobs):
@@ -495,13 +501,13 @@ class MForm(QtGui.QWidget):
         if(radio == None or port == None):
             askinfo = ConInfoDialog(self);
             if askinfo.exec_():
-                sys.stderr.write("connecting...\n")
-                radio = str(askinfo.host.text());
+                host = str(askinfo.host.text());
                 port = str(askinfo.port.text());
-                sys.stderr.write("this is broken\n")
-                return;
+                radio = parent.interface.getRadio(host, port)
             else:
                 return;
+        sys.stderr.write("radio:  {0}\n".format(type(radio)))
+        sys.stderr.write("port:   {0}\n".format(port))
     
         self.parent = parent;
         self.horizontalLayout = QtGui.QVBoxLayout(self);

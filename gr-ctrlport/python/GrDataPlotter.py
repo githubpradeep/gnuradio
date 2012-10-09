@@ -53,10 +53,12 @@ class GrDataPlotterC(gr.top_block):
         self.snk.set_title(1, "Im{{0}}".format(self._name))
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
-        self.py_window.show()
 
     def __del__(self):
         pass
+
+    def qwidget(self):
+        return self.py_window
 
     def name(self):
         return self._name
@@ -122,10 +124,12 @@ class GrDataPlotterF(gr.top_block):
         self.snk.set_title(0, self._name)
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
-        self.py_window.show()
 
     def __del__(self):
         pass
+
+    def qwidget(self):
+        return self.py_window
 
     def name(self):
         return self._name
@@ -187,10 +191,12 @@ class GrDataPlotterConst(gr.top_block):
         self.connect(self.src, self.thr, (self.snk, 0))
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
-        self.py_window.show()
 
     def __del__(self):
         pass
+
+    def qwidget(self):
+        return self.py_window
 
     def name(self):
         return self._name
@@ -260,10 +266,12 @@ class GrDataPlotterPsdC(gr.top_block):
         self.snk.set_title(0, "{0}".format(self._name))
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
-        self.py_window.show()
 
     def __del__(self):
         pass
+
+    def qwidget(self):
+        return self.py_window
 
     def name(self):
         return self._name
@@ -332,10 +340,12 @@ class GrDataPlotterPsdF(gr.top_block):
         self.snk.set_title(0, "{0}".format(self._name))
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
-        self.py_window.show()
 
     def __del__(self):
         pass
+
+    def qwidget(self):
+        return self.py_window
 
     def name(self):
         return self._name
