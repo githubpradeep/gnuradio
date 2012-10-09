@@ -439,9 +439,15 @@ class MForm(QtGui.QWidget):
             self.parent.statusBar().showMessage("Current GNU Radio Control Port Query Latency: %f ms"%(latency*1000))
             
         except:
-            sys.exit(0);
-            print "radio.get() failed"
-            return;
+            sys.stderr.write("ctrlport-monitor: radio.get threw exception ({0}).\n".format(e))
+            if(type(self.parent) is MAINWindow):
+                # closing all of these seems to help control shutdown order.
+                self.parent.closeAllAct.trigger()
+                self.parent.closeAct.trigger()
+                self.parent.exitAct.trigger()
+            else:
+                sys.exit(1)
+            return
 
         tableitems = knobs.keys();
             

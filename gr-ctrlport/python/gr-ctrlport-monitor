@@ -31,7 +31,6 @@ from gnuradio.ctrlport.GrDataPlotter import *
 
 _gr_prefs = gr.prefs()
 ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
-print ice_directory
 Ice.loadSlice(ice_directory + '/gnuradio.ice')
 
 import GNURadio
@@ -65,16 +64,13 @@ class MAINWindow(QtGui.QMainWindow):
         self.setWindowTitle("GNU Radio Control Port Monitor")
         self.setUnifiedTitleAndToolBarOnMac(True)
 
-#        self.resize(QtCore.QSize(1024,768));      
-
-        self.newCon(radio,port);
-#        self.mdiArea.addSubWindow(child);
-#        child.resize(QtCore.QSize(800,600));
-        icon = QtGui.QIcon( ctrlport.__path__[0] + "/icon.png" );
-        self.setWindowIcon(icon);
+        self.newCon(radio,port)
+#        self.mdiArea.addSubWindow(child)
+        icon = QtGui.QIcon(ctrlport.__path__[0] + "/icon.png" )
+        self.setWindowIcon(icon)
 
     def newCon(self,host=None,port=None):
-        child = MForm(host,port,self)
+        child = MForm(host, port, self)
         #child.setWindowTitle("Modem Connected :: %s:%s"%(host,port))
         child.setWindowTitle(str(host))
         self.mdiArea.addSubWindow(child)
@@ -526,10 +522,16 @@ class MForm(QtGui.QWidget):
             latency = ft-st;
             self.parent.statusBar().showMessage("Current GNU Radio Control Port Query Latency: %f ms"%(latency*1000))
             
-        except:
-            sys.exit(0);
-            print "radio.get() failed"
-            return;
+        except Exception, e:
+            sys.stderr.write("ctrlport-monitor: radio.get threw exception ({0}).\n".format(e))
+            if(type(self.parent) is MAINWindow):
+                # closing all of these seems to help control shutdown order.
+                self.parent.closeAllAct.trigger()
+                self.parent.closeAct.trigger()
+                self.parent.exitAct.trigger()
+            else:
+                sys.exit(1)
+            return
 
         tableitems = knobs.keys();
             
@@ -611,5 +613,5 @@ class MForm(QtGui.QWidget):
 class MyClient(IceRadioClient):
     def __init__(self):
         IceRadioClient.__init__(self, MAINWindow)
-		
+
 sys.exit(MyClient().main(sys.argv))

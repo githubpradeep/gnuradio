@@ -27,7 +27,6 @@ from gnuradio import gr
 
 _gr_prefs = gr.prefs()
 ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
-print ice_directory
 Ice.loadSlice(ice_directory + '/gnuradio.ice')
 
 import GNURadio
