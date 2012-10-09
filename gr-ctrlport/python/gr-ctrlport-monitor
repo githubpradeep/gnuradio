@@ -211,37 +211,9 @@ class MAINWindow(QtGui.QMainWindow):
                 self, shortcut=QtGui.QKeySequence.New,
                 statusTip="Create a new file", triggered=self.newPlotF)
 
-#        self.openAct = QtGui.QAction(QtGui.QIcon(':/images/open.png'),
-#                "&Open...", self, shortcut=QtGui.QKeySequence.Open,
-#                statusTip="Open an existing file", triggered=self.open)
-
-#        self.saveAct = QtGui.QAction(QtGui.QIcon(':/images/save.png'),
-#                "&Save", self, shortcut=QtGui.QKeySequence.Save,
-#                statusTip="Save the document to disk", triggered=self.save)
-
-#        self.saveAsAct = QtGui.QAction("Save &As...", self,
-#                shortcut=QtGui.QKeySequence.SaveAs,
-#                statusTip="Save the document under a new name",
-#                triggered=self.saveAs)
-
         self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q",
                 statusTip="Exit the application",
                 triggered=QtGui.qApp.closeAllWindows)
-
-#        self.cutAct = QtGui.QAction(QtGui.QIcon(':/images/cut.png'), "Cu&t",
-#                self, shortcut=QtGui.QKeySequence.Cut,
-#                statusTip="Cut the current selection's contents to the clipboard",
-#                triggered=self.cut)
-
-#        self.copyAct = QtGui.QAction(QtGui.QIcon(':/images/copy.png'),
-#                "&Copy", self, shortcut=QtGui.QKeySequence.Copy,
-#                statusTip="Copy the current selection's contents to the clipboard",
-#                triggered=self.copy)
-
-#        self.pasteAct = QtGui.QAction(QtGui.QIcon(':/images/paste.png'),
-#                "&Paste", self, shortcut=QtGui.QKeySequence.Paste,
-#                statusTip="Paste the clipboard's contents into the current selection",
-#                triggered=self.paste)
 
         self.closeAct = QtGui.QAction("Cl&ose", self, shortcut="Ctrl+F4",
                 statusTip="Close the active window",
@@ -276,30 +248,20 @@ class MAINWindow(QtGui.QMainWindow):
         self.separatorAct = QtGui.QAction(self)
         self.separatorAct.setSeparator(True)
 
-#        self.aboutAct = QtGui.QAction("&About", self,
-#                statusTip="Show the application's About box",
-#                triggered=self.about)
-#
-#        self.aboutQtAct = QtGui.QAction("About &Qt", self,
-#                statusTip="Show the Qt library's About box",
-#                triggered=QtGui.qApp.aboutQt)
+        self.aboutAct = QtGui.QAction("&About", self,
+                statusTip="Show the application's About box",
+                triggered=self.about)
+
+        self.aboutQtAct = QtGui.QAction("About &Qt", self,
+                statusTip="Show the Qt library's About box",
+                triggered=QtGui.qApp.aboutQt)
 
     def createMenus(self):
         self.fileMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.newConAct)
         self.fileMenu.addAction(self.newPlotAct)
-#        self.fileMenu.addAction(self.openAct)
-#        self.fileMenu.addAction(self.saveAct)
-#        self.fileMenu.addAction(self.saveAsAct)
         self.fileMenu.addSeparator()
-#        action = self.fileMenu.addAction("Switch layout direction")
-#        action.triggered.connect(self.switchLayoutDirection)
         self.fileMenu.addAction(self.exitAct)
-
-#        self.editMenu = self.menuBar().addMenu("&Edit")
-#        self.editMenu.addAction(self.cutAct)
-#        self.editMenu.addAction(self.copyAct)
-#        self.editMenu.addAction(self.pasteAct)
 
         self.windowMenu = self.menuBar().addMenu("&Window")
         self.updateWindowMenu()
@@ -307,10 +269,9 @@ class MAINWindow(QtGui.QMainWindow):
 
         self.menuBar().addSeparator()
 
-#        self.helpMenu = self.menuBar().addMenu("&Help")
-#        self.helpMenu.addAction(self.aboutAct)
-#        self.helpMenu.addAction(self.aboutQtAct)
-
+        self.helpMenu = self.menuBar().addMenu("&Help")
+        self.helpMenu.addAction(self.aboutAct)
+        self.helpMenu.addAction(self.aboutQtAct)
 
     def createToolBars(self):
         self.fileToolBar = self.addToolBar("File")
@@ -333,9 +294,6 @@ class MAINWindow(QtGui.QMainWindow):
 
     def updateMenus(self):
         hasMdiChild = (self.activeMdiChild() is not None)
-#        self.saveAct.setEnabled(hasMdiChild)
-#        self.saveAsAct.setEnabled(hasMdiChild)
-#        self.pasteAct.setEnabled(hasMdiChild)
         self.closeAct.setEnabled(hasMdiChild)
         self.closeAllAct.setEnabled(hasMdiChild)
         self.tileAct.setEnabled(hasMdiChild)
@@ -343,12 +301,6 @@ class MAINWindow(QtGui.QMainWindow):
         self.nextAct.setEnabled(hasMdiChild)
         self.previousAct.setEnabled(hasMdiChild)
         self.separatorAct.setVisible(hasMdiChild)
-
-#        hasSelection = (self.activeMdiChild() is not None and
-#                        self.activeMdiChild().textCursor().hasSelection())
-#        self.cutAct.setEnabled(hasSelection)
-#        self.copyAct.setEnabled(hasSelection)
-
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
@@ -362,20 +314,15 @@ class MAINWindow(QtGui.QMainWindow):
         self.windowMenu.addAction(self.previousAct)
         self.windowMenu.addAction(self.separatorAct)
 
-#        self.fileToolBar.addAction(self.openAct)
-#        self.fileToolBar.addAction(self.saveAct)
+    def about(self):
+        about_info = \
+'''Copyright 2012 Free Software Foundation, Inc.\n
+This program is part of GNU Radio.\n
+GNU Radio is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3, or (at your option) any later version.\n
+GNU Radio is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n
+You should have received a copy of the GNU General Public License along with GNU Radio; see the file COPYING. If not, write to the Free Software Foundation, Inc., 51 Franklin Street, Boston, MA 02110-1301, USA.'''
 
-#        self.editToolBar = self.addToolBar("Edit")
-#        self.editToolBar.addAction(self.cutAct)
-#        self.editToolBar.addAction(self.copyAct)
-#        self.editToolBar.addAction(self.pasteAct)
-
-
-
-
-##class SubscriberPlot(DataPlotterTickerWithSeriesButtons):
-#    def __init__(self):
-#        super(SubscriberPlot,self).__init__(None, "", 'units', '',250,0,0,120);
+        QtGui.QMessageBox.about(None, "gr-ctrlport-monitor", about_info)
 
 
 class ConInfoDialog(QtGui.QDialog):
@@ -498,7 +445,7 @@ class UpdaterWindow(QtGui.QDialog):
         elif(type(self.sv.value) == float):
             val = float(self.textInput.text())
         else:
-            print "set type not supported! (%s)"%(type(self.sv.value))
+            sys.stderr.write("set type not supported! ({0})\n".format(type(self.sv.value)))
             sys.exit(-1)
 
         self.sv.value = val
@@ -517,7 +464,6 @@ class MForm(QtGui.QWidget):
         try:
             st = time.time();
             knobs = self.radio.get([]);
-            #print "GOT KNOBS: ", knobs
             ft = time.time();
             latency = ft-st;
             self.parent.statusBar().showMessage("Current GNU Radio Control Port Query Latency: %f ms"%(latency*1000))
@@ -549,10 +495,10 @@ class MForm(QtGui.QWidget):
         if(radio == None or port == None):
             askinfo = ConInfoDialog(self);
             if askinfo.exec_():
-                print "connecting..."
+                sys.stderr.write("connecting...\n")
                 radio = str(askinfo.host.text());
                 port = str(askinfo.port.text());
-                print "this is broken"
+                sys.stderr.write("this is broken\n")
                 return;
             else:
                 return;
@@ -569,8 +515,6 @@ class MForm(QtGui.QWidget):
         self.constupdatediv = 0
         self.tableupdatediv = 0
         plotsize=250
-
-        #print self.knobprops
             
         # make table
         self.table = GrDataPlotterValueTable(self, 0, 0, 400, 200)
