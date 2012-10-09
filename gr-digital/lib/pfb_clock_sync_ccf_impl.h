@@ -63,12 +63,12 @@ namespace gr {
       int   d_out_idx;
 
 #ifdef ENABLE_GR_CTRLPORT
-  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_error_rpc;
-  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_rate_rpc;
-  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_phase_rpc;
+      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_error_rpc;
+      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_rate_rpc;
+      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_phase_rpc;
 
-  rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_loop_bw_get;
-  rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> *d_loop_bw_set;
+      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_loop_bw_get;
+      rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> *d_loop_bw_set;
 #endif /* ENABLE_GR_CTRLPORT */
 
       void create_diff_taps(const std::vector<float> &newtaps,

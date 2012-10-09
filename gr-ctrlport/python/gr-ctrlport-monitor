@@ -69,9 +69,10 @@ class MAINWindow(QtGui.QMainWindow):
 
     def newCon(self, radio=None, port=None):
         child = MForm(radio, port, self)
-        child.setWindowTitle(str(radio))
-        self.mdiArea.addSubWindow(child)
-        child.showMaximized()
+        if(child.radio is not None):
+            child.setWindowTitle(str(radio))
+            self.mdiArea.addSubWindow(child)
+            child.showMaximized()
         return child
 
     def propertiesMenu(self, key, radio):
@@ -214,7 +215,7 @@ class MAINWindow(QtGui.QMainWindow):
                 statusTip="Create a new file", triggered=self.newCon)
         #self.newAct = QtGui.QAction(QtGui.QIcon(':/images/new.png'), "&New Plot",
         self.newPlotAct = QtGui.QAction("&New Plot",
-                self, shortcut=QtGui.QKeySequence.New,
+                self,
                 statusTip="Create a new file", triggered=self.newPlotF)
 
         self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q",
@@ -503,17 +504,16 @@ class MForm(QtGui.QWidget):
                 port = str(askinfo.port.text());
                 radio = parent.interface.getRadio(host, port)
             else:
-                return;
-        sys.stderr.write("radio:  {0}\n".format(type(radio)))
-        sys.stderr.write("port:   {0}\n".format(port))
-    
-        self.parent = parent;
-        self.horizontalLayout = QtGui.QVBoxLayout(self);
+                self.radio = None
+                return
+
+        self.parent = parent
+        self.horizontalLayout = QtGui.QVBoxLayout(self)
         self.gridLayout = QtGui.QGridLayout()
 
         self.radio = radio
         self.knobprops = self.radio.properties([])
-        self.parent.knobprops = self.knobprops;
+        self.parent.knobprops = self.knobprops
         self.resize(775,500)
         self.timer = QtCore.QTimer()
         self.constupdatediv = 0
@@ -529,7 +529,7 @@ class MForm(QtGui.QWidget):
         self.table.treeWidget.setDragEnabled(True)
         
         # add things to layouts
-        self.horizontalLayout.addWidget(self.table.treeWidget);
+        self.horizontalLayout.addWidget(self.table.treeWidget)
 
         # set up timer   
         self.connect(self.timer, QtCore.SIGNAL('timeout()'), self.update)
