@@ -478,9 +478,7 @@ class MForm(QtGui.QWidget):
             sys.stderr.write("ctrlport-monitor: radio.get threw exception ({0}).\n".format(e))
             if(type(self.parent) is MAINWindow):
                 # closing all of these seems to help control shutdown order.
-                self.parent.closeAllAct.trigger()
                 self.parent.closeAct.trigger()
-                self.parent.exitAct.trigger()
             else:
                 sys.exit(1)
             return
