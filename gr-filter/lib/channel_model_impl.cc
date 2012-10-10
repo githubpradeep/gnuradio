@@ -52,6 +52,8 @@ namespace gr {
 		       gr_make_io_signature(1, 1, sizeof(gr_complex)),
 		       gr_make_io_signature(1, 1, sizeof(gr_complex)))
     {
+      setup_rpc();
+
       d_taps = taps;
       while(d_taps.size() < 2) {
 	d_taps.push_back(0);
@@ -77,6 +79,7 @@ namespace gr {
 
     channel_model_impl::~channel_model_impl()
     {
+      takedown_rpc();
     }
 
     void
@@ -130,6 +133,66 @@ namespace gr {
     {
       return d_timing_offset->interp_ratio();
     }
+
+#ifdef ENABLE_GR_CTRLPORT
+    void
+    channel_model_impl::setup_rpc()
+    {
+      d_noise_get = new rpcbasic_register_get<channel_model_impl, double>
+	(d_name, "noise", this, unique_id(),
+	 &channel_model_impl::noise_voltage,
+	 pmt::mp(-10.0f), pmt::mp(10.0f), pmt::mp(0.0f),
+	 "", "Noise Voltage",
+	 RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+
+      d_freq_get = new rpcbasic_register_get<channel_model_impl, double>
+	(d_name, "freq", this, unique_id(),
+	 &channel_model_impl::frequency_offset,
+	 pmt::mp(-1.0f), pmt::mp(1.0f), pmt::mp(0.0f),
+	 "Hz", "Frequency Offset",
+	 RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+
+      d_timing_get = new rpcbasic_register_get<channel_model_impl, double>
+	(d_name, "timing", this, unique_id(),
+	 &channel_model_impl::timing_offset,
+	 pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+	 "", "Timing Offset",
+	 RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+
+
+      d_noise_set = new rpcbasic_register_set<channel_model_impl, double>
+	(d_name, "noise", this, unique_id(),
+	 &channel_model_impl::set_noise_voltage,
+	 pmt::mp(-10.0f), pmt::mp(10.0f), pmt::mp(0.0f),
+	 "V", "Noise Voltage",
+	 RPC_PRIVLVL_MIN, DISPNULL);
+
+      d_freq_set = new rpcbasic_register_set<channel_model_impl, double>
+	(d_name, "freq", this, unique_id(),
+	 &channel_model_impl::set_frequency_offset,
+	 pmt::mp(-1.0f), pmt::mp(1.0f), pmt::mp(0.0f),
+	 "Hz", "Frequency Offset",
+	 RPC_PRIVLVL_MIN, DISPNULL);
+
+      d_timing_set = new rpcbasic_register_set<channel_model_impl, double>
+	(d_name, "timing", this, unique_id(),
+	 &channel_model_impl::set_timing_offset,
+	 pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+	 "", "Timing Offset",
+	 RPC_PRIVLVL_MIN, DISPNULL);
+    }
+
+    void
+    channel_model_impl::takedown_rpc()
+    {
+      delete d_noise_get; 
+      delete d_freq_get;  
+      delete d_timing_get;
+      delete d_noise_set; 
+      delete d_freq_set;  
+      delete d_timing_set;
+    }
+#endif /* ENABLE_GR_CTRLPORT */
 
   } /* namespace filter */
 } /* namespace gr */

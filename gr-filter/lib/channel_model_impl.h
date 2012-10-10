@@ -32,6 +32,10 @@
 #include <filter/fractional_interpolator_cc.h>
 #include <filter/fir_filter_ccc.h>
 
+#ifdef ENABLE_GR_CTRLPORT
+#include <ctrlport/rpcregisterhelpers.h>
+#endif
+
 namespace gr {
   namespace filter {
 
@@ -47,6 +51,19 @@ namespace gr {
       fir_filter_ccc::sptr d_multipath;
 
       std::vector<gr_complex> d_taps;
+
+#ifdef ENABLE_GR_CTRLPORT
+      rpcbasic_register_get<channel_model_impl, double> *d_noise_get; 
+      rpcbasic_register_get<channel_model_impl, double> *d_freq_get;  
+      rpcbasic_register_get<channel_model_impl, double> *d_timing_get;
+							             
+      rpcbasic_register_set<channel_model_impl, double> *d_noise_set; 
+      rpcbasic_register_set<channel_model_impl, double> *d_freq_set;  
+      rpcbasic_register_set<channel_model_impl, double> *d_timing_set;
+
+      void setup_rpc();
+      void takedown_rpc();
+#endif /* ENABLE_GR_CTRLPORT */
 
     public:
       channel_model_impl(double noise_voltage,
