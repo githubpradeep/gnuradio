@@ -199,15 +199,21 @@ namespace gr {
     }
 
     void
-    freq_sink_f_impl::set_title(int which, const std::string &title)
+    freq_sink_f_impl::set_title(const std::string &title)
     {
-      d_main_gui->setTitle(which, title.c_str());
+      d_main_gui->setTitle(title.c_str());
     }
 
     void
-    freq_sink_f_impl::set_color(int which, const std::string &color)
+    freq_sink_f_impl::set_line_label(int which, const std::string &label)
     {
-      d_main_gui->setColor(which, color.c_str());
+      d_main_gui->setLineLabel(which, label.c_str());
+    }
+
+    void
+    freq_sink_f_impl::set_line_color(int which, const std::string &color)
+    {
+      d_main_gui->setLineColor(which, color.c_str());
     }
 
     void
