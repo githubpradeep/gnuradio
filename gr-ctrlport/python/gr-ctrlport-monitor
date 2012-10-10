@@ -76,6 +76,7 @@ class MAINWindow(QtGui.QMainWindow):
             self.mdiArea.addSubWindow(child)
             child.showMaximized()
         self.conns.append(child)
+        self.plots.append([])
 
     def propertiesMenu(self, key, radio):
         def newUpdaterProxy():
@@ -125,68 +126,67 @@ class MAINWindow(QtGui.QMainWindow):
     def newSub(self, e):
         tag = str(e.text(0))
         tree = e.treeWidget().parent()
-        knobprop = self.knobprops[tree.uid][tag]
+        uid = tree.uid
+        knobprop = self.knobprops[uid][tag]
+
+        radio = str(tree.radio).split(" ")
+        host = radio[3]
+        port = radio[5]
 
         if(knobprop.display == GNURadio.DisplayType.DISPXYSCATTER):
-            self.newPlotConst(tag)
+            self.newPlotConst(tag, uid, "{0}:{1}".format(host, port))
         elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESF):
-            self.newPlotF(tag)
+            self.newPlotF(tag, uid, "{0}:{1}".format(host, port))
         elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESC):
-            self.newPlotC(tag)
+            self.newPlotC(tag, uid, "{0}:{1}".format(host, port))
 
-    def createPlot(self, plot):
+    def createPlot(self, plot, uid, title):
         plot.start()
-        self.plots.append(plot)
+        self.plots[uid].append(plot)
 
         self.mdiArea.addSubWindow(plot.qwidget())
+        plot.qwidget().setWindowTitle("{0}: {1}".format(title, plot.name()))
         self.connect(plot.qwidget(),
                      QtCore.SIGNAL('destroyed(QObject*)'),
                      self.destroyPlot)
         plot.qwidget().show()
 
+
     def destroyPlot(self, obj):
-        for p in self.plots:
-            if p.qwidget() == obj:
-                self.plots.remove(p)
-                break
+        for plots in self.plots:
+            for p in plots:
+                if p.qwidget() == obj:
+                    plots.remove(p)
+                    break
 
-    def newPlotConst(self, tag):
+    def newPlotConst(self, tag, uid, title=""):
         plot = GrDataPlotterConst(tag, 32e6)
-        self.createPlot(plot)
+        self.createPlot(plot, uid, title)
     
-    def newPlotF(self, tag):
+    def newPlotF(self, tag, uid, title=""):
         plot = GrDataPlotterF(tag, 32e6)
-        self.createPlot(plot)
+        self.createPlot(plot, uid, title)
 
-    def newPlotC(self, tag):
+    def newPlotC(self, tag, uid, title=""):
         plot = GrDataPlotterC(tag, 32e6)
-        self.createPlot(plot)
+        self.createPlot(plot, uid, title)
 
-    def newPlotPsdF(self, tag):
+    def newPlotPsdF(self, tag, uid, title=""):
         plot = GrDataPlotterPsdF(tag, 32e6)
-        self.createPlot(plot)
+        self.createPlot(plot, uid, title)
 
-    def newPlotPsdC(self, tag):
+    def newPlotPsdC(self, tag, uid, title=""):
         plot = GrDataPlotterPsdC(tag, 32e6)
-        self.createPlot(plot)
+        self.createPlot(plot, uid, title)
 
     def update(self, knobs, uid):
         #sys.stderr.write("KNOB KEYS: {0}\n".format(knobs.keys()))
-        for plot in self.plots:
-            if(knobs.has_key(plot.name())):
-                data = knobs[plot.name()].value
-                plot.update(data)
-                plot.stop()
-                plot.wait()
-                plot.start()
-
-    def plotDropEvent(self, e):
-        model = QtGui.QStandardItemModel()
-        model.dropMimeData(e.mimeData(), QtCore.Qt.CopyAction,0,0,QtCore.QModelIndex())
-        tag =  str(QtGui.QTreeWidgetItem([model.item(0,0).text()]).text(0));
-        knobprop = self.knobprops[tag]
-        #self.sender().addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
-
+        for plot in self.plots[uid]:
+            data = knobs[plot.name()].value
+            plot.update(data)
+            plot.stop()
+            plot.wait()
+            plot.start()
 
     def setActiveSubWindow(self, window):
         if window:
@@ -462,9 +462,28 @@ class MForm(QtGui.QWidget):
         except Exception, e:
             sys.stderr.write("ctrlport-monitor: radio.get threw exception ({0}).\n".format(e))
             if(type(self.parent) is MAINWindow):
-                # closing all of these seems to help control shutdown order.
-                self.parent.closeAllAct.trigger()
-                self.parent.closeAct.trigger()
+                # Find window of connection
+                remove = []
+                for p in self.parent.mdiArea.subWindowList():
+                    if self.parent.conns[self.uid] == p.widget():
+                        remove.append(p)
+
+                # Find any subplot windows of connection
+                for p in self.parent.mdiArea.subWindowList():
+                    for plot in self.parent.plots[self.uid]:
+                        if plot.qwidget() == p.widget():
+                            remove.append(p)
+                
+                # Clean up local references to these
+                self.parent.conns.remove(self.parent.conns[self.uid])
+                self.parent.plots.remove(self.parent.plots[self.uid])
+
+                # Remove subwindows for connection and plots
+                for r in remove:
+                    self.parent.mdiArea.removeSubWindow(r)
+
+                # Clean up self
+                self.close()
             else:
                 sys.exit(1)
             return
@@ -529,13 +548,6 @@ class MForm(QtGui.QWidget):
         self.connect(self.table.treeWidget,
                      QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem*, int)'),
                      self.parent.newSub);
-
-    def plotDropEvent(self, e):
-        model = QtGui.QStandardItemModel()
-        model.dropMimeData(e.mimeData(), QtCore.Qt.CopyAction,0,0,QtCore.QModelIndex())
-        tag =  str(QtGui.QTreeWidgetItem([model.item(0,0).text()]).text(0))
-        knobprop = self.knobprops[tag]
-        #self.sender().addSeriesWithButton(tag, knobprop.description + ' (' + knobprop.units + ')', None, 1.0);
 
     def openMenu(self, pos):
         index = self.table.treeWidget.selectedIndexes()
