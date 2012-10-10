@@ -69,7 +69,11 @@ namespace gr {
 
       rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_loop_bw_get;
       rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> *d_loop_bw_set;
+
+      void setup_rpc();
+      void takedown_rpc();
 #endif /* ENABLE_GR_CTRLPORT */
+
 
       void create_diff_taps(const std::vector<float> &newtaps,
 			    std::vector<float> &difftaps);
