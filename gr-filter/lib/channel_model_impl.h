@@ -56,10 +56,14 @@ namespace gr {
       rpcbasic_register_get<channel_model_impl, double> *d_noise_get; 
       rpcbasic_register_get<channel_model_impl, double> *d_freq_get;  
       rpcbasic_register_get<channel_model_impl, double> *d_timing_get;
+      rpcbasic_register_get<channel_model_impl,
+			    std::vector<gr_complex> > *d_taps_get;
 							             
       rpcbasic_register_set<channel_model_impl, double> *d_noise_set; 
       rpcbasic_register_set<channel_model_impl, double> *d_freq_set;  
       rpcbasic_register_set<channel_model_impl, double> *d_timing_set;
+      //rpcbasic_register_set<channel_model_impl,
+      //		    const std::vector<gr_complex>& > *d_taps_set;
 
       void setup_rpc();
       void takedown_rpc();

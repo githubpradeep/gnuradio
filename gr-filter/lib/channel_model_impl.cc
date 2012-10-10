@@ -159,6 +159,14 @@ namespace gr {
 	 "", "Timing Offset",
 	 RPC_PRIVLVL_MIN, DISPTIMESERIESF);
 
+      d_taps_get = new rpcbasic_register_get<channel_model_impl, std::vector<gr_complex> >
+	(d_name, "taps", this, unique_id(),
+	 &channel_model_impl::taps,
+	 pmt::pmt_make_c32vector(0,-10),
+	 pmt::pmt_make_c32vector(0,10),
+	 pmt::pmt_make_c32vector(0,0),
+	 "", "Multipath taps",
+	 RPC_PRIVLVL_MIN, DISPTIMESERIESF);
 
       d_noise_set = new rpcbasic_register_set<channel_model_impl, double>
 	(d_name, "noise", this, unique_id(),
@@ -180,6 +188,17 @@ namespace gr {
 	 pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
 	 "", "Timing Offset",
 	 RPC_PRIVLVL_MIN, DISPNULL);
+
+      /*
+      d_taps_set = new rpcbasic_register_set<channel_model_impl, const std::vector<gr_complex>&>
+	(d_name, "taps", this, unique_id(),
+	 &channel_model_impl::set_taps,
+	 pmt::pmt_make_c32vector(0,0),
+	 pmt::pmt_make_c32vector(0,0),
+	 pmt::pmt_make_c32vector(0,0),
+	 "", "Multipath taps",
+	 RPC_PRIVLVL_MIN, DISPTIMESERIESF);
+      */
     }
 
     void
@@ -188,6 +207,7 @@ namespace gr {
       delete d_noise_get; 
       delete d_freq_get;  
       delete d_timing_get;
+      delete d_taps_get;
       delete d_noise_set; 
       delete d_freq_set;  
       delete d_timing_set;
