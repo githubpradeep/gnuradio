@@ -78,24 +78,27 @@ class MAINWindow(QtGui.QMainWindow):
         self.conns.append(child)
         self.plots.append([])
 
-    def propertiesMenu(self, key, radio):
+    def propertiesMenu(self, key, radio, uid):
+        r = str(radio).split(" ")
+        title = "{0}:{1}".format(r[3], r[5])
+
         def newUpdaterProxy():
             self.newUpdater(key, radio)
 
         def newPlotterFProxy():
-            self.newPlotF(key)
+            self.newPlotF(key, uid, title)
 
         def newPlotterCProxy():
-            self.newPlotC(key)
+            self.newPlotC(key, uid, title)
 
         def newPlotterConstProxy():
-            self.newPlotConst(key)
+            self.newPlotConst(key, uid, title)
 
         def newPlotterPsdFProxy():
-            self.newPlotPsdF(key)
+            self.newPlotPsdF(key, uid, title)
 
         def newPlotterPsdCProxy():
-            self.newPlotPsdC(key)
+            self.newPlotPsdC(key, uid, title)
 
         menu = QtGui.QMenu(self)
         menu.setTitle("Item Actions")
@@ -129,16 +132,15 @@ class MAINWindow(QtGui.QMainWindow):
         uid = tree.uid
         knobprop = self.knobprops[uid][tag]
 
-        radio = str(tree.radio).split(" ")
-        host = radio[3]
-        port = radio[5]
+        r = str(tree.radio).split(" ")
+        title = "{0}:{1}".format(r[3], r[5])
 
         if(knobprop.display == GNURadio.DisplayType.DISPXYSCATTER):
-            self.newPlotConst(tag, uid, "{0}:{1}".format(host, port))
+            self.newPlotConst(tag, uid, title)
         elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESF):
-            self.newPlotF(tag, uid, "{0}:{1}".format(host, port))
+            self.newPlotF(tag, uid, title)
         elif(knobprop.display == GNURadio.DisplayType.DISPTIMESERIESC):
-            self.newPlotC(tag, uid, "{0}:{1}".format(host, port))
+            self.newPlotC(tag, uid, title)
 
     def createPlot(self, plot, uid, title):
         plot.start()
@@ -553,7 +555,7 @@ class MForm(QtGui.QWidget):
         index = self.table.treeWidget.selectedIndexes()
         item = self.table.treeWidget.itemFromIndex(index[0])
         itemname = str(item.text(0))
-        self.parent.propertiesMenu(itemname, self.radio)
+        self.parent.propertiesMenu(itemname, self.radio, self.uid)
         
 
 class MyClient(IceRadioClient):
