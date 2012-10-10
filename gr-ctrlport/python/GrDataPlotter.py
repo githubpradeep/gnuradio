@@ -49,8 +49,8 @@ class GrDataPlotterC(gr.top_block):
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
-        self.snk.set_title(0, "Re{{0}}".format(self._name))
-        self.snk.set_title(1, "Im{{0}}".format(self._name))
+        self.snk.set_line_label(0, "Real")
+        self.snk.set_line_label(1, "Imag")
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
 
@@ -121,8 +121,6 @@ class GrDataPlotterF(gr.top_block):
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
-        self.snk.set_title(0, self._name)
-
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
 
     def __del__(self):
@@ -186,7 +184,7 @@ class GrDataPlotterConst(gr.top_block):
         self.src = gr.vector_source_c([])
         self.thr = gr.throttle(gr.sizeof_gr_complex, rate)
         self.snk = qtgui.const_sink_c(self._npts,
-                                     self._name, 1)
+                                      self._name, 1)
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
@@ -263,8 +261,6 @@ class GrDataPlotterPsdC(gr.top_block):
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
-        self.snk.set_title(0, "{0}".format(self._name))
-
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
 
     def __del__(self):
@@ -336,8 +332,6 @@ class GrDataPlotterPsdF(gr.top_block):
                                      self._name, 1)
 
         self.connect(self.src, self.thr, (self.snk, 0))
-
-        self.snk.set_title(0, "{0}".format(self._name))
 
         self.py_window = sip.wrapinstance(self.snk.pyqwidget(), QtGui.QWidget)
 
