@@ -291,6 +291,13 @@ struct rpcbasic_register_set
 			priv_lvl_t minpriv_ = RPC_PRIVLVL_MIN,
 			DisplayType display_ = DISPNULL)
   {
+    d_min = min;
+    d_max = max;
+    d_def = def;
+    d_units = units_;
+    d_desc = desc_;
+    d_minpriv = minpriv_;
+    d_display = display_;
 #ifdef RPCSERVER_ENABLED
     callbackregister_base::configureCallback_t
       extractor(new rpcbasic_extractor<T,Tto>(obj, function), 
@@ -310,8 +317,29 @@ struct rpcbasic_register_set
 #endif
   }
 
+
+  pmt::pmt_t min() const { return d_min; }
+  pmt::pmt_t max() const { return d_max; }
+  pmt::pmt_t def() const { return d_def; }
+  std::string units() const { return d_units; }
+  std::string description() const { return d_desc; }
+  priv_lvl_t privilege_level() const { return d_minpriv; }
+  DisplayType default_display() const { return d_display; }
+
+  void set_min(pmt::pmt_t p) { d_min = p; }
+  void set_max(pmt::pmt_t p) { d_max = p; }
+  void set_def(pmt::pmt_t p) { d_def = p; }
+  void units(std::string u) { d_units = u; }
+  void description(std::string d) { d_desc = d; }
+  void privilege_level(priv_lvl_t p) { d_minpriv = p; }
+  void default_display(DisplayType d) { d_display = d; }
+
 private:
   std::string d_id;
+  pmt::pmt_t d_min, d_max, d_def;
+  std::string d_units, d_desc;
+  priv_lvl_t d_minpriv;
+  DisplayType d_display;
 };
 
 template<typename T, typename Tfrom>
@@ -325,14 +353,23 @@ struct rpcbasic_register_get
 			const pmt::pmt_t &min, const pmt::pmt_t &max, const pmt::pmt_t &def,
 			const char* units_ = "", 
 			const char* desc_ = "",
-			priv_lvl_t minpriv = RPC_PRIVLVL_MIN,
-			DisplayType display_ = DISPNULL){
+			priv_lvl_t minpriv_ = RPC_PRIVLVL_MIN,
+			DisplayType display_ = DISPNULL)
+  {
+    d_min = min;
+    d_max = max;
+    d_def = def;
+    d_units = units_;
+    d_desc = desc_;
+    d_minpriv = minpriv_;
+    d_display = display_;
 #ifdef RPCSERVER_ENABLED
     callbackregister_base::queryCallback_t
       inserter(new rpcbasic_inserter<T,Tfrom>(obj, function), 
-	       minpriv, std::string(units_), display_, std::string(desc_), min, max, def);
+	       minpriv_, std::string(units_), display_, std::string(desc_), min, max, def);
     std::ostringstream oss(std::ostringstream::out);
-    oss << namebase << serial << "::" << functionbase; d_id = oss.str();
+    oss << namebase << serial << "::" << functionbase;
+    d_id = oss.str();
     //std::cerr << "REGISTERING GET: " << d_id << "  " << desc_ << std::endl;
     rpcmanager::get()->i()->registerQueryCallback(d_id, inserter);
 #endif
@@ -346,15 +383,23 @@ struct rpcbasic_register_get
 			const pmt::pmt_t &min, const pmt::pmt_t &max, const pmt::pmt_t &def,
 			const char* units_ = "", 
 			const char* desc_ = "",
-			priv_lvl_t minpriv = RPC_PRIVLVL_MIN,
+			priv_lvl_t minpriv_ = RPC_PRIVLVL_MIN,
 			DisplayType display_ = DISPNULL)
   { 
+    d_min = min;
+    d_max = max;
+    d_def = def;
+    d_units = units_;
+    d_desc = desc_;
+    d_minpriv = minpriv_;
+    d_display = display_;
 #ifdef RPCSERVER_ENABLED
     callbackregister_base::queryCallback_t
       inserter(new rpcbasic_inserter<T,Tfrom>(obj, (Tfrom (T::*)())function), 
-	       minpriv, std::string(units_), display_, std::string(desc_), min, max, def);
+	       minpriv_, std::string(units_), display_, std::string(desc_), min, max, def);
     std::ostringstream oss(std::ostringstream::out);
-    oss << namebase << serial << "::" << functionbase; d_id = oss.str();
+    oss << namebase << serial << "::" << functionbase;
+    d_id = oss.str();
     //std::cerr << "REGISTERING GET CONST: " << d_id << "   " << desc_ << "   " << display_ << std::endl;
     rpcmanager::get()->i()->registerQueryCallback(d_id, inserter);
 #endif
@@ -367,8 +412,28 @@ struct rpcbasic_register_get
 #endif
   }
 
+  pmt::pmt_t min() const { return d_min; }
+  pmt::pmt_t max() const { return d_max; }
+  pmt::pmt_t def() const { return d_def; }
+  std::string units() const { return d_units; }
+  std::string description() const { return d_desc; }
+  priv_lvl_t privilege_level() const { return d_minpriv; }
+  DisplayType default_display() const { return d_display; }
+
+  void set_min(pmt::pmt_t p) { d_min = p; }
+  void set_max(pmt::pmt_t p) { d_max = p; }
+  void set_def(pmt::pmt_t p) { d_def = p; }
+  void units(std::string u) { d_units = u; }
+  void description(std::string d) { d_desc = d; }
+  void privilege_level(priv_lvl_t p) { d_minpriv = p; }
+  void default_display(DisplayType d) { d_display = d; }
+
 private:
   std::string d_id;
+  pmt::pmt_t d_min, d_max, d_def;
+  std::string d_units, d_desc;
+  priv_lvl_t d_minpriv;
+  DisplayType d_display;
 };
 
 /*
@@ -408,10 +473,10 @@ public:
 			     const pmt::pmt_t &min, const pmt::pmt_t &max, const pmt::pmt_t &def,
 			     const char* units_ = "",
 			     const char* desc_ = "",
-			     priv_lvl_t minpriv = RPC_PRIVLVL_MIN,
+			     priv_lvl_t minpriv_ = RPC_PRIVLVL_MIN,
 			     DisplayType display_=DISPNULL) :
     d_rpc_reg(namebase,functionbase,this,serial,&rpcbasic_register_variable::get,
-	      min,max,def,units_,desc_,minpriv,display_),
+	      min,max,def,units_,desc_,minpriv_,display_),
     d_variable(variable)
   {
     //std::cerr << "REGISTERING VAR: " << serial << " " << desc_ << std::endl;
