@@ -32,7 +32,7 @@ except ImportError:
     sys.exit(1)
 
 class GrDataPlotterC(gr.top_block):
-    def __init__(self, name, rate):
+    def __init__(self, name, rate, pmin=None, pmax=None):
         gr.top_block.__init__(self)
 
         self._name = name
@@ -46,6 +46,9 @@ class GrDataPlotterC(gr.top_block):
         self.thr = gr.throttle(gr.sizeof_gr_complex, rate)
         self.snk = qtgui.time_sink_c(self._npts, samp_rate,
                                      self._name, 1)
+
+        if(pmin is not None or not pmax is None):
+            self.snk.set_y_axis(pmin, pmax)
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
@@ -104,7 +107,7 @@ class GrDataPlotterC(gr.top_block):
             self.src.set_data(self._last_data)
 
 class GrDataPlotterF(gr.top_block):
-    def __init__(self, name, rate):
+    def __init__(self, name, rate, pmin=None, pmax=None):
         gr.top_block.__init__(self)
 
         self._name = name
@@ -118,6 +121,9 @@ class GrDataPlotterF(gr.top_block):
         self.thr = gr.throttle(gr.sizeof_float, rate)
         self.snk = qtgui.time_sink_f(self._npts, samp_rate,
                                      self._name, 1)
+
+        if(pmin is not None or not pmax is None):
+            self.snk.set_y_axis(pmin, pmax)
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
@@ -171,7 +177,7 @@ class GrDataPlotterF(gr.top_block):
 
 
 class GrDataPlotterConst(gr.top_block):
-    def __init__(self, name, rate):
+    def __init__(self, name, rate, pmin=None, pmax=None):
         gr.top_block.__init__(self)
 
         self._name = name
@@ -185,6 +191,10 @@ class GrDataPlotterConst(gr.top_block):
         self.thr = gr.throttle(gr.sizeof_gr_complex, rate)
         self.snk = qtgui.const_sink_c(self._npts,
                                       self._name, 1)
+
+        if(pmin is not None or not pmax is None):
+            self.snk.set_x_axis(pmin, pmax)
+            self.snk.set_y_axis(pmin, pmax)
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
@@ -241,7 +251,7 @@ class GrDataPlotterConst(gr.top_block):
 
 
 class GrDataPlotterPsdC(gr.top_block):
-    def __init__(self, name, rate):
+    def __init__(self, name, rate, pmin=None, pmax=None):
         gr.top_block.__init__(self)
 
         self._name = name
@@ -258,6 +268,9 @@ class GrDataPlotterPsdC(gr.top_block):
         self.snk = qtgui.freq_sink_c(self._fftsize, self._wintype,
                                      self._fc, self._samp_rate,
                                      self._name, 1)
+
+        if(pmin is not None or not pmax is None):
+            self.snk.set_y_axis(pmin, pmax)
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
@@ -313,7 +326,7 @@ class GrDataPlotterPsdC(gr.top_block):
             self.src.set_data(self._last_data)
 
 class GrDataPlotterPsdF(gr.top_block):
-    def __init__(self, name, rate):
+    def __init__(self, name, rate, pmin=None, pmax=None):
         gr.top_block.__init__(self)
 
         self._name = name
@@ -330,6 +343,9 @@ class GrDataPlotterPsdF(gr.top_block):
         self.snk = qtgui.freq_sink_f(self._fftsize, self._wintype,
                                      self._fc, self._samp_rate,
                                      self._name, 1)
+
+        if(pmin is not None or not pmax is None):
+            self.snk.set_y_axis(pmin, pmax)
 
         self.connect(self.src, self.thr, (self.snk, 0))
 
