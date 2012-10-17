@@ -40,16 +40,14 @@ class TimeDisplayForm : public DisplayForm
 
   TimeDomainDisplayPlot* getPlot();
 
-  int GetNPoints() const;
+  int getNPoints() const;
 
 public slots:
   void customEvent(QEvent * e);
 
-  void setFrequencyRange(const double newCenterFrequency,
-			 const double newStartFrequency,
-			 const double newStopFrequency);
-  void setTimeDomainAxis(double min, double max);
-  void SetNPoints(const int);
+  void setSampleRate(const double samprate);
+  void setYaxis(double min, double max);
+  void setNPoints(const int);
 
 private slots:
   void newData(const QEvent*);
