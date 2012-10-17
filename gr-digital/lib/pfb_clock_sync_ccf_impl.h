@@ -63,17 +63,15 @@ namespace gr {
       int   d_out_idx;
 
 #ifdef ENABLE_GR_CTRLPORT
-      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_error_rpc;
-      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_rate_rpc;
-      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_phase_rpc;
-
-      rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> *d_loop_bw_get;
-      rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> *d_loop_bw_set;
-
-      void setup_rpc();
-      void takedown_rpc();
+      typedef rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> get_32f_t;
+      typedef rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> set_32f_t;
+      typedef boost::shared_ptr<get_32f_t> get_32f_sptr;
+      typedef boost::shared_ptr<set_32f_t> set_32f_sptr;
+      std::vector<get_32f_sptr> d_get_rpcs;
+      std::vector<set_32f_sptr> d_set_rpcs;
 #endif /* ENABLE_GR_CTRLPORT */
 
+      void setup_rpc();
 
       void create_diff_taps(const std::vector<float> &newtaps,
 			    std::vector<float> &difftaps);
