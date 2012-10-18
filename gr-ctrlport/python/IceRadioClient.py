@@ -26,8 +26,17 @@ import sys, time, Ice
 from gnuradio import gr
 
 _gr_prefs = gr.prefs()
-ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
-Ice.loadSlice(ice_directory + '/gnuradio.ice')
+if(_gr_prefs.has_section('ctrlport')):
+    ice_directory = _gr_prefs.get_string('ctrlport', 'ice_directory', '')
+    Ice.loadSlice(ice_directory + '/gnuradio.ice')
+else:
+    for p in sys.path:
+        try:
+            Ice.loadSlice(p+'/../slice/gnuradio.ice')
+        except RuntimeError:
+            pass
+        else:
+            break
 
 import GNURadio
 
