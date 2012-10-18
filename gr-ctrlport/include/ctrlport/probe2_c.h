@@ -30,7 +30,7 @@ namespace gr {
   namespace ctrlport {
     
     /*!
-     * \class probe2 a complex value probe with fixed length.
+     * \brief A complex value probe to pass a pre-set length of data through ctrlport.
      *
      */
     class CTRLPORT_API probe2_c : virtual public gr_sync_block
@@ -41,6 +41,10 @@ namespace gr {
 
       /*!
        * Build a complex value control port probe with fixed length.
+       *
+       * \param id name to give to the probe.
+       * \param desc string describing what the probe is for.
+       * \param len the lnegth of the vector to pass.
        */
       static sptr make(const std::string &id, const std::string &desc, int len);
 

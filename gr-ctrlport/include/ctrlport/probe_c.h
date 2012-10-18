@@ -30,7 +30,7 @@ namespace gr {
   namespace ctrlport {
     
     /*!
-     * \class probe a complex value probe.
+     * \brief A complex value probe to pass data through ctrlport.
      *
      */
     class CTRLPORT_API probe_c : virtual public gr_sync_block
@@ -41,6 +41,9 @@ namespace gr {
 
       /*!
        * Build a complex value control port probe.
+       *
+       * \param id name to give to the probe.
+       * \param desc string describing what the probe is for.
        */
       static sptr make(const std::string &id, const std::string &desc);
 
