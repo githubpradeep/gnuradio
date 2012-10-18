@@ -126,7 +126,12 @@ void ice_application_base<TserverBase, TserverClass>::starticeexample()
   while(fread(buf, 1, 1, fp)) {
     if(*buf == iceconf[counter]) {
       if(++counter == sizeof(iceconf) - 1) {
-	int result(fread(buf, sizeof(buf), 1, fp));
+	int result = fread(buf, sizeof(buf), 1, fp);
+	if((result == 0) && (feof(fp) == 0)) {
+	  fprintf(stderr, "ICE file read failur %d\n", ferror(fp));
+	  clearerr(fp);
+	  exit(EXIT_FAILURE);
+	}
 	break;
       }
     }
