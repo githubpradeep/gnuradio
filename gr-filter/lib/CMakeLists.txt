@@ -166,7 +166,11 @@ target_link_libraries(gnuradio-filter ${filter_libs})
 GR_LIBRARY_FOO(gnuradio-filter RUNTIME_COMPONENT "filter_runtime" DEVEL_COMPONENT "filter_devel")
 add_dependencies(gnuradio-filter
   filter_generated_includes filter_generated_swigs
-  gnuradio-ctrlport gnuradio-fft)
+  gnuradio-fft)
+
+if(ENABLE_GR_CTRLPORT)
+  add_dependencies(gnuradio-filter gnuradio-ctrlport)
+endif(ENABLE_GR_CTRLPORT)
 
 
 ########################################################################

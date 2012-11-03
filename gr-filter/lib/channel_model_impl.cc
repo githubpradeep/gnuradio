@@ -133,10 +133,10 @@ namespace gr {
       return d_timing_offset->interp_ratio();
     }
 
-#ifdef ENABLE_GR_CTRLPORT
     void
     channel_model_impl::setup_rpc()
     {
+#ifdef ENABLE_GR_CTRLPORT
       d_get_64f_rpcs.push_back(get_64f_sptr
 	 (new get_64f_t(d_name, "noise", this, unique_id(),
 			&channel_model_impl::noise_voltage,
@@ -187,15 +187,8 @@ namespace gr {
 			pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
 			"", "Timing Offset",
 			RPC_PRIVLVL_MIN, DISPNULL)));
-    }
-
-#else
-
-    void
-    channel_model_impl::setup_rpc()
-    { /* NOP if no ctrlport */ }
-
 #endif /* ENABLE_GR_CTRLPORT */
+    }
 
   } /* namespace filter */
 } /* namespace gr */

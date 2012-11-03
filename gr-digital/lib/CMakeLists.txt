@@ -171,4 +171,8 @@ target_link_libraries(gnuradio-digital ${digital_libs})
 GR_LIBRARY_FOO(gnuradio-digital RUNTIME_COMPONENT "digital_runtime" DEVEL_COMPONENT "digital_devel")
 add_dependencies(gnuradio-digital 
   digital_generated_includes digital_generated_swigs
-  gnuradio-ctrlport gnuradio-filter)
+  gnuradio-filter)
+
+if(ENABLE_GR_CTRLPORT)
+  add_dependencies(gnuradio-digital gnuradio-ctrlport)
+endif(ENABLE_GR_CTRLPORT)
