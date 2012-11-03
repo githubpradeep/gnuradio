@@ -23,6 +23,7 @@ include(GrPython)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gnuradio_ice.py
          ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/__init__.py
+	 ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/Booter/__init__.py
   COMMAND ${ICE_SLICE2PY} -I${CMAKE_CURRENT_SOURCE_DIR}/../slice
           --output-dir=${CMAKE_CURRENT_BINARY_DIR}
           ${CMAKE_CURRENT_SOURCE_DIR}/../slice/gnuradio.ice
