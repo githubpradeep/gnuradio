@@ -48,6 +48,8 @@ namespace gr {
       probe2_c_impl(const std::string &id, const std::string &desc, int len);
       ~probe2_c_impl();
 
+      void forecast(int noutput_items, gr_vector_int &ninput_items_required);
+
       std::vector<gr_complex> get();
 
       void set_length(int len);

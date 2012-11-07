@@ -63,6 +63,15 @@ namespace gr {
     {
     }
 
+    void
+    probe2_c_impl::forecast(int noutput_items, gr_vector_int &ninput_items_required)
+    {
+      // make sure all inputs have noutput_items available
+      unsigned ninputs = ninput_items_required.size();
+      for(unsigned i = 0; i < ninputs; i++)
+	ninput_items_required[i] = d_len;
+    }
+    
     //    boost::shared_mutex mutex_buffer;
     //    mutable boost::mutex mutex_notify;
     //    boost::condition_variable condition_buffer_ready;
@@ -80,7 +89,6 @@ namespace gr {
 
       mutex_buffer.lock();
       std::vector<gr_complex> buf_copy = d_buffer;
-      //d_buffer.clear();
       assert(buf_copy.size() == d_len);
       mutex_buffer.unlock();
 
