@@ -37,10 +37,11 @@ if _RTLD_GLOBAL != 0:
     sys.setdlopenflags(_dlopenflags|_RTLD_GLOBAL)
 # ----------------------------------------------------------------
 
-import IcePy;
+import Ice, IcePy
 
 # import swig generated symbols into the ctrlport namespace
 from ctrlport_swig import *
+from monitor import *
 
 # import any pure python here
 import GNURadio

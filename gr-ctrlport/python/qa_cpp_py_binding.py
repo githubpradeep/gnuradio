@@ -143,7 +143,7 @@ class test_cpp_py_binding(gr_unittest.TestCase):
         self.assertComplexTuplesAlmostEqual(val, rval, 5)
 
     def test_002(self):
-        data = range(1,10)
+        data = range(1,9)
 
         self.src = gr.vector_source_c(data)
         self.p1 = ctrlport.probe_c("aaa","C++ exported variable")
