@@ -34,6 +34,7 @@ INSTALL(FILES
     rpcserver_selector.h
     probe_c.h
     probe2_c.h
+    nop.h
     DESTINATION ${GR_INCLUDE_DIR}/gnuradio/ctrlport
     COMPONENT "ctrlport_devel"
 )

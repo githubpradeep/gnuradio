@@ -55,6 +55,7 @@ list(APPEND ctrlport_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/rpcmanager.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/probe_c_impl.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/probe2_c_impl.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/nop_impl.cc
     ${CMAKE_CURRENT_BINARY_DIR}/gnuradio.cpp
 )
 

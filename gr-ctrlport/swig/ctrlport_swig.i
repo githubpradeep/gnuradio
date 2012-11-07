@@ -35,6 +35,7 @@
 #include "ctrlport/rpcserver_booter_aggregator.h"
 #include "ctrlport/probe_c.h"
 #include "ctrlport/probe2_c.h"
+#include "ctrlport/nop.h"
 %}
 
 %include "ctrlport/rpcmanager.h"
@@ -42,10 +43,12 @@
 %include "ctrlport/rpcserver_booter_aggregator.h"
 %include "ctrlport/probe_c.h"
 %include "ctrlport/probe2_c.h"
+%include "ctrlport/nop.h"
 
 
 GR_SWIG_BLOCK_MAGIC2(ctrlport, probe_c);
 GR_SWIG_BLOCK_MAGIC2(ctrlport, probe2_c);
+GR_SWIG_BLOCK_MAGIC2(ctrlport, nop);
 
 %{
 #include <ctrlport/pycallback_object.h>
