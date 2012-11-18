@@ -45,17 +45,21 @@ EXECUTE_PROCESS(
 ########################################################################
 
 list(APPEND ctrlport_sources 
-    ${CMAKE_CURRENT_SOURCE_DIR}/ice_application_base.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcserver_ice.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcserver_booter_ice.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcserver_booter_aggregator.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcserver_aggregator.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcserver_selector.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcpmtconverters_ice.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/rpcmanager.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/probe_c_impl.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/probe2_c_impl.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/nop_impl.cc
+    ice_application_base.cc
+    rpcserver_ice.cc
+    rpcserver_booter_ice.cc
+    rpcserver_booter_aggregator.cc
+    rpcserver_aggregator.cc
+    rpcserver_selector.cc
+    rpcpmtconverters_ice.cc
+    rpcmanager.cc
+    probe_c_impl.cc
+    probe2_c_impl.cc
+    nop_impl.cc
+)
+
+# Append generated file in build directory
+list(APPEND ctrlport_sources 
     ${CMAKE_CURRENT_BINARY_DIR}/gnuradio.cpp
 )
 
