@@ -200,15 +200,6 @@ public:
   }
 };
 
-
-//template<typename T> class rpcbasic_inserter<T,double> : public virtual rpcinserter_base<T,double> {
-//        public:
-//       	rpcbasic_inserter(T* source, double (T::*func)() const) : rpcinserter_base<T,double>(source, func) {;}
-//       	rpcbasic_inserter(T* source, double (T::*func)()) : rpcinserter_base<T,double>(source, func) {;}
-//
-//	pmt::pmt_t retrieve() { return pmt::mp((rpcinserter_base<T,double>::_source->*rpcinserter_base<T,double>::_func)()); }
-//};
-
 template<typename T>
 class rpcbasic_inserter<T,uint64_t> : public virtual rpcinserter_base<T,uint64_t>
 {

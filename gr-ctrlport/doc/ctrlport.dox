@@ -26,6 +26,13 @@ after importing by using:
 
 \section Dependencies
 
-The filter blocks depend on GNU Radio Core and Zeroc's ICE.
+ControlPort requires ZeroC's ICE and associated
+libraries/headers/programs. ICE is generally installed into the
+standard paths if using a software repo (like apt-get, yum, etc.). If
+installed by hand, GNU Radio assumes ICE is installed into
+/opt/Ice-3.4.2. If this is not the case, you can tell GNU Radio where
+to find ICE by passing to cmake the following:
+
+    -DICE_MANUAL_INSTALL_PATH=<your path here>
 
 */
