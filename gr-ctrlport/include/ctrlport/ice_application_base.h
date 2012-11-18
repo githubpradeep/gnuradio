@@ -139,13 +139,11 @@ void ice_application_base<TserverBase, TserverClass>::starticeexample()
   fclose(fp);
 
   if(buf[0]) {
-    //std::cout << "avec ice_config : " << buf << std::endl;
     ice_application_common::d_have_ice_config = true; 
     ice_application_common::d_main_called = true;
     d_application->main(0, argv, buf);
   } 
   else {
-    //std::cout << "sans ice_config : " << std::endl;
     ice_application_common::d_have_ice_config = false; 
     ice_application_common::d_main_called = true;
     d_application->main(0, argv);
@@ -172,8 +170,8 @@ void ice_application_base<TserverBase, TserverClass>::kickoff()
       ::nanosleep(&timer_ts, &rem_ts);
       if(!d_this->application_started())
 	std::cout << "@";
-      if(iter++ > 100){
-	printf("ice_application_base::kickoff(), timeout waiting to get communicator() d_application->main() might have failed?!\n");
+      if(iter++ > 100) {
+	std::cout << "ice_application_base::kickoff(), timeout waiting to get communicator() d_application->main() might have failed?!" << std::endl;;
 	break;
       }
     }

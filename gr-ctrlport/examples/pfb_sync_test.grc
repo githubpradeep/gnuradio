@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Wed Oct  3 17:49:31 2012</timestamp>
+  <timestamp>Sun Nov 18 15:35:00 2012</timestamp>
   <block>
     <key>import</key>
     <param>
@@ -455,54 +455,89 @@
     </param>
   </block>
   <block>
-    <key>variable_slider</key>
+    <key>probe2_c</key>
     <param>
       <key>id</key>
-      <value>phase</value>
+      <value>probe2_c_0</value>
     </param>
     <param>
       <key>_enabled</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
-      <key>label</key>
+      <key>name</key>
+      <value>constellation</value>
+    </param>
+    <param>
+      <key>desc</key>
+      <value>Constellation Points</value>
+    </param>
+    <param>
+      <key>len</key>
+      <value>1024</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(912, 243)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>options</key>
+    <param>
+      <key>id</key>
+      <value>pfb_sync_test</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>title</key>
       <value></value>
     </param>
     <param>
-      <key>value</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>min</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>max</key>
-      <value>2</value>
-    </param>
-    <param>
-      <key>num_steps</key>
-      <value>100</value>
-    </param>
-    <param>
-      <key>style</key>
-      <value>wx.SL_HORIZONTAL</value>
-    </param>
-    <param>
-      <key>converver</key>
-      <value>float_converter</value>
-    </param>
-    <param>
-      <key>grid_pos</key>
+      <key>author</key>
       <value></value>
     </param>
     <param>
-      <key>notebook</key>
+      <key>description</key>
+      <value></value>
+    </param>
+    <param>
+      <key>window_size</key>
+      <value>1280, 1024</value>
+    </param>
+    <param>
+      <key>generate_options</key>
+      <value>wx_gui</value>
+    </param>
+    <param>
+      <key>category</key>
+      <value>Custom</value>
+    </param>
+    <param>
+      <key>run_options</key>
+      <value>prompt</value>
+    </param>
+    <param>
+      <key>run</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>max_nouts</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>realtime_scheduling</key>
       <value></value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(167, 405)</value>
+      <value>(10, 10)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -517,7 +552,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>label</key>
@@ -565,69 +600,10 @@
     </param>
   </block>
   <block>
-    <key>options</key>
+    <key>variable_slider</key>
     <param>
       <key>id</key>
-      <value>pfb_sync_test</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>title</key>
-      <value></value>
-    </param>
-    <param>
-      <key>author</key>
-      <value></value>
-    </param>
-    <param>
-      <key>description</key>
-      <value></value>
-    </param>
-    <param>
-      <key>window_size</key>
-      <value>1280, 1024</value>
-    </param>
-    <param>
-      <key>generate_options</key>
-      <value>qt_gui</value>
-    </param>
-    <param>
-      <key>category</key>
-      <value>Custom</value>
-    </param>
-    <param>
-      <key>run_options</key>
-      <value>prompt</value>
-    </param>
-    <param>
-      <key>run</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>max_nouts</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>realtime_scheduling</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(10, 10)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable_qtgui_range</key>
-    <param>
-      <key>id</key>
-      <value>noise</value>
+      <value>phase</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -635,74 +611,43 @@
     </param>
     <param>
       <key>label</key>
-      <value>Noise</value>
+      <value></value>
     </param>
     <param>
       <key>value</key>
-      <value>0.050</value>
+      <value>0</value>
     </param>
     <param>
-      <key>start</key>
-      <value>0.0001</value>
+      <key>min</key>
+      <value>0</value>
     </param>
     <param>
-      <key>stop</key>
+      <key>max</key>
       <value>2</value>
     </param>
     <param>
-      <key>step</key>
-      <value>0.01</value>
+      <key>num_steps</key>
+      <value>100</value>
     </param>
     <param>
-      <key>widget</key>
-      <value>counter_slider</value>
+      <key>style</key>
+      <value>wx.SL_HORIZONTAL</value>
     </param>
     <param>
-      <key>orient</key>
-      <value>Qt.Horizontal</value>
+      <key>converver</key>
+      <value>float_converter</value>
     </param>
     <param>
-      <key>min_len</key>
-      <value>200</value>
+      <key>grid_pos</key>
+      <value></value>
     </param>
     <param>
-      <key>gui_hint</key>
+      <key>notebook</key>
       <value></value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(412, 404)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>probe2_c</key>
-    <param>
-      <key>id</key>
-      <value>probe2_c_0</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>name</key>
-      <value>constellation</value>
-    </param>
-    <param>
-      <key>desc</key>
-      <value>Constellation Points</value>
-    </param>
-    <param>
-      <key>len</key>
-      <value>1024</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(912, 243)</value>
+      <value>(167, 405)</value>
     </param>
     <param>
       <key>_rotation</key>

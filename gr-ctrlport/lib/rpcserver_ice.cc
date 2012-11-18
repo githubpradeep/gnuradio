@@ -24,6 +24,8 @@
 #include <IceUtil/IceUtil.h>
 #include <Ice/Ice.h>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <gruel/pmt.h>
 
 #define DEBUG 0
@@ -43,8 +45,10 @@ rpcserver_ice::registerConfigureCallback(const std::string &id,
   {
     ConfigureCallbackMap_t::const_iterator iter(d_setcallbackmap.find(id));
     if(iter != d_setcallbackmap.end()) {
-      std::cout << "rpcserver_ice ERROR registering set, already registered: " << id << std::endl;
-      assert(iter != d_setcallbackmap.end());
+      std::stringstream s;
+      s << "rpcserver_ice:: rpcserver_ice ERROR registering set, already registered: "
+	<< id << std::endl;
+      throw std::runtime_error(s.str().c_str());
     }
   }
 
@@ -59,8 +63,10 @@ rpcserver_ice::unregisterConfigureCallback(const std::string &id)
 {
   ConfigureCallbackMap_t::iterator iter(d_setcallbackmap.find(id));
   if(iter == d_setcallbackmap.end()) {
-    std::cout << "rpcserver_ice ERROR unregistering set, not registered: " << id << std::endl;
-    assert(iter == d_setcallbackmap.end());
+    std::stringstream s;
+    s << "rpcserver_ice:: rpcserver_ice ERROR unregistering set, not registered: "
+      << id << std::endl;
+    throw std::runtime_error(s.str().c_str());
   }
 
   if(DEBUG)
@@ -76,8 +82,10 @@ rpcserver_ice::registerQueryCallback(const std::string &id,
   {
     QueryCallbackMap_t::const_iterator iter(d_getcallbackmap.find(id));
     if(iter != d_getcallbackmap.end()) {
-      std::cout << "rpcserver_ice ERROR registering get, already registered: " << id << std::endl;
-      assert(iter != d_getcallbackmap.end());
+      std::stringstream s;
+      s << "rpcserver_ice:: rpcserver_ice ERROR registering get, already registered: "
+	<< id << std::endl;
+      throw std::runtime_error(s.str().c_str());
     }
   }
 
@@ -92,8 +100,10 @@ rpcserver_ice::unregisterQueryCallback(const std::string &id)
 {
   QueryCallbackMap_t::iterator iter(d_getcallbackmap.find(id));
   if(iter == d_getcallbackmap.end()) {
-    std::cout << "rpcserver_ice ERROR unregistering get, not registered: " << id << std::endl;
-    assert(iter == d_getcallbackmap.end());
+    std::stringstream s;
+    s << "rpcserver_ice:: rpcserver_ice ERROR unregistering get,  registered: "
+      << id << std::endl;
+    throw std::runtime_error(s.str().c_str());
   }
 
   if(DEBUG)
@@ -149,6 +159,7 @@ rpcserver_ice::properties(const GNURadio::KnobIDList& knobs, const Ice::Current&
 void
 rpcserver_ice::shutdown(const Ice::Current& c)
 {
-  std::cout << "Shutting down..." << std::endl;
+  if(DEBUG)
+    std::cout << "Shutting down..." << std::endl;
   c.adapter->getCommunicator()->shutdown();
 }

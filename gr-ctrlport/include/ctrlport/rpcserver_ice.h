@@ -73,7 +73,8 @@ private:
 	}
 	else {
 	  std::cout << "Key " << p.first << " requires PRIVLVL <= "
-		    << iter->second.priv << " to set, currently at: " << cur_priv << std::endl;
+		    << iter->second.priv << " to set, currently at: "
+		    << cur_priv << std::endl;
 	}
       }
       else {
@@ -103,7 +104,8 @@ private:
 	}
 	else {
 	  std::cout << "Key " << iter->first << " requires PRIVLVL: <= "
-		    << iter->second.priv << " to get, currently at: " << cur_priv << std::endl;
+		    << iter->second.priv << " to get, currently at: "
+		    << cur_priv << std::endl;
 	}
       }
       else {
@@ -128,13 +130,12 @@ private:
     void operator()(const T& p)
     {
       if(cur_priv <= p.second.priv) {
-	//std::cout << "rpcserver_ice::get: " << iter->first << std::endl;
 	outknobs[p.first] = rpcpmtconverter::from_pmt(p.second.callback->retrieve(), c);
-	//std::cout << "rpcserver_ice::GOT: " << iter->first << std::endl;
       }
       else {
 	std::cout << "Key " << p.first << " requires PRIVLVL <= "
-		  << p.second.priv << " to get, currently at: " << cur_priv << std::endl;
+		  << p.second.priv << " to get, currently at: "
+		  << cur_priv << std::endl;
       }
     }
 
@@ -166,7 +167,8 @@ private:
       }
       else {
 	std::cout << "Key " << p.first << " requires PRIVLVL <= "
-		  << p.second.priv << " to get, currently at: " << cur_priv << std::endl;
+		  << p.second.priv << " to get, currently at: "
+		  << cur_priv << std::endl;
       }
     }
 
@@ -198,7 +200,6 @@ private:
 	  prop.display = static_cast<GNURadio::DisplayType>(iter->second.display);
 	  //outknobs[iter->first] = prop;
 	  outknobs[p] = prop;
-	  //std::cout << "Key " << iter->first << " desc: " << iter->second.description << std::endl;
 	}
 	else {
 	  std::cout << "Key " << iter->first << " requires PRIVLVL: <= " <<

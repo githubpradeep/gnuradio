@@ -59,7 +59,6 @@ ice_server_template<TserverBase, TserverClass, TImplClass, TIceClass>::ice_serve
 template<typename TserverBase, typename TserverClass, typename TImplClass, typename TIceClass>
 ice_server_template<TserverBase, TserverClass,TImplClass, TIceClass>::~ice_server_template()
 {
-  std::cout << "Deactivating Control Port" << std::endl;
   if(d_adapter) {
     d_adapter->deactivate();
     delete(d_iceserver);

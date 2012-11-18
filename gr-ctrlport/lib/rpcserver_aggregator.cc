@@ -23,6 +23,8 @@
 #include <ctrlport/rpcserver_aggregator.h>
 #include <ctrlport/rpcserver_booter_base.h>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 rpcserver_aggregator::rpcserver_aggregator()
   : d_type(std::string("aggregator"))
@@ -83,8 +85,9 @@ rpcserver_aggregator::registerServer(rpcmanager_base::rpcserver_booter_base_sptr
     d_registeredServers.push_back(server->type());
   }
   else {
-    std::cout << "rpcserver_aggregator::registerServer: server of type "
-	      << server->type() << " already registered" << std::endl;
-    assert(it != d_registeredServers.end());
+    std::stringstream s;
+    s << "rpcserver_aggregator::registerServer: server of type "
+      << server->type() << " already registered" << std::endl;
+    throw std::runtime_error(s.str().c_str());
   }
 }

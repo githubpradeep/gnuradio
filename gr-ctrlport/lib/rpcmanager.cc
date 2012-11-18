@@ -22,6 +22,7 @@
 
 #include <ctrlport/rpcmanager.h>
 #include <iostream>
+#include <stdexcept>
 
 bool rpcmanager::booter_registered(false);
 bool rpcmanager::aggregator_registered(false);
@@ -66,7 +67,6 @@ rpcmanager::register_booter(rpcserver_booter_base* booter)
     booter_registered = true;
   }
   else {
-    std::cout << "Aggregator not in use, and a rpc booter is already registered" << std::endl;
-    assert(0);
+    throw std::runtime_error("rpcmanager: Aggregator not in use, and a rpc booter is already registered\n");
   }
 }

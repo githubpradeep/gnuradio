@@ -112,7 +112,6 @@ public:
 
       // release  PyGIL
       PyGILState_Release(state);
-      //std::cout << "returning: " << rVal << std::endl;
       return rVal;
     }
   }
