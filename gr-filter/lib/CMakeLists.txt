@@ -97,12 +97,9 @@ include_directories(
     ${GNURADIO_CORE_INCLUDE_DIRS}
     ${GR_FFT_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
-    ${FFTW3F_INCLUDE_DIRS}
 )
 
-link_directories(${FFT_LIBRARY_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
-link_directories(${FFTW3F_LIBRARY_DIRS})
 
 if(ENABLE_GR_CTRLPORT)
   include_directories(${GR_CTRLPORT_INCLUDE_DIRS})
@@ -143,7 +140,6 @@ list(APPEND filter_sources
   pfb_synthesizer_ccf_impl.cc
   single_pole_iir_filter_cc_impl.cc
   single_pole_iir_filter_ff_impl.cc
-  channel_model_impl.cc
 )
 
 list(APPEND filter_libs
@@ -151,7 +147,6 @@ list(APPEND filter_libs
     gnuradio-fft
     volk
     ${Boost_LIBRARIES}
-    ${FFTW3F_LIBRARIES}
 )
 
 if(ENABLE_GR_CTRLPORT)
@@ -193,10 +188,12 @@ if(ENABLE_TESTING)
 
   add_executable(test-gr-filter ${test_gr_filter_sources})
 
+  list(APPEND GR_TEST_TARGET_DEPS test-gr-filter gnuradio-filter gnuradio-fft)
+
   target_link_libraries(
     test-gr-filter
     gnuradio-core
-    gnuradio-filter 
+    gnuradio-filter
     ${Boost_LIBRARIES}
     ${CPPUNIT_LIBRARIES}
   )
