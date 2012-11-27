@@ -460,36 +460,32 @@ namespace gr {
     {
 #ifdef ENABLE_GR_CTRLPORT
       // Getters
-      d_rpcs.push_back(
-        boost::shared_ptr<rpc_get<pfb_clock_sync_ccf_impl>::_32f>(
-	  new rpc_get<pfb_clock_sync_ccf_impl>::_32f(
+      d_rpc_vars.push_back(
+          rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "error", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::error,
 	      pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
 	      "", "Error signal of loop",
 	      RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
     
-      d_rpcs.push_back(
-        boost::shared_ptr<rpc_get<pfb_clock_sync_ccf_impl>::_32f>(
-	  new rpc_get<pfb_clock_sync_ccf_impl>::_32f(
+      d_rpc_vars.push_back(
+          rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "rate", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::rate,
 	      pmt::mp(-2.0f), pmt::mp(2.0f), pmt::mp(0.0f),
 	      "", "Rate change of phase",
 	      RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_rpcs.push_back(
-        boost::shared_ptr<rpc_get<pfb_clock_sync_ccf_impl>::_32f>(
-	  new rpc_get<pfb_clock_sync_ccf_impl>::_32f(
+      d_rpc_vars.push_back(
+          rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "phase", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::phase,
 	      pmt::mp(0), pmt::mp((int)d_nfilters), pmt::mp(0),
 	      "", "Current filter phase arm",
 	      RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_rpcs.push_back(
-        boost::shared_ptr<rpc_get<pfb_clock_sync_ccf_impl>::_32f>(
-	  new rpc_get<pfb_clock_sync_ccf_impl>::_32f(
+      d_rpc_vars.push_back(
+          rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "loop bw", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::loop_bandwidth,
 	      pmt::mp(0.0f), pmt::mp(1.0f), pmt::mp(0.0f),
@@ -497,9 +493,8 @@ namespace gr {
 	      RPC_PRIVLVL_MIN, DISPNULL)));
 
       // Setters
-      d_rpcs.push_back(
-        boost::shared_ptr<rpc_set<pfb_clock_sync_ccf_impl>::_32f>(
-	  new rpc_set<pfb_clock_sync_ccf_impl>::_32f(
+      d_rpc_vars.push_back(
+          rpcbasic_sptr(new rpcbasic_register_set<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "loop bw", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::set_loop_bandwidth,
 	      pmt::mp(0.0f), pmt::mp(1.0f), pmt::mp(0.0f),

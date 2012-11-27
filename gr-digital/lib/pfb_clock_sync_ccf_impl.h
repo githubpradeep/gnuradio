@@ -63,8 +63,7 @@ namespace gr {
       int   d_out_idx;
 
 #ifdef ENABLE_GR_CTRLPORT
-   std::vector<boost::any> d_rpcs;
-
+      std::vector<boost::any> d_rpc_vars;
 #endif /* ENABLE_GR_CTRLPORT */
 
       void setup_rpc();

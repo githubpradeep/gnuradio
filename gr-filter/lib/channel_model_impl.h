@@ -53,20 +53,7 @@ namespace gr {
       std::vector<gr_complex> d_taps;
 
 #ifdef ENABLE_GR_CTRLPORT
-      typedef rpcbasic_register_get<channel_model_impl, double> get_64f_t;
-      typedef rpcbasic_register_set<channel_model_impl, double> set_64f_t;
-      typedef rpcbasic_register_get<channel_model_impl, std::vector<gr_complex> > get_v32fc_t;
-      typedef rpcbasic_register_set<channel_model_impl, std::vector<gr_complex> > set_v32fc_t;
-      typedef boost::shared_ptr<get_64f_t> get_64f_sptr;
-      typedef boost::shared_ptr<set_64f_t> set_64f_sptr;
-      typedef boost::shared_ptr<get_v32fc_t> get_v32fc_sptr;
-      typedef boost::shared_ptr<set_v32fc_t> set_v32fc_sptr;
-
-      std::vector<get_64f_sptr> d_get_64f_rpcs;
-      std::vector<set_64f_sptr> d_set_64f_rpcs;
-
-      std::vector<get_v32fc_sptr> d_get_v32fc_rpcs;
-      //std::vector<set_32fc_sptr> d_set_v32fc_rpcs;
+      std::vector<boost::any> d_rpc_vars;
 #endif /* ENABLE_GR_CTRLPORT */
 
       void setup_rpc();

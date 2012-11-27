@@ -278,8 +278,18 @@ struct rpc_register_base
 protected: static int count;
 };
 
+// Base class to inherit from and create universal shared pointers.
+class rpcbasic_base
+{
+public:
+  rpcbasic_base() {}
+  virtual ~rpcbasic_base() {};
+};
+
+typedef boost::shared_ptr<rpcbasic_base> rpcbasic_sptr;
+
 template<typename T, typename Tto>
-struct rpcbasic_register_set
+struct rpcbasic_register_set : public rpcbasic_base
 {
   rpcbasic_register_set(const std::string& namebase,
 			const char* functionbase, T* obj,
@@ -342,9 +352,11 @@ private:
   DisplayType d_display;
 };
 
+
 template<typename T, typename Tfrom>
-struct rpcbasic_register_get
+class rpcbasic_register_get : public rpcbasic_base
 {
+public:
   // primary constructor to allow for T get() functions
   rpcbasic_register_get(const std::string& namebase,
 			const char* functionbase, T* obj,
@@ -444,7 +456,7 @@ private:
  *
  */
 template<typename Tfrom>
-class rpcbasic_register_variable
+class rpcbasic_register_variable : public rpcbasic_base
 {
 private:
   rpcbasic_register_get< rpcbasic_register_variable<Tfrom>, Tfrom > d_rpc_reg;
@@ -481,20 +493,6 @@ public:
   {
     //std::cerr << "REGISTERING VAR: " << serial << " " << desc_ << std::endl;
   }
-};
-
-template <class T>
-struct rpc_get {
-  typedef rpcbasic_register_get<T, float> _32f;
-  typedef rpcbasic_register_get<T, int32_t> _32i;
-  typedef rpcbasic_register_get<T, int16_t> _16i;
-};
-
-template <class T>
-struct rpc_set {
-  typedef rpcbasic_register_set<T, float> _32f;
-  typedef rpcbasic_register_set<T, int32_t> _32i;
-  typedef rpcbasic_register_set<T, int16_t> _16i;
 };
 
 #endif

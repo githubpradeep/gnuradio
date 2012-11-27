@@ -137,56 +137,63 @@ namespace gr {
     channel_model_impl::setup_rpc()
     {
 #ifdef ENABLE_GR_CTRLPORT
-      d_get_64f_rpcs.push_back(get_64f_sptr
-	 (new get_64f_t(d_name, "noise", this, unique_id(),
-			&channel_model_impl::noise_voltage,
-			pmt::mp(-10.0f), pmt::mp(10.0f), pmt::mp(0.0f),
-			"", "Noise Voltage",
-			RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, double>(
+	  d_name, "noise", this, unique_id(),
+	  &channel_model_impl::noise_voltage,
+	  pmt::mp(-10.0f), pmt::mp(10.0f), pmt::mp(0.0f),
+	  "", "Noise Voltage",
+	  RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_get_64f_rpcs.push_back(get_64f_sptr
-	 (new get_64f_t(d_name, "freq", this, unique_id(),
-			&channel_model_impl::frequency_offset,
-			pmt::mp(-1.0f), pmt::mp(1.0f), pmt::mp(0.0f),
-			"Hz", "Frequency Offset",
-			RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, double>(
+           d_name, "freq", this, unique_id(),
+	   &channel_model_impl::frequency_offset,
+	   pmt::mp(-1.0f), pmt::mp(1.0f), pmt::mp(0.0f),
+	   "Hz", "Frequency Offset",
+	   RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_get_64f_rpcs.push_back(get_64f_sptr
-	 (new get_64f_t(d_name, "timing", this, unique_id(),
-			&channel_model_impl::timing_offset,
-			pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
-			"", "Timing Offset",
-			RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, double>(
+	  d_name, "timing", this, unique_id(),
+	  &channel_model_impl::timing_offset,
+	  pmt::mp(0.0), pmt::mp(2.0), pmt::mp(0.0),
+	  "", "Timing Offset",
+	  RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 	  
-      d_get_v32fc_rpcs.push_back(get_v32fc_sptr
-	(new get_v32fc_t(d_name, "taps", this, unique_id(),
-			 &channel_model_impl::taps,
-			 pmt::pmt_make_c32vector(0,-10),
-			 pmt::pmt_make_c32vector(0,10),
-			 pmt::pmt_make_c32vector(0,0),
-			 "", "Multipath taps",
-			 RPC_PRIVLVL_MIN, DISPTIMESERIESC)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, std::vector<gr_complex> >(
+	  d_name, "taps", this, unique_id(),
+	  &channel_model_impl::taps,
+	  pmt::pmt_make_c32vector(0,-10),
+	  pmt::pmt_make_c32vector(0,10),
+	  pmt::pmt_make_c32vector(0,0),
+	  "", "Multipath taps",
+	  RPC_PRIVLVL_MIN, DISPTIMESERIESC)));
 
-      d_set_64f_rpcs.push_back(set_64f_sptr
-	 (new set_64f_t(d_name, "noise", this, unique_id(),
-			&channel_model_impl::set_noise_voltage,
-			pmt::mp(-10.0f), pmt::mp(10.0f), pmt::mp(0.0f),
-			"V", "Noise Voltage",
-			RPC_PRIVLVL_MIN, DISPNULL)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_set<channel_model_impl, double>(
+	  d_name, "noise", this, unique_id(),
+	  &channel_model_impl::set_noise_voltage,
+	  pmt::mp(-10.0), pmt::mp(10.0), pmt::mp(0.0),
+	  "V", "Noise Voltage",
+	  RPC_PRIVLVL_MIN, DISPNULL)));
 
-      d_set_64f_rpcs.push_back(set_64f_sptr
-	 (new set_64f_t(d_name, "freq", this, unique_id(),
-			&channel_model_impl::set_frequency_offset,
-			pmt::mp(-1.0f), pmt::mp(1.0f), pmt::mp(0.0f),
-			"Hz", "Frequency Offset",
-			RPC_PRIVLVL_MIN, DISPNULL)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_set<channel_model_impl, double>(
+	  d_name, "freq", this, unique_id(),
+	  &channel_model_impl::set_frequency_offset,
+	  pmt::mp(-1.0), pmt::mp(1.0), pmt::mp(0.0),
+	  "Hz", "Frequency Offset",
+	  RPC_PRIVLVL_MIN, DISPNULL)));
 
-      d_set_64f_rpcs.push_back(set_64f_sptr
-	 (new set_64f_t(d_name, "timing", this, unique_id(),
-			&channel_model_impl::set_timing_offset,
-			pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
-			"", "Timing Offset",
-			RPC_PRIVLVL_MIN, DISPNULL)));
+      d_rpc_vars.push_back(
+        rpcbasic_sptr(new rpcbasic_register_set<channel_model_impl, double>(
+	  d_name, "timing", this, unique_id(),
+	  &channel_model_impl::set_timing_offset,
+	  pmt::mp(0.0f), pmt::mp(2.0f), pmt::mp(0.0f),
+	  "", "Timing Offset",
+	  RPC_PRIVLVL_MIN, DISPNULL)));
 #endif /* ENABLE_GR_CTRLPORT */
     }
 
