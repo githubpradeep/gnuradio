@@ -63,12 +63,8 @@ namespace gr {
       int   d_out_idx;
 
 #ifdef ENABLE_GR_CTRLPORT
-      typedef rpcbasic_register_get<pfb_clock_sync_ccf_impl, float> get_32f_t;
-      typedef rpcbasic_register_set<pfb_clock_sync_ccf_impl, float> set_32f_t;
-      typedef boost::shared_ptr<get_32f_t> get_32f_sptr;
-      typedef boost::shared_ptr<set_32f_t> set_32f_sptr;
-      std::vector<get_32f_sptr> d_get_rpcs;
-      std::vector<set_32f_sptr> d_set_rpcs;
+   std::vector<boost::any> d_rpcs;
+
 #endif /* ENABLE_GR_CTRLPORT */
 
       void setup_rpc();

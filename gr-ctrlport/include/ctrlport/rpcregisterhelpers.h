@@ -483,4 +483,18 @@ public:
   }
 };
 
+template <class T>
+struct rpc_get {
+  typedef rpcbasic_register_get<T, float> _32f;
+  typedef rpcbasic_register_get<T, int32_t> _32i;
+  typedef rpcbasic_register_get<T, int16_t> _16i;
+};
+
+template <class T>
+struct rpc_set {
+  typedef rpcbasic_register_set<T, float> _32f;
+  typedef rpcbasic_register_set<T, int32_t> _32i;
+  typedef rpcbasic_register_set<T, int16_t> _16i;
+};
+
 #endif
