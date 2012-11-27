@@ -42,7 +42,7 @@ class CTRLPORT_API rpcserver_booter_aggregator :
   const std::string& type();
   const std::vector<std::string> endpoints();
 
-  const std::vector<std::string>& 	registeredServers();
+  const std::vector<std::string>& registeredServers();
 
  protected:
   friend class rpcmanager;

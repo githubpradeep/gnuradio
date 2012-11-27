@@ -98,6 +98,11 @@ namespace gr {
     void
     probe2_c_impl::set_length(int len)
     {
+      if(len > 8191) {
+	std::cerr << "probe2_c: length " << len << " exceeds maximum buffer size of 8191" << std::endl;
+	len = 8191;
+      }
+
       d_len = len;
       d_buffer.reserve(d_len);
     }
