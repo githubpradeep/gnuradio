@@ -81,8 +81,6 @@ namespace gr {
 		   gr_vector_const_void_star &input_items,
 		   gr_vector_void_star &output_items)
     {
-      const gr_complex *in = (const gr_complex*)input_items[0];
-
       return noutput_items;
     }
 
