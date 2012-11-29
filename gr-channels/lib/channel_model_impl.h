@@ -33,7 +33,7 @@
 #include <filter/fir_filter_ccc.h>
 
 #ifdef ENABLE_GR_CTRLPORT
-#include <ctrlport/rpcregisterhelpers.h>
+#include <rpcregisterhelpers.h>
 #endif
 
 namespace gr {

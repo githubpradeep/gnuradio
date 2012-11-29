@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2004,2010 Free Software Foundation, Inc.
+ * Copyright 2012 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -20,15 +20,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-GR_SWIG_BLOCK_MAGIC(gr,nop)
+#include <ice_application_base.h>
 
-gr_nop_sptr gr_make_nop (size_t sizeof_stream_item);
+int ice_application_common::d_reacquire_attributes(0);
+bool ice_application_common::d_main_called(false);
+bool ice_application_common::d_have_ice_config(false);
+boost::shared_ptr<boost::thread> ice_application_common::d_thread;
+std::string ice_application_common::d_endpointStr("");
 
-class gr_nop : public gr_block {
-public:
-  int  ctrlport_test();
-  void set_ctrlport_test(int x);
-private:
-  gr_nop (size_t sizeof_stream_item);
-};
+boost::shared_ptr<ice_application_common>
+ice_application_common::Instance()
+{
+  static boost::shared_ptr<ice_application_common>
+    instance(new ice_application_common());
+  return instance;
+}
 
+int ice_application_common::run(int, char**)
+{
+  communicator()->waitForShutdown();
+  return EXIT_SUCCESS;
+}

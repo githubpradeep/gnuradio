@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2004,2010 Free Software Foundation, Inc.
+ * Copyright 2012 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -20,15 +20,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-GR_SWIG_BLOCK_MAGIC(gr,nop)
+#include <rpcserver_booter_aggregator.h>
+#include <rpcmanager.h>
+#include <rpcserver_selector.h>
 
-gr_nop_sptr gr_make_nop (size_t sizeof_stream_item);
+bool rpcmanager::make_aggregator(false);
 
-class gr_nop : public gr_block {
-public:
-  int  ctrlport_test();
-  void set_ctrlport_test(int x);
-private:
-  gr_nop (size_t sizeof_stream_item);
-};
+#ifdef RPCSERVER_ICE
+  #include <rpcserver_booter_ice.h>
+  rpcmanager::rpcserver_booter_register_helper<rpcserver_booter_ice> boot_ice;
+#endif
 
+#ifdef RPCSERVER_ERLANG
+  #error TODO ERLANG
+#endif
+
+#ifdef RPCSERVER_XMLRPC
+  #error TODO XMLRPC 
+#endif

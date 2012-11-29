@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2004,2010 Free Software Foundation, Inc.
+ * Copyright 2012 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -20,15 +20,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-GR_SWIG_BLOCK_MAGIC(gr,nop)
+GR_SWIG_BLOCK_MAGIC(gr,ctrlport_probe_c)
 
-gr_nop_sptr gr_make_nop (size_t sizeof_stream_item);
+gr_ctrlport_probe_c_sptr
+gr_make_ctrlport_probe_c(const std::string &id, const std::string &desc);
 
-class gr_nop : public gr_block {
+class gr_ctrlport_probe_c : public gr_sync_block
+{
 public:
-  int  ctrlport_test();
-  void set_ctrlport_test(int x);
-private:
-  gr_nop (size_t sizeof_stream_item);
+  ~gr_ctrlport_probe_c();
+  std::vector<gr_complex> get();
 };
 

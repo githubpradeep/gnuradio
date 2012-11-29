@@ -180,3 +180,16 @@
 %include "gr_vector_map.i"
 %include "gr_add_ff.i"
 %include "gr_tag_debug.i"
+
+
+#ifdef ENABLE_GR_CTRLPORT
+
+%{
+#include <gr_ctrlport_probe_c.h>
+#include <gr_ctrlport_probe2_c.h>
+%}
+
+%include "gr_ctrlport_probe_c.i"
+%include "gr_ctrlport_probe2_c.i"
+
+#endif /* ENABLE_GR_CTRLPORT */

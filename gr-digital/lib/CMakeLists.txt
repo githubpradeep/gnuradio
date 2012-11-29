@@ -34,8 +34,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
 if(ENABLE_GR_CTRLPORT)
-  include_directories(${GR_CTRLPORT_INCLUDE_DIRS})
-  link_directories(${GR_CTRLPORT_LIBRARY_DIRS})
   add_definitions(-DENABLE_GR_CTRLPORT=1)
 endif(ENABLE_GR_CTRLPORT)
 
@@ -162,19 +160,10 @@ list(APPEND digital_libs
     ${Boost_LIBRARIES}
 )
 
-if(ENABLE_GR_CTRLPORT)
-  list(APPEND digital_libs
-    gnuradio-ctrlport
-  )
-endif(ENABLE_GR_CTRLPORT)
 
 add_library(gnuradio-digital SHARED ${digital_sources})
 target_link_libraries(gnuradio-digital ${digital_libs})
 GR_LIBRARY_FOO(gnuradio-digital RUNTIME_COMPONENT "digital_runtime" DEVEL_COMPONENT "digital_devel")
 add_dependencies(gnuradio-digital 
   digital_generated_includes digital_generated_swigs
-  gnuradio-filter gnuradio-analog)
-
-if(ENABLE_GR_CTRLPORT)
-  add_dependencies(gnuradio-digital gnuradio-ctrlport)
-endif(ENABLE_GR_CTRLPORT)
+  gnuradio-core gnuradio-filter gnuradio-analog)

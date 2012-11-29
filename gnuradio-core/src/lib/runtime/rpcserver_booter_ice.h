@@ -1,9 +1,9 @@
 /* -*- c++ -*- */
-/*
- * Copyright 2004,2010 Free Software Foundation, Inc.
+/* 
+ * Copyright 2012 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
- *
+ * 
  * GNU Radio is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
@@ -20,15 +20,30 @@
  * Boston, MA 02110-1301, USA.
  */
 
-GR_SWIG_BLOCK_MAGIC(gr,nop)
+#ifndef RPCSERVER_BOOTER_ICE_H
+#define RPCSERVER_BOOTER_ICE_H
 
-gr_nop_sptr gr_make_nop (size_t sizeof_stream_item);
+#include <rpcserver_booter_base.h>
+#include <ice_server_template.h>
+#include <gnuradio.h>
 
-class gr_nop : public gr_block {
+class rpcserver_base;
+class rpcserver_ice;
+
+class rpcserver_booter_ice : public virtual rpcserver_booter_base,
+     public virtual ice_server_template<rpcserver_base, rpcserver_ice,
+					rpcserver_booter_ice, GNURadio::ControlPortPtr>
+{
 public:
-  int  ctrlport_test();
-  void set_ctrlport_test(int x);
+  rpcserver_booter_ice();
+  ~rpcserver_booter_ice();
+
+  rpcserver_base* i();
+  const std::string & type() {return d_type;}
+  const std::vector<std::string> endpoints();
+
 private:
-  gr_nop (size_t sizeof_stream_item);
+  std::string d_type;
 };
 
+#endif /* RPCSERVER_BOOTER_ICE_H */

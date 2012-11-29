@@ -26,7 +26,7 @@
 #include <digital/pfb_clock_sync_ccf.h>
 
 #ifdef ENABLE_GR_CTRLPORT
-#include <ctrlport/rpcregisterhelpers.h>
+#include <rpcregisterhelpers.h>
 #endif
 
 using namespace gr::filter;

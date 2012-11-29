@@ -102,8 +102,6 @@ include_directories(
 link_directories(${Boost_LIBRARY_DIRS})
 
 if(ENABLE_GR_CTRLPORT)
-  include_directories(${GR_CTRLPORT_INCLUDE_DIRS})
-  link_directories(${GR_CTRLPORT_LIBRARY_DIRS})
   add_definitions(-DENABLE_GR_CTRLPORT=1)
 endif(ENABLE_GR_CTRLPORT)
 
@@ -149,24 +147,13 @@ list(APPEND filter_libs
     ${Boost_LIBRARIES}
 )
 
-if(ENABLE_GR_CTRLPORT)
-  list(APPEND filter_libs
-    gnuradio-ctrlport
-  )
-endif(ENABLE_GR_CTRLPORT)
-
 
 add_library(gnuradio-filter SHARED ${filter_sources})
 target_link_libraries(gnuradio-filter ${filter_libs})
 GR_LIBRARY_FOO(gnuradio-filter RUNTIME_COMPONENT "filter_runtime" DEVEL_COMPONENT "filter_devel")
 add_dependencies(gnuradio-filter
   filter_generated_includes filter_generated_swigs
-  gnuradio-fft)
-
-if(ENABLE_GR_CTRLPORT)
-  add_dependencies(gnuradio-filter gnuradio-ctrlport)
-endif(ENABLE_GR_CTRLPORT)
-
+  gnuradio-core gnuradio-fft)
 
 ########################################################################
 # QA C++ Code for gr-filter
