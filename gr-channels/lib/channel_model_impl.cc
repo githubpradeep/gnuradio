@@ -139,7 +139,7 @@ namespace gr {
     channel_model_impl::setup_rpc()
     {
 #ifdef ENABLE_GR_CTRLPORT
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, double>(
 	  d_name, "noise", this, unique_id(),
 	  &channel_model_impl::noise_voltage,
@@ -147,7 +147,7 @@ namespace gr {
 	  "", "Noise Voltage",
 	  RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, double>(
            d_name, "freq", this, unique_id(),
 	   &channel_model_impl::frequency_offset,
@@ -155,7 +155,7 @@ namespace gr {
 	   "Hz", "Frequency Offset",
 	   RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, double>(
 	  d_name, "timing", this, unique_id(),
 	  &channel_model_impl::timing_offset,
@@ -163,7 +163,7 @@ namespace gr {
 	  "", "Timing Offset",
 	  RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 	  
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_get<channel_model_impl, std::vector<gr_complex> >(
 	  d_name, "taps", this, unique_id(),
 	  &channel_model_impl::taps,
@@ -173,7 +173,7 @@ namespace gr {
 	  "", "Multipath taps",
 	  RPC_PRIVLVL_MIN, DISPTIMESERIESC)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_set<channel_model_impl, double>(
 	  d_name, "noise", this, unique_id(),
 	  &channel_model_impl::set_noise_voltage,
@@ -181,7 +181,7 @@ namespace gr {
 	  "V", "Noise Voltage",
 	  RPC_PRIVLVL_MIN, DISPNULL)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_set<channel_model_impl, double>(
 	  d_name, "freq", this, unique_id(),
 	  &channel_model_impl::set_frequency_offset,
@@ -189,7 +189,7 @@ namespace gr {
 	  "Hz", "Frequency Offset",
 	  RPC_PRIVLVL_MIN, DISPNULL)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
         rpcbasic_sptr(new rpcbasic_register_set<channel_model_impl, double>(
 	  d_name, "timing", this, unique_id(),
 	  &channel_model_impl::set_timing_offset,

@@ -460,7 +460,7 @@ namespace gr {
     {
 #ifdef ENABLE_GR_CTRLPORT
       // Getters
-      d_rpc_vars.push_back(
+      add_rpc_variable(
           rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "error", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::error,
@@ -468,7 +468,7 @@ namespace gr {
 	      "", "Error signal of loop",
 	      RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
     
-      d_rpc_vars.push_back(
+      add_rpc_variable(
           rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "rate", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::rate,
@@ -476,7 +476,7 @@ namespace gr {
 	      "", "Rate change of phase",
 	      RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
           rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "phase", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::phase,
@@ -484,7 +484,7 @@ namespace gr {
 	      "", "Current filter phase arm",
 	      RPC_PRIVLVL_MIN, DISPTIMESERIESF)));
 
-      d_rpc_vars.push_back(
+      add_rpc_variable(
           rpcbasic_sptr(new rpcbasic_register_get<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "loop bw", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::loop_bandwidth,
@@ -493,7 +493,7 @@ namespace gr {
 	      RPC_PRIVLVL_MIN, DISPNULL)));
 
       // Setters
-      d_rpc_vars.push_back(
+      add_rpc_variable(
           rpcbasic_sptr(new rpcbasic_register_set<pfb_clock_sync_ccf_impl, float>(
 	      d_name, "loop bw", this, unique_id(),
 	      &pfb_clock_sync_ccf_impl::set_loop_bandwidth,

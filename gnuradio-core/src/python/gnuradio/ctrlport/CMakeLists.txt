@@ -21,7 +21,7 @@
 include(GrPython)
 
 ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gnuradio_ice.py
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/../../gnuradio_ice.py
          ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/__init__.py
 	 ${CMAKE_CURRENT_BINARY_DIR}/GNURadio/Booter/__init__.py
   COMMAND ${ICE_SLICE2PY} -I${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/runtime
@@ -39,6 +39,7 @@ ADD_CUSTOM_COMMAND(
           --output-dir=${CMAKE_CURRENT_BINARY_DIR}/../../
           ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/runtime/frontend.ice
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/runtime/frontend.ice
+          ${CMAKE_CURRENT_BINARY_DIR}/../../gnuradio_ice.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Slicing frontend.slice"
 )
@@ -118,7 +119,6 @@ foreach(py_qa_test_file ${py_qa_test_files})
     get_filename_component(py_qa_test_name ${py_qa_test_file} NAME_WE)
     set(GR_TEST_PYTHON_DIRS
         ${CMAKE_BINARY_DIR}/gnuradio-core/src/python
-        ${CMAKE_BINARY_DIR}/gnuradio-core/src/python/ctrlport
         ${CMAKE_BINARY_DIR}/gnuradio-core/src/lib/swig
     )
     set(GR_TEST_TARGET_DEPS gruel gnuradio-core)

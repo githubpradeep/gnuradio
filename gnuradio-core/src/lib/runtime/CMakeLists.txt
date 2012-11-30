@@ -171,6 +171,7 @@ install(FILES
 
 
 if(ENABLE_GR_CTRLPORT)
+add_definitions(-DENABLE_GR_CTRLPORT=1)
 INSTALL(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/ice_application_base.h
     ${CMAKE_CURRENT_SOURCE_DIR}/ice_server_template.h

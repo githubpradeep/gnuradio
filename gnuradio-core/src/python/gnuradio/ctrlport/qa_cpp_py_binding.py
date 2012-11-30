@@ -28,7 +28,7 @@ import Ice
 import sys, time, random, numpy
 from gnuradio import gr, gr_unittest
 
-import GNURadio
+from gnuradio.ctrlport import GNURadio
 from gnuradio import ctrlport
 
 def get1():

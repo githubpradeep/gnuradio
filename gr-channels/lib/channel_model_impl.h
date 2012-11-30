@@ -32,10 +32,6 @@
 #include <filter/fractional_interpolator_cc.h>
 #include <filter/fir_filter_ccc.h>
 
-#ifdef ENABLE_GR_CTRLPORT
-#include <rpcregisterhelpers.h>
-#endif
-
 namespace gr {
   namespace channels {
 
@@ -52,10 +48,6 @@ namespace gr {
       filter::fir_filter_ccc::sptr d_multipath;
 
       std::vector<gr_complex> d_taps;
-
-#ifdef ENABLE_GR_CTRLPORT
-      std::vector<boost::any> d_rpc_vars;
-#endif /* ENABLE_GR_CTRLPORT */
 
       void setup_rpc();
 

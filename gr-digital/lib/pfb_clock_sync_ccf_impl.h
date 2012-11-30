@@ -25,10 +25,6 @@
 
 #include <digital/pfb_clock_sync_ccf.h>
 
-#ifdef ENABLE_GR_CTRLPORT
-#include <rpcregisterhelpers.h>
-#endif
-
 using namespace gr::filter;
 
 namespace gr {
@@ -61,10 +57,6 @@ namespace gr {
       int   d_osps;
       float d_error;
       int   d_out_idx;
-
-#ifdef ENABLE_GR_CTRLPORT
-      std::vector<boost::any> d_rpc_vars;
-#endif /* ENABLE_GR_CTRLPORT */
 
       void setup_rpc();
 
