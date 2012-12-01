@@ -102,7 +102,7 @@ include_directories(
 link_directories(${Boost_LIBRARY_DIRS})
 
 if(ENABLE_GR_CTRLPORT)
-  add_definitions(-DENABLE_GR_CTRLPORT=1)
+  GR_ADD_COND_DEF(ENABLE_GR_CTRLPORT)
 endif(ENABLE_GR_CTRLPORT)
 
 ########################################################################
